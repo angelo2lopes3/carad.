@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raio-X da Calourada — Radiologia</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --film-black:#0A0D13;
+  --film-navy:#131B29;
+  --panel:#171F2E;
+  --cyan:#6FD9EC;
+  --cyan-dim:#3E7A87;
+  --bone:#F3EEE2;
+  --muted:#8B94A6;
+  --amber:#E8A23C;
+  --line:#2A3547;
+  --paper:#EDE3CC;
+  --ink:#211C14;
+  --ink-soft:#5A5140;
+  --rule:#C2AF7C;
+  --valid:#2F6B4E;
+  --valid-bg:#E1EEE4;
+  --used:#A5362B;
+  --used-bg:#F3E2DF;
+  --gold:#AD8226;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--film-black);color:var(--bone);font-family:'Inter',sans-serif;}
+a{color:inherit;}
+button{font-family:inherit;}
+img{max-width:100%;display:block;}
+
+/* ---------------- NAV ---------------- */
+.nav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;
+  background:rgba(10,13,19,.88);
+  backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);
+  flex-wrap:wrap;gap:10px;
+}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.brand svg{width:26px;height:26px;flex-shrink:0;}
+.brand-text{font-family:'Oswald',sans-serif;font-size:18px;letter-spacing:.03em;font-weight:600;}
+.brand-text span{color:var(--cyan);}
+.nav-links{display:flex;align-items:center;gap:8px;}
+.nav-btn{
+  background:transparent;border:1px solid var(--line);color:var(--bone);
+  font-size:13px;font-weight:600;padding:8px 16px;border-radius:6px;cursor:pointer;
+  font-family:'Inter',sans-serif;
+}
+.nav-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.nav-btn.primary{background:var(--cyan);color:var(--film-black);border-color:var(--cyan);}
+.nav-btn.primary:hover{background:#8FE4F2;}
+.nav-btn.active{color:var(--cyan);border-color:var(--cyan-dim);}
+
+.view{display:none;}
+.view.active{display:block;}
+
+/* ---------------- HERO (lightbox) ---------------- */
+.hero{
+  position:relative;overflow:hidden;
+  margin:28px auto 0;max-width:1040px;
+  padding:60px 40px;
+  background:linear-gradient(180deg,var(--film-navy),var(--panel));
+  background-size:cover;background-position:center;
+  border:1px solid var(--line);border-radius:14px;
+}
+.hero::after{
+  content:'';position:absolute;left:0;right:0;height:2px;z-index:3;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  box-shadow:0 0 12px 1px var(--cyan);
+  opacity:.7;
+  animation:scan 5s linear infinite;
+}
+.hero-eyebrow,.hero-title,.hero-sub,.hero-date{position:relative;z-index:2;}
+@keyframes scan{
+  0%{top:0;opacity:0;}
+  10%{opacity:.8;}
+  90%{opacity:.8;}
+  100%{top:100%;opacity:0;}
+}
+.hero-eyebrow{
+  font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--amber);margin:0 0 12px;
+}
+.hero-title{
+  font-family:'Oswald',sans-serif;font-weight:700;font-size:44px;line-height:1.05;
+  margin:0 0 16px;max-width:680px;letter-spacing:.01em;
+}
+.hero-sub{font-size:16px;color:var(--muted);max-width:560px;margin:0 0 20px;line-height:1.5;}
+.hero-date{
+  display:inline-block;font-family:'Space Mono',monospace;font-size:13px;
+  border:1px solid var(--cyan-dim);color:var(--cyan);padding:6px 14px;border-radius:20px;
+}
+
+/* ---------------- SECTIONS ---------------- */
+.section{max-width:1040px;margin:52px auto;padding:0 20px;}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:8px;}
+.section-title{font-family:'Oswald',sans-serif;font-size:24px;font-weight:600;margin:0;}
+.section-tag{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.news-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;
+}
+.news-date{font-family:'Space Mono',monospace;font-size:11px;color:var(--cyan);margin:0 0 8px;letter-spacing:.05em;}
+.news-title{font-family:'Oswald',sans-serif;font-size:18px;margin:0 0 8px;}
+.news-body{font-size:14px;color:var(--muted);line-height:1.5;margin:0;}
+.empty-note{color:var(--muted);font-size:14px;font-family:'Space Mono',monospace;}
+
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.gallery-item{border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--panel);}
+.gallery-item img{width:100%;height:160px;object-fit:cover;filter:saturate(.9) contrast(1.05);}
+.gallery-cap{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);padding:8px 10px;}
+
+footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12px;font-family:'Space Mono',monospace;}
+
+/* ---------------- LOGIN ---------------- */
+.login-wrap{max-width:380px;margin:90px auto;padding:0 20px;}
+.login-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:32px;
+  position:relative;overflow:hidden;
+}
+.login-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--cyan-dim),var(--cyan),var(--cyan-dim));
+}
+.login-title{font-family:'Oswald',sans-serif;font-size:22px;margin:6px 0 4px;}
+.login-sub{font-size:13px;color:var(--muted);margin:0 0 24px;}
+.field-dark label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+.field-dark input{
+  width:100%;background:var(--film-navy);border:1px solid var(--line);color:var(--bone);
+  padding:11px 12px;border-radius:6px;font-family:'Space Mono',monospace;font-size:14px;margin-bottom:16px;
+}
+.field-dark input:focus{outline:none;border-color:var(--cyan);}
+.login-err{color:#F0897C;font-size:13px;margin:-8px 0 14px;font-family:'Space Mono',monospace;}
+.btn-cyan{
+  width:100%;background:var(--cyan);color:var(--film-black);border:none;font-weight:700;
+  padding:12px;border-radius:6px;cursor:pointer;font-size:14px;
+}
+.btn-cyan:hover{background:#8FE4F2;}
+
+/* ---------------- ADMIN ---------------- */
+.admin-wrap{max-width:1040px;margin:36px auto;padding:0 20px 60px;}
+.admin-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px;}
+.admin-title{font-family:'Oswald',sans-serif;font-size:26px;margin:0;}
+.subtabs{display:flex;gap:8px;margin-bottom:26px;}
+.subtab-btn{
+  background:transparent;border:1px solid var(--line);color:var(--muted);
+  padding:9px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;
+}
+.subtab-btn.active{border-color:var(--cyan);color:var(--cyan);}
+.admin-panel{display:none;}
+.admin-panel.active{display:block;}
+
+.card-dark{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:24px;margin-bottom:20px;}
+.card-dark h3{font-family:'Oswald',sans-serif;font-size:16px;margin:0 0 16px;color:var(--bone);}
+.row-flex{display:flex;gap:12px;flex-wrap:wrap;}
+.row-flex .field-dark{flex:1;min-width:180px;}
+.btn-outline{
+  background:transparent;border:1px solid var(--cyan-dim);color:var(--cyan);
+  padding:9px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;
+}
+.btn-outline:hover{border-color:var(--cyan);}
+.list-manage-item{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+  padding:12px 0;border-top:1px solid var(--line);
+}
+.list-manage-item:first-child{border-top:none;}
+.lmi-text{font-size:13px;color:var(--muted);}
+.lmi-text b{color:var(--bone);display:block;font-size:14px;margin-bottom:2px;}
+.del-btn{background:none;border:none;color:#F0897C;cursor:pointer;font-size:12px;font-family:'Space Mono',monospace;}
+.thumb-row{display:flex;gap:10px;align-items:center;}
+.thumb-row img{width:52px;height:40px;object-fit:cover;border-radius:4px;border:1px solid var(--line);}
+.saved-tag{font-size:12px;color:var(--valid);font-family:'Space Mono',monospace;margin-left:10px;opacity:0;transition:opacity .3s;}
+.saved-tag.show{opacity:1;}
+.hero-img-preview-row{display:flex;align-items:center;gap:12px;margin:-6px 0 16px;}
+.hero-img-preview-row img{width:110px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--line);}
+.pass-msg{font-size:12px;margin-left:10px;font-family:'Space Mono',monospace;}
+.pass-msg.ok{color:var(--valid);}
+.pass-msg.err{color:#F0897C;}
+.config-warning{
+  background:#3A1F1B;color:#F5C9BE;border-bottom:1px solid #6B342A;
+  font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.5;
+  padding:12px 24px;text-align:center;
+}
+
+/* ---------------- TICKET TOOL (reused, light paper theme, intentionally contrasting) ---------------- */
+.ticket-shell{background:var(--paper);color:var(--ink);border-radius:12px;padding:28px;}
+.ticket-shell *{box-sizing:border-box;}
+.t-eyebrow{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 4px;}
+.t-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:26px;margin:0;}
+.t-title-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
+.t-count-badge{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.04em;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:20px;padding:5px 14px;font-weight:700;}
+.t-tabs{display:flex;gap:6px;margin-bottom:20px;}
+.t-counter-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.t-counter-box{
+  flex:1;min-width:110px;background:#fff;border:2px solid var(--rule);border-radius:8px;
+  padding:12px 16px;display:flex;flex-direction:column;gap:2px;
+}
+.t-counter-box.valido{border-color:var(--valid);}
+.t-counter-box.usado{border-color:var(--used);}
+.t-counter-num{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;line-height:1;color:var(--ink);}
+.t-counter-box.valido .t-counter-num{color:var(--valid);}
+.t-counter-box.usado .t-counter-num{color:var(--used);}
+.t-counter-label{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);}
+.t-tab-btn{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.05em;text-transform:uppercase;background:transparent;border:2px solid var(--ink);border-bottom:none;color:var(--ink);padding:9px 16px;cursor:pointer;border-radius:8px 8px 0 0;position:relative;top:2px;}
+.t-tab-btn.active{background:#fff;border-bottom:2px solid #fff;}
+.t-panel{background:#fff;border:2px solid var(--ink);border-radius:0 8px 8px 8px;padding:22px;}
+.t-panel[hidden]{display:none;}
+.t-field{margin-bottom:14px;}
+.t-field label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:6px;}
+.t-field input{width:100%;font-family:'Space Mono',monospace;font-size:14px;padding:10px 11px;border:2px solid var(--rule);border-radius:6px;background:#fff;color:var(--ink);}
+.t-field input:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold);}
+.t-btn{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;border:none;border-radius:6px;padding:11px 18px;cursor:pointer;background:var(--ink);color:var(--paper);}
+.t-btn:hover{background:#3a3225;}
+.t-btn.secondary{background:transparent;color:var(--ink);border:2px solid var(--ink);}
+.t-error{color:var(--used);font-size:12px;margin:-4px 0 12px;font-family:'Space Mono',monospace;}
+.t-stub{position:relative;background:#fff;border:2px dashed var(--rule);border-radius:10px;padding:20px 26px;display:flex;gap:20px;align-items:center;box-shadow:0 6px 16px rgba(33,28,20,0.15);}
+.t-stub::before,.t-stub::after{content:'';position:absolute;top:50%;transform:translateY(-50%);width:24px;height:24px;background:var(--paper);border-radius:50%;}
+.t-stub::before{left:-14px;}.t-stub::after{right:-14px;}
+.t-stub-info{flex:1;min-width:0;}
+.t-stub-code{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);margin:0 0 6px;}
+.t-stub-name{font-family:'Oswald',sans-serif;font-size:21px;margin:0 0 4px;line-height:1.1;word-break:break-word;}
+.t-stub-phone{font-family:'Space Mono',monospace;font-size:13px;color:var(--ink-soft);margin:0 0 10px;}
+.t-pill{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:700;}
+.t-pill.valido{background:var(--valid-bg);color:var(--valid);}
+.t-pill.usado{background:var(--used-bg);color:var(--used);}
+.t-stamp{position:absolute;top:8px;right:20px;font-family:'Oswald',sans-serif;font-size:19px;color:var(--used);border:3px solid var(--used);border-radius:8px;padding:2px 9px;transform:rotate(8deg);opacity:.85;}
+.t-search-row{display:flex;gap:10px;margin-bottom:16px;}
+.t-search-row input{flex:1;}
+.t-ledger{border:1px solid var(--rule);border-radius:8px;overflow:hidden;}
+.t-ledger-head,.t-ledger-row{display:grid;grid-template-columns:40px 1.3fr 1fr 1.1fr 90px;gap:10px;align-items:center;padding:9px 12px;}
+.t-ledger-head{background:var(--ink);color:var(--paper);font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.05em;}
+.t-ledger-row{background:#fff;font-family:'Space Mono',monospace;font-size:12px;border-top:1px solid var(--rule);}
+.t-ledger-row:nth-child(even){background:#F7F2E4;}
+.t-qr-mini{line-height:0;cursor:pointer;}
+.t-ledger-name{font-family:'Inter',sans-serif;font-weight:600;font-size:12.5px;}
+.t-empty{padding:28px 16px;text-align:center;color:var(--ink-soft);font-size:13px;}
+.t-reset{margin-top:16px;font-size:12px;color:var(--ink-soft);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0;}
+.t-verify-row{display:flex;gap:10px;}
+.t-verify-row input{flex:1;}
+.t-cam-box{margin-top:12px;border:2px dashed var(--rule);border-radius:8px;padding:12px;text-align:center;}
+.t-cam-box video{width:100%;max-width:320px;border-radius:6px;}
+.t-cam-status{font-size:11px;color:var(--ink-soft);margin-top:8px;font-family:'Space Mono',monospace;}
+.t-shared-note{font-size:11px;color:var(--ink-soft);margin-top:18px;border-top:1px solid var(--rule);padding-top:12px;}
+
+@media (max-width:640px){
+  .hero-title{font-size:32px;}
+  .t-ledger-head,.t-ledger-row{grid-template-columns:30px 1fr 1fr;}
+  .t-col-hide{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand" id="brandHome">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#6FD9EC" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/><circle cx="17" cy="16" r="1.4" fill="#6FD9EC" stroke="none"/></svg>
+    <div class="brand-text">RAIO-X <span>DA CALOURADA</span></div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn" data-nav="home">Início</button>
+    <button class="nav-btn" id="navLoginBtn" data-nav="login">Entrar</button>
+    <button class="nav-btn" id="navAdminBtn" data-nav="admin" hidden>Painel</button>
+    <button class="nav-btn" id="navLogoutBtn" hidden>Sair</button>
+  </div>
+</nav>
+
+<div id="configWarning" class="config-warning" hidden></div>
+
+<!-- ============ HOME (public) ============ -->
+<div class="view active" id="view-home">
+  <div class="hero">
+    <p class="hero-eyebrow">Curso de Radiologia &middot; Recepção de calouros</p>
+    <h1 class="hero-title" id="heroTitleOut">Carregando...</h1>
+    <p class="hero-sub" id="heroSubOut"></p>
+    <span class="hero-date" id="heroDateOut"></span>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">Novidades & divulgações</h2>
+      <span class="section-tag">Laudo atualizado</span>
+    </div>
+    <div class="news-grid" id="newsGrid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">Galeria</h2>
+      <span class="section-tag">Chapas reveladas</span>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+
+  <footer>Página mantida pela comissão de calourada &middot; Radiologia</footer>
+</div>
+
+<!-- ============ LOGIN ============ -->
+<div class="view" id="view-login">
+  <div class="login-wrap">
+    <div class="login-card">
+      <p class="hero-eyebrow" style="margin-bottom:2px;">Acesso restrito</p>
+      <h2 class="login-title">Área da comissão</h2>
+      <p class="login-sub">Entre com a senha da organização para editar o site e gerenciar os ingressos.</p>
+      <div class="field-dark">
+        <label for="loginPass">Senha</label>
+        <input type="password" id="loginPass" placeholder="••••••••">
+      </div>
+      <div class="login-err" id="loginErr" hidden></div>
+      <button class="btn-cyan" id="btnLogin">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN ============ -->
+<div class="view" id="view-admin">
+  <div class="admin-wrap">
+    <div class="admin-head">
+      <h2 class="admin-title">Painel da comissão</h2>
+      <span class="saved-tag" id="savedTag">Alterações salvas</span>
+    </div>
+
+    <div class="subtabs">
+      <button class="subtab-btn active" data-subtab="conteudo">Página inicial</button>
+      <button class="subtab-btn" data-subtab="ingressos">Ingressos</button>
+    </div>
+
+    <!-- ---- CONTEUDO ---- -->
+    <div class="admin-panel active" id="admin-conteudo">
+      <div class="card-dark">
+        <h3>Cabeçalho (hero)</h3>
+        <div class="field-dark"><label for="edHeroTitle">Título</label><input id="edHeroTitle" type="text"></div>
+        <div class="field-dark"><label for="edHeroSub">Subtítulo</label><input id="edHeroSub" type="text"></div>
+        <div class="field-dark"><label for="edHeroDate">Data / selo</label><input id="edHeroDate" type="text"></div>
+        <div class="field-dark"><label for="edHeroImgUrl">Imagem de capa (URL)</label><input id="edHeroImgUrl" type="text" placeholder="https://..."></div>
+        <div class="field-dark">
+          <label for="edHeroImgFile">ou envie uma imagem do dispositivo</label>
+          <input id="edHeroImgFile" type="file" accept="image/*">
+        </div>
+        <div class="hero-img-preview-row" id="heroImgPreviewRow" hidden>
+          <img id="heroImgPreview" alt="Pré-visualização da capa">
+          <button class="del-btn" id="btnRemoveHeroImg" type="button">Remover imagem</button>
+        </div>
+        <button class="btn-outline" id="btnSaveHero" style="margin-top:6px;">Salvar cabeçalho</button>
+      </div>
+
+      <div class="card-dark">
+        <h3>Novidades</h3>
+        <div class="row-flex">
+          <div class="field-dark"><label for="newTitle">Título</label><input id="newTitle" type="text" placeholder="Ex: Camisa da turma chegou"></div>
+          <div class="field-dark"><label for="newDate">Data</label><input id="newDate" type="text" placeholder="Ex: 12/07"></div>
+        </div>
+        <div class="field-dark"><label for="newBody">Texto</label><input id="newBody" type="text" placeholder="Detalhes do comunicado"></div>
+        <button class="btn-outline" id="btnAddNews">Publicar novidade</button>
+        <div id="newsManageList" style="margin-top:14px;"></div>
+      </div>
+
+      <div class="card-dark">
+        <h3>Galeria de fotos</h3>
+        <div class="row-flex">
+          <div class="field-dark"><label for="newPhotoUrl">URL da imagem</label><input id="newPhotoUrl" type="text" placeholder="https://..."></div>
+          <div class="field-dark"><label for="newPhotoCap">Legenda</label><input id="newPhotoCap" type="text" placeholder="Ex: Aula inaugural"></div>
+        </div>
+        <button class="btn-outline" id="btnAddPhoto">Adicionar foto</button>
+        <div id="photoManageList" style="margin-top:14px;"></div>
+      </div>
+
+      <div class="card-dark">
+        <h3>Senha de acesso da comissão</h3>
+        <div class="field-dark"><label for="edPassword">Nova senha</label><input id="edPassword" type="text" placeholder="Deixe em branco para manter"></div>
+        <button class="btn-outline" id="btnSavePass">Atualizar senha</button>
+        <span class="pass-msg" id="passMsg"></span>
+      </div>
+    </div>
+
+    <!-- ---- INGRESSOS (bilheteria embutida) ---- -->
+    <div class="admin-panel" id="admin-ingressos">
+      <div class="ticket-shell">
+        <p class="t-eyebrow">Bilheteria &middot; sistema de emissão</p>
+        <div class="t-title-row">
+          <h2 class="t-title">Cadastro de ingressos</h2>
+          <span class="t-count-badge" id="tCountBadge">0 cadastrados</span>
+        </div>
+
+        <div class="t-tabs">
+          <button class="t-tab-btn active" data-ttab="emitir">Emitir</button>
+          <button class="t-tab-btn" data-ttab="lista">Ingressos</button>
+          <button class="t-tab-btn" data-ttab="validar">Validar</button>
+        </div>
+
+        <div class="t-panel" id="tpanel-emitir">
+          <div class="t-field"><label for="inpNome">Nome do comprador</label><input id="inpNome" type="text" placeholder="Ex: Ana Souza"></div>
+          <div class="t-field"><label for="inpTel">Telefone</label><input id="inpTel" type="text" placeholder="Ex: (11) 91234-5678"></div>
+          <div id="emitirErro" class="t-error" hidden></div>
+          <button class="t-btn" id="btnEmitir">Emitir ingresso</button>
+          <div id="novoIngressoWrap" style="margin-top:22px;" hidden></div>
+        </div>
+
+        <div class="t-panel" id="tpanel-lista" hidden>
+          <div class="t-counter-row" id="tCounterRow">
+            <div class="t-counter-box"><span class="t-counter-num" id="cTotal">0</span><span class="t-counter-label">cadastrados</span></div>
+            <div class="t-counter-box valido"><span class="t-counter-num" id="cValidos">0</span><span class="t-counter-label">válidos</span></div>
+            <div class="t-counter-box usado"><span class="t-counter-num" id="cUsados">0</span><span class="t-counter-label">usados</span></div>
+          </div>
+          <div class="t-search-row"><input id="inpBusca" type="text" placeholder="Buscar por nome, telefone ou código..."></div>
+          <div class="t-ledger">
+            <div class="t-ledger-head"><div>QR</div><div>Nome</div><div class="t-col-hide">Código</div><div class="t-col-hide">Status</div><div>Data</div></div>
+            <div id="ledgerBody"></div>
+          </div>
+          <button class="t-reset" id="btnReset">Limpar todos os ingressos cadastrados</button>
+        </div>
+
+        <div class="t-panel" id="tpanel-validar" hidden>
+          <div class="t-field">
+            <label for="inpCodigo">Código do ingresso</label>
+            <div class="t-verify-row"><input id="inpCodigo" type="text" placeholder="Digite ou cole o código, ex: T-ABC123"><button class="t-btn" id="btnVerificar">Validar</button></div>
+          </div>
+          <button class="t-btn secondary" id="btnCam">Usar câmera para ler o QR code</button>
+          <div class="t-cam-box" id="camBox" hidden>
+            <video id="camVideo" autoplay playsinline muted></video>
+            <canvas id="camCanvas" hidden></canvas>
+            <div class="t-cam-status" id="camStatus">Aponte a câmera para o QR code do ingresso.</div>
+            <button class="t-btn secondary" id="btnCamStop" style="margin-top:10px;">Fechar câmera</button>
+          </div>
+          <div class="result-area" id="resultArea" style="margin-top:20px;"></div>
+        </div>
+
+        <p class="t-shared-note">Os ingressos ficam salvos e são compartilhados entre todos que acessarem este painel.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+  // =========================================================================
+  // CONFIGURAÇÃO DO FIREBASE — troque pelos dados do SEU projeto
+  // Console: https://console.firebase.google.com → criar projeto → Firestore
+  // Database → criar banco → Configurações do projeto → "Seus apps" → Web (</>)
+  // Copie o objeto "firebaseConfig" gerado lá e cole aqui embaixo.
+  // =========================================================================
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY_AQUI",
+    authDomain: "SEU_PROJETO.firebaseapp.com",
+    projectId: "SEU_PROJETO",
+    storageBucket: "SEU_PROJETO.appspot.com",
+    messagingSenderId: "SEU_SENDER_ID",
+    appId: "SEU_APP_ID"
+  };
+
+  const DEFAULT_PASSWORD = 'calourada2026';
+  const COLLECTION = 'calourada';
+
+  let content = null;
+  let tickets = [];
+  let isLoggedIn = false;
+  let db = null;
+  let firebaseReady = false;
+
+  function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+  function defaultContent(){
+    return {
+      heroTitle: 'BEM-VINDOS, CALOUROS DE RADIOLOGIA',
+      heroSubtitle: 'A turma mais nova do curso já entrou em exame de admissão à calourada. Fiquem de olho nas novidades e chapas do evento.',
+      heroDate: 'Data a definir',
+      heroImage: '',
+      announcements: [
+        {id: uid(), title:'Inscrições abertas para a calourada', date:'Em breve', body:'Garanta seu ingresso na aba de compras assim que abrirmos as vendas por aqui.'},
+        {id: uid(), title:'Camisa oficial da turma', date:'Em breve', body:'Modelo e cores da camisa serão revelados nas próximas semanas.'}
+      ],
+      photos: []
+    };
+  }
+
+  function showConfigWarning(msg){
+    const banner = document.getElementById('configWarning');
+    if(banner){
+      banner.textContent = msg;
+      banner.hidden = false;
+    }
+  }
+
+  // ---------------- Firebase init ----------------
+  function initFirebase(){
+    if(firebaseConfig.apiKey === 'SUA_API_KEY_AQUI'){
+      showConfigWarning('⚠ O Firebase ainda não foi configurado neste arquivo. Os dados não vão salvar nem sincronizar entre dispositivos até você colocar as credenciais do seu projeto no código (veja o comentário no início do <script>).');
+      return false;
+    }
+    try{
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      return true;
+    }catch(e){
+      console.error('Falha ao iniciar o Firebase', e);
+      showConfigWarning('⚠ Não foi possível conectar ao Firebase. Confira se as credenciais no código estão corretas.');
+      return false;
+    }
+  }
+
+  // ---------------- content (site) ----------------
+  async function ensureContentDoc(){
+    const ref = db.collection(COLLECTION).doc('content');
+    const snap = await ref.get();
+    if(!snap.exists){
+      content = defaultContent();
+      await ref.set(content);
+    } else {
+      content = snap.data();
+      if(content.heroImage === undefined) content.heroImage = '';
+    }
+  }
+  function watchContent(){
+    db.collection(COLLECTION).doc('content').onSnapshot(snap=>{
+      if(!snap.exists) return;
+      content = snap.data();
+      if(content.heroImage === undefined) content.heroImage = '';
+      if(views.home.classList.contains('active')) renderHome();
+    }, err=>console.error('Erro ao sincronizar conteúdo', err));
+  }
+  async function saveContent(){
+    try{
+      await db.collection(COLLECTION).doc('content').set(content);
+      return true;
+    }catch(e){
+      console.error('Falha ao salvar conteúdo', e);
+      return false;
+    }
+  }
+
+  // ---------------- password ----------------
+  async function getPassword(){
+    try{
+      const snap = await db.collection(COLLECTION).doc('auth').get();
+      return snap.exists && snap.data().password ? snap.data().password : DEFAULT_PASSWORD;
+    }catch(e){ return DEFAULT_PASSWORD; }
+  }
+  async function setPassword(p){
+    try{
+      await db.collection(COLLECTION).doc('auth').set({password: p});
+      const check = await db.collection(COLLECTION).doc('auth').get();
+      return !!(check.exists && check.data().password === p);
+    }catch(e){
+      console.error('Falha ao salvar a senha', e);
+      return false;
+    }
+  }
+
+  // ---------------- tickets ----------------
+  async function ensureTicketsDoc(){
+    const ref = db.collection(COLLECTION).doc('tickets');
+    const snap = await ref.get();
+    if(!snap.exists){
+      tickets = [];
+      await ref.set({list: []});
+    } else {
+      tickets = snap.data().list || [];
+    }
+  }
+  function watchTickets(){
+    db.collection(COLLECTION).doc('tickets').onSnapshot(snap=>{
+      tickets = snap.exists ? (snap.data().list || []) : [];
+      updateCount();
+      if(document.getElementById('tpanel-lista') && !document.getElementById('tpanel-lista').hidden) renderLedger();
+    }, err=>console.error('Erro ao sincronizar ingressos', err));
+  }
+  async function saveTickets(){
+    try{
+      await db.collection(COLLECTION).doc('tickets').set({list: tickets});
+      return true;
+    }catch(e){
+      console.error('Falha ao salvar ingressos', e);
+      return false;
+    }
+  }
+
+
+  function flashSaved(){
+    const tag = document.getElementById('savedTag');
+    tag.classList.add('show');
+    setTimeout(()=>tag.classList.remove('show'), 1600);
+  }
+
+  // ---------------- NAV / VIEWS ----------------
+  const views = {
+    home: document.getElementById('view-home'),
+    login: document.getElementById('view-login'),
+    admin: document.getElementById('view-admin'),
+  };
+  function showView(name){
+    if(name === 'admin' && !isLoggedIn) name = 'login';
+    Object.keys(views).forEach(k => views[k].classList.toggle('active', k===name));
+    document.querySelectorAll('.nav-btn[data-nav]').forEach(b=>b.classList.toggle('active', b.dataset.nav===name));
+    if(name === 'home') renderHome();
+    if(name === 'admin') renderAdmin();
+  }
+  document.getElementById('brandHome').addEventListener('click', ()=>showView('home'));
+  document.querySelectorAll('.nav-btn[data-nav]').forEach(b=>{
+    b.addEventListener('click', ()=>showView(b.dataset.nav));
+  });
+
+  function updateNavAuth(){
+    document.getElementById('navLoginBtn').hidden = isLoggedIn;
+    document.getElementById('navAdminBtn').hidden = !isLoggedIn;
+    document.getElementById('navLogoutBtn').hidden = !isLoggedIn;
+  }
+  document.getElementById('navLogoutBtn').addEventListener('click', ()=>{
+    isLoggedIn = false;
+    updateNavAuth();
+    showView('home');
+  });
+
+  // ---------------- LOGIN ----------------
+  document.getElementById('btnLogin').addEventListener('click', async ()=>{
+    const val = document.getElementById('loginPass').value;
+    const errEl = document.getElementById('loginErr');
+    const correct = await getPassword();
+    if(val === correct){
+      isLoggedIn = true;
+      errEl.hidden = true;
+      document.getElementById('loginPass').value = '';
+      updateNavAuth();
+      showView('admin');
+    } else {
+      errEl.textContent = 'Senha incorreta.';
+      errEl.hidden = false;
+    }
+  });
+  document.getElementById('loginPass').addEventListener('keydown', e=>{
+    if(e.key === 'Enter') document.getElementById('btnLogin').click();
+  });
+
+  // ---------------- HOME RENDER ----------------
+  function renderHome(){
+    document.getElementById('heroTitleOut').textContent = content.heroTitle;
+    document.getElementById('heroSubOut').textContent = content.heroSubtitle;
+    document.getElementById('heroDateOut').textContent = content.heroDate;
+    const heroEl = document.querySelector('.hero');
+    if(content.heroImage){
+      heroEl.style.backgroundImage = `linear-gradient(180deg, rgba(10,13,19,.45), rgba(23,31,46,.88)), url("${content.heroImage}")`;
+    } else {
+      heroEl.style.backgroundImage = '';
+    }
+
+    const newsGrid = document.getElementById('newsGrid');
+    newsGrid.innerHTML = '';
+    if(content.announcements.length === 0){
+      newsGrid.innerHTML = '<p class="empty-note">Nenhuma novidade publicada ainda.</p>';
+    } else {
+      content.announcements.forEach(a=>{
+        const card = document.createElement('div');
+        card.className = 'news-card';
+        card.innerHTML = `<p class="news-date">${esc(a.date)}</p><h3 class="news-title">${esc(a.title)}</h3><p class="news-body">${esc(a.body)}</p>`;
+        newsGrid.appendChild(card);
+      });
+    }
+
+    const galGrid = document.getElementById('galleryGrid');
+    galGrid.innerHTML = '';
+    if(content.photos.length === 0){
+      galGrid.innerHTML = '<p class="empty-note">Nenhuma foto publicada ainda.</p>';
+    } else {
+      content.photos.forEach(p=>{
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = `<img src="${esc(p.url)}" alt="${esc(p.caption)}"><p class="gallery-cap">${esc(p.caption)}</p>`;
+        galGrid.appendChild(item);
+      });
+    }
+  }
+
+  // ---------------- ADMIN: subtabs ----------------
+  document.querySelectorAll('.subtab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('admin-conteudo').classList.toggle('active', btn.dataset.subtab==='conteudo');
+      document.getElementById('admin-ingressos').classList.toggle('active', btn.dataset.subtab==='ingressos');
+      if(btn.dataset.subtab==='ingressos') renderLedger();
+    });
+  });
+
+  function renderAdmin(){
+    document.getElementById('edHeroTitle').value = content.heroTitle;
+    document.getElementById('edHeroSub').value = content.heroSubtitle;
+    document.getElementById('edHeroDate').value = content.heroDate;
+    document.getElementById('edHeroImgUrl').value = content.heroImage && !content.heroImage.startsWith('data:') ? content.heroImage : '';
+    updateHeroImgPreview();
+    renderNewsManage();
+    renderPhotoManage();
+    updateCount();
+  }
+
+  function updateHeroImgPreview(){
+    const row = document.getElementById('heroImgPreviewRow');
+    const img = document.getElementById('heroImgPreview');
+    if(content.heroImage){
+      img.src = content.heroImage;
+      row.hidden = false;
+    } else {
+      row.hidden = true;
+    }
+  }
+
+  document.getElementById('btnSaveHero').addEventListener('click', async ()=>{
+    content.heroTitle = document.getElementById('edHeroTitle').value.trim() || content.heroTitle;
+    content.heroSubtitle = document.getElementById('edHeroSub').value.trim();
+    content.heroDate = document.getElementById('edHeroDate').value.trim();
+    const urlVal = document.getElementById('edHeroImgUrl').value.trim();
+    if(urlVal) content.heroImage = urlVal;
+    await saveContent();
+    updateHeroImgPreview();
+    flashSaved();
+  });
+
+  document.getElementById('edHeroImgFile').addEventListener('change', async (e)=>{
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    if(file.size > 3.5 * 1024 * 1024){
+      alert('Essa imagem é muito grande. Use um arquivo de até ~3,5MB ou cole um link de imagem no campo de URL.');
+      e.target.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async ()=>{
+      content.heroImage = reader.result;
+      document.getElementById('edHeroImgUrl').value = '';
+      await saveContent();
+      updateHeroImgPreview();
+      flashSaved();
+      e.target.value = '';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('btnRemoveHeroImg').addEventListener('click', async ()=>{
+    content.heroImage = '';
+    document.getElementById('edHeroImgUrl').value = '';
+    await saveContent();
+    updateHeroImgPreview();
+    flashSaved();
+  });
+
+  function renderNewsManage(){
+    const wrap = document.getElementById('newsManageList');
+    wrap.innerHTML = '';
+    content.announcements.forEach(a=>{
+      const row = document.createElement('div');
+      row.className = 'list-manage-item';
+      row.innerHTML = `<div class="lmi-text"><b>${esc(a.title)}</b>${esc(a.date)} — ${esc(a.body)}</div><button class="del-btn">Remover</button>`;
+      row.querySelector('.del-btn').addEventListener('click', async ()=>{
+        content.announcements = content.announcements.filter(x=>x.id!==a.id);
+        await saveContent();
+        renderNewsManage();
+      });
+      wrap.appendChild(row);
+    });
+  }
+  document.getElementById('btnAddNews').addEventListener('click', async ()=>{
+    const title = document.getElementById('newTitle').value.trim();
+    const date = document.getElementById('newDate').value.trim() || 'Sem data';
+    const body = document.getElementById('newBody').value.trim();
+    if(!title) return;
+    content.announcements.unshift({id:uid(), title, date, body});
+    await saveContent();
+    document.getElementById('newTitle').value='';
+    document.getElementById('newDate').value='';
+    document.getElementById('newBody').value='';
+    renderNewsManage();
+    flashSaved();
+  });
+
+  function renderPhotoManage(){
+    const wrap = document.getElementById('photoManageList');
+    wrap.innerHTML = '';
+    content.photos.forEach(p=>{
+      const row = document.createElement('div');
+      row.className = 'list-manage-item';
+      row.innerHTML = `<div class="thumb-row"><img src="${esc(p.url)}"><div class="lmi-text"><b>${esc(p.caption)}</b></div></div><button class="del-btn">Remover</button>`;
+      row.querySelector('.del-btn').addEventListener('click', async ()=>{
+        content.photos = content.photos.filter(x=>x.id!==p.id);
+        await saveContent();
+        renderPhotoManage();
+      });
+      wrap.appendChild(row);
+    });
+  }
+  document.getElementById('btnAddPhoto').addEventListener('click', async ()=>{
+    const url = document.getElementById('newPhotoUrl').value.trim();
+    const caption = document.getElementById('newPhotoCap').value.trim() || 'Sem legenda';
+    if(!url) return;
+    content.photos.unshift({id:uid(), url, caption});
+    await saveContent();
+    document.getElementById('newPhotoUrl').value='';
+    document.getElementById('newPhotoCap').value='';
+    renderPhotoManage();
+    flashSaved();
+  });
+
+  document.getElementById('btnSavePass').addEventListener('click', async ()=>{
+    const val = document.getElementById('edPassword').value.trim();
+    const msg = document.getElementById('passMsg');
+    msg.className = 'pass-msg';
+    if(!val){
+      msg.textContent = 'Digite a nova senha antes de salvar.';
+      msg.classList.add('err');
+      return;
+    }
+    msg.textContent = 'Salvando...';
+    const ok = await setPassword(val);
+    if(ok){
+      document.getElementById('edPassword').value='';
+      msg.textContent = 'Senha atualizada com sucesso.';
+      msg.classList.add('ok');
+      flashSaved();
+    } else {
+      msg.textContent = 'Não foi possível salvar a senha agora. Tente novamente.';
+      msg.classList.add('err');
+    }
+  });
+
+  // ================== TICKET TOOL (embedded) ==================
+  document.querySelectorAll('.t-tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.t-tab-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tpanel-emitir').hidden = btn.dataset.ttab!=='emitir';
+      document.getElementById('tpanel-lista').hidden = btn.dataset.ttab!=='lista';
+      document.getElementById('tpanel-validar').hidden = btn.dataset.ttab!=='validar';
+      if(btn.dataset.ttab==='lista') renderLedger();
+      if(btn.dataset.ttab!=='validar') stopCamera();
+    });
+  });
+
+  function genId(){
+    const t = Date.now().toString(36).toUpperCase();
+    const r = Math.random().toString(36).slice(2,6).toUpperCase();
+    return 'T-'+t+r;
+  }
+  function fmtDate(iso){
+    const d = new Date(iso);
+    return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  }
+  function renderQR(container, text, size){
+    container.innerHTML='';
+    new QRCode(container, {text:text, width:size, height:size, colorDark:'#211C14', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.M});
+  }
+  function statusPill(t){ return t.used ? '<span class="t-pill usado">Usado</span>' : '<span class="t-pill valido">Válido</span>'; }
+  function buildStubEl(t, qrSize){
+    const el = document.createElement('div');
+    el.className = 't-stub';
+    el.innerHTML = `
+      ${t.used ? '<div class="t-stamp">USADO</div>' : ''}
+      <div class="t-stub-info">
+        <p class="t-stub-code">${t.id}</p>
+        <p class="t-stub-name">${esc(t.name)}</p>
+        <p class="t-stub-phone">${esc(t.phone)}</p>
+        ${statusPill(t)}
+      </div>
+      <div class="stub-qr" data-qr></div>
+    `;
+    renderQR(el.querySelector('[data-qr]'), 'TICKET:'+t.id, qrSize||96);
+    return el;
+  }
+
+  const btnEmitir = document.getElementById('btnEmitir');
+  const inpNome = document.getElementById('inpNome');
+  const inpTel = document.getElementById('inpTel');
+  const emitirErro = document.getElementById('emitirErro');
+  const novoWrap = document.getElementById('novoIngressoWrap');
+
+  btnEmitir.addEventListener('click', async ()=>{
+    const name = inpNome.value.trim();
+    const phone = inpTel.value.trim();
+    emitirErro.hidden = true;
+    if(!name || !phone){
+      emitirErro.textContent = 'Preencha nome e telefone para emitir o ingresso.';
+      emitirErro.hidden = false;
+      return;
+    }
+    btnEmitir.disabled = true;
+    const ticket = {id: genId(), name, phone, used:false, createdAt:new Date().toISOString(), usedAt:null};
+    tickets.unshift(ticket);
+    await saveTickets();
+    updateCount();
+    inpNome.value=''; inpTel.value='';
+    novoWrap.hidden = false;
+    novoWrap.innerHTML = '';
+    novoWrap.appendChild(buildStubEl(ticket, 110));
+    btnEmitir.disabled = false;
+  });
+
+  const ledgerBody = document.getElementById('ledgerBody');
+  const inpBusca = document.getElementById('inpBusca');
+  function renderLedger(){
+    const q = inpBusca.value.trim().toLowerCase();
+    const filtered = tickets.filter(t => !q || t.name.toLowerCase().includes(q) || t.phone.toLowerCase().includes(q) || t.id.toLowerCase().includes(q));
+    ledgerBody.innerHTML = '';
+    if(filtered.length===0){
+      ledgerBody.innerHTML = `<div class="t-empty">${tickets.length===0 ? 'Nenhum ingresso emitido ainda.' : 'Nenhum ingresso encontrado.'}</div>`;
+      return;
+    }
+    filtered.forEach(t=>{
+      const row = document.createElement('div');
+      row.className = 't-ledger-row';
+      row.innerHTML = `<div class="t-qr-mini" data-qr></div><div class="t-ledger-name">${esc(t.name)}</div><div class="t-col-hide">${t.id}</div><div class="t-col-hide">${statusPill(t)}</div><div>${fmtDate(t.createdAt).split(' ')[0]}</div>`;
+      renderQR(row.querySelector('[data-qr]'), 'TICKET:'+t.id, 34);
+      row.querySelector('[data-qr]').addEventListener('click', ()=>{
+        document.querySelector('.t-tab-btn[data-ttab="emitir"]').click();
+        novoWrap.hidden = false;
+        novoWrap.innerHTML = '';
+        novoWrap.appendChild(buildStubEl(t, 110));
+      });
+      ledgerBody.appendChild(row);
+    });
+  }
+  inpBusca.addEventListener('input', renderLedger);
+
+  document.getElementById('btnReset').addEventListener('click', async ()=>{
+    if(!confirm('Isso vai apagar TODOS os ingressos cadastrados. Confirmar?')) return;
+    tickets = [];
+    await saveTickets();
+    updateCount();
+    renderLedger();
+  });
+
+  function updateCount(){
+    const total = tickets.length;
+    const usados = tickets.filter(t=>t.used).length;
+    const validos = total - usados;
+    const badge = document.getElementById('tCountBadge');
+    if(badge) badge.textContent = total === 1 ? '1 cadastrado' : total + ' cadastrados';
+    const cTotal = document.getElementById('cTotal');
+    const cValidos = document.getElementById('cValidos');
+    const cUsados = document.getElementById('cUsados');
+    if(cTotal) cTotal.textContent = total;
+    if(cValidos) cValidos.textContent = validos;
+    if(cUsados) cUsados.textContent = usados;
+  }
+
+  const inpCodigo = document.getElementById('inpCodigo');
+  const btnVerificar = document.getElementById('btnVerificar');
+  const resultArea = document.getElementById('resultArea');
+  function normalizeCode(raw){
+    let c = raw.trim();
+    if(c.toUpperCase().startsWith('TICKET:')) c = c.slice(7);
+    return c.trim().toUpperCase();
+  }
+  async function handleVerify(rawCode){
+    const code = normalizeCode(rawCode);
+    resultArea.innerHTML = '';
+    if(!code) return;
+    const ticket = tickets.find(t => t.id.toUpperCase() === code);
+    if(!ticket){
+      resultArea.innerHTML = `<p class="t-error">Nenhum ingresso encontrado com o código "${esc(code)}".</p>`;
+      return;
+    }
+    resultArea.appendChild(buildStubEl(ticket, 120));
+    if(!ticket.used){
+      const confirmBtn = document.createElement('button');
+      confirmBtn.className = 't-btn';
+      confirmBtn.style.marginTop = '16px';
+      confirmBtn.textContent = 'Confirmar entrada (marcar como usado)';
+      confirmBtn.addEventListener('click', async ()=>{
+        ticket.used = true;
+        ticket.usedAt = new Date().toISOString();
+        await saveTickets();
+        updateCount();
+        handleVerify(ticket.id);
+      });
+      resultArea.appendChild(confirmBtn);
+    } else {
+      const p = document.createElement('p');
+      p.style.cssText = 'font-size:12px;color:var(--ink-soft);margin-top:12px;';
+      p.textContent = 'Este ingresso já foi utilizado em ' + fmtDate(ticket.usedAt) + '.';
+      resultArea.appendChild(p);
+    }
+  }
+  btnVerificar.addEventListener('click', ()=>handleVerify(inpCodigo.value));
+  inpCodigo.addEventListener('keydown', e=>{ if(e.key==='Enter') handleVerify(inpCodigo.value); });
+
+  let camStream=null, camRAF=null;
+  const btnCam=document.getElementById('btnCam'), btnCamStop=document.getElementById('btnCamStop');
+  const camBox=document.getElementById('camBox'), camVideo=document.getElementById('camVideo');
+  const camCanvas=document.getElementById('camCanvas'), camStatus=document.getElementById('camStatus');
+  async function startCamera(){
+    camBox.hidden=false;
+    camStatus.textContent='Solicitando acesso à câmera...';
+    try{
+      camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+      camVideo.srcObject = camStream;
+      camStatus.textContent='Aponte a câmera para o QR code do ingresso.';
+      scanLoop();
+    }catch(e){
+      camStatus.textContent='Não foi possível acessar a câmera. Digite o código manualmente.';
+    }
+  }
+  function stopCamera(){
+    if(camRAF) cancelAnimationFrame(camRAF);
+    camRAF=null;
+    if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
+    camBox.hidden=true;
+  }
+  function scanLoop(){
+    if(!camStream) return;
+    const ctx = camCanvas.getContext('2d');
+    if(camVideo.readyState === camVideo.HAVE_ENOUGH_DATA){
+      camCanvas.width = camVideo.videoWidth;
+      camCanvas.height = camVideo.videoHeight;
+      ctx.drawImage(camVideo,0,0,camCanvas.width,camCanvas.height);
+      const imgData = ctx.getImageData(0,0,camCanvas.width,camCanvas.height);
+      const code = window.jsQR ? jsQR(imgData.data, imgData.width, imgData.height) : null;
+      if(code && code.data){
+        camStatus.textContent='QR code lido!';
+        inpCodigo.value = code.data;
+        stopCamera();
+        handleVerify(code.data);
+        return;
+      }
+    }
+    camRAF = requestAnimationFrame(scanLoop);
+  }
+  btnCam.addEventListener('click', startCamera);
+  btnCamStop.addEventListener('click', stopCamera);
+
+  // ---------------- INIT ----------------
+  (async function init(){
+    firebaseReady = initFirebase();
+    if(firebaseReady){
+      try{
+        await ensureContentDoc();
+        await ensureTicketsDoc();
+        watchContent();
+        watchTickets();
+      }catch(e){
+        console.error('Erro ao conectar ao Firestore', e);
+        showConfigWarning('⚠ Não foi possível ler/escrever no Firestore. Confira se o banco foi criado e se as regras de segurança permitem leitura e escrita.');
+        content = defaultContent();
+        tickets = [];
+      }
+    } else {
+      // sem Firebase configurado: roda só na memória local desta aba, nada é salvo
+      content = defaultContent();
+      tickets = [];
+    }
+    updateNavAuth();
+    updateCount();
+    showView('home');
+  })();
+})();
+</script>
+</body>
+</html>
