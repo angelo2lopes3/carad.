@@ -451,12 +451,12 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   // Copie o objeto "firebaseConfig" gerado lá e cole aqui embaixo.
   // =========================================================================
   const firebaseConfig = {
-    apiKey: "SUA_API_KEY_AQUI",
-    authDomain: "SEU_PROJETO.firebaseapp.com",
-    projectId: "SEU_PROJETO",
-    storageBucket: "SEU_PROJETO.appspot.com",
-    messagingSenderId: "SEU_SENDER_ID",
-    appId: "SEU_APP_ID"
+    apiKey: "AIzaSyBFKZWyOD1BhhyJidfZJarw0DV-o8tWq9g",
+    authDomain: "sitecarad.firebaseapp.com",
+    projectId: "sitecarad",
+    storageBucket: "sitecarad.firebasestorage.app",
+    messagingSenderId: "787001867481",
+    appId: "1:787001867481:web:e8e4a864300e3de0ab12c8"
   };
 
   const DEFAULT_PASSWORD = 'calourada2026';
@@ -495,7 +495,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 
   // ---------------- Firebase init ----------------
   function initFirebase(){
-    if(firebaseConfig.apiKey === 'SUA_API_KEY_AQUI'){
+    if(firebaseConfig.apiKey === 'AIzaSyBFKZWyOD1BhhyJidfZJarw0DV-o8tWq9g'){
       showConfigWarning('⚠ O Firebase ainda não foi configurado neste arquivo. Os dados não vão salvar nem sincronizar entre dispositivos até você colocar as credenciais do seu projeto no código (veja o comentário no início do <script>).');
       return false;
     }
