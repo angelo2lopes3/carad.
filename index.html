@@ -424,8 +424,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           </div>
           <button class="t-btn secondary" id="btnCam">Usar câmera para ler o QR code</button>
           <div class="t-cam-box" id="camBox" hidden>
-            <video id="camVideo" autoplay playsinline muted></video>
-            <canvas id="camCanvas" hidden></canvas>
+            <div id="qrReader" style="width:100%;max-width:320px;margin:0 auto;"></div>
             <div class="t-cam-status" id="camStatus">Aponte a câmera para o QR code do ingresso.</div>
             <button class="t-btn secondary" id="btnCamStop" style="margin-top:10px;">Fechar câmera</button>
           </div>
@@ -439,7 +438,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
@@ -451,7 +450,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   // Copie o objeto "firebaseConfig" gerado lá e cole aqui embaixo.
   // =========================================================================
   const firebaseConfig = {
-  apiKey: "AIzaSyBFKZWyOD1BhhyJidfZJarw0DV-o8tWq9g",
+    apiKey: "AIzaSyBFKZWyOD1BhhyJidfZJarw0DV-o8tWq9g",
     authDomain: "sitecarad.firebaseapp.com",
     projectId: "sitecarad",
     storageBucket: "sitecarad.firebasestorage.app",
@@ -958,7 +957,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     if(c.toUpperCase().startsWith('TICKET:')) c = c.slice(7);
     return c.trim().toUpperCase();
   }
-  async function handleVerify(rawCode){
+  async function handleVerify(rawCode, autoConfirm){
     const code = normalizeCode(rawCode);
     resultArea.innerHTML = '';
     if(!code) return;
@@ -967,6 +966,14 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       resultArea.innerHTML = `<p class="t-error">Nenhum ingresso encontrado com o código "${esc(code)}".</p>`;
       return;
     }
+
+    if(autoConfirm && !ticket.used){
+      ticket.used = true;
+      ticket.usedAt = new Date().toISOString();
+      await saveTickets();
+      updateCount();
+    }
+
     resultArea.appendChild(buildStubEl(ticket, 120));
     if(!ticket.used){
       const confirmBtn = document.createElement('button');
@@ -984,53 +991,56 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     } else {
       const p = document.createElement('p');
       p.style.cssText = 'font-size:12px;color:var(--ink-soft);margin-top:12px;';
-      p.textContent = 'Este ingresso já foi utilizado em ' + fmtDate(ticket.usedAt) + '.';
+      p.textContent = autoConfirm
+        ? 'Entrada confirmada automaticamente pela leitura do QR code em ' + fmtDate(ticket.usedAt) + '.'
+        : 'Este ingresso já foi utilizado em ' + fmtDate(ticket.usedAt) + '.';
       resultArea.appendChild(p);
     }
   }
-  btnVerificar.addEventListener('click', ()=>handleVerify(inpCodigo.value));
-  inpCodigo.addEventListener('keydown', e=>{ if(e.key==='Enter') handleVerify(inpCodigo.value); });
+  btnVerificar.addEventListener('click', ()=>handleVerify(inpCodigo.value, false));
+  inpCodigo.addEventListener('keydown', e=>{ if(e.key==='Enter') handleVerify(inpCodigo.value, false); });
 
-  let camStream=null, camRAF=null;
   const btnCam=document.getElementById('btnCam'), btnCamStop=document.getElementById('btnCamStop');
-  const camBox=document.getElementById('camBox'), camVideo=document.getElementById('camVideo');
-  const camCanvas=document.getElementById('camCanvas'), camStatus=document.getElementById('camStatus');
+  const camBox=document.getElementById('camBox'), camStatus=document.getElementById('camStatus');
+  let html5QrCodeInstance = null;
+  let camBusy = false;
   async function startCamera(){
+    if(typeof Html5Qrcode === 'undefined'){
+      camBox.hidden=false;
+      camStatus.textContent='Não foi possível carregar o leitor de câmera. Digite o código manualmente.';
+      return;
+    }
     camBox.hidden=false;
     camStatus.textContent='Solicitando acesso à câmera...';
+    camBusy = false;
     try{
-      camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-      camVideo.srcObject = camStream;
+      html5QrCodeInstance = new Html5Qrcode('qrReader');
+      await html5QrCodeInstance.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: 220 },
+        (decodedText)=>{
+          if(camBusy) return;
+          camBusy = true;
+          camStatus.textContent='QR code lido!';
+          inpCodigo.value = decodedText;
+          stopCamera();
+          handleVerify(decodedText, true);
+        },
+        ()=>{ /* frame sem QR legível, ignorar */ }
+      );
       camStatus.textContent='Aponte a câmera para o QR code do ingresso.';
-      scanLoop();
     }catch(e){
+      console.error(e);
       camStatus.textContent='Não foi possível acessar a câmera. Digite o código manualmente.';
     }
   }
   function stopCamera(){
-    if(camRAF) cancelAnimationFrame(camRAF);
-    camRAF=null;
-    if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
-    camBox.hidden=true;
-  }
-  function scanLoop(){
-    if(!camStream) return;
-    const ctx = camCanvas.getContext('2d');
-    if(camVideo.readyState === camVideo.HAVE_ENOUGH_DATA){
-      camCanvas.width = camVideo.videoWidth;
-      camCanvas.height = camVideo.videoHeight;
-      ctx.drawImage(camVideo,0,0,camCanvas.width,camCanvas.height);
-      const imgData = ctx.getImageData(0,0,camCanvas.width,camCanvas.height);
-      const code = window.jsQR ? jsQR(imgData.data, imgData.width, imgData.height) : null;
-      if(code && code.data){
-        camStatus.textContent='QR code lido!';
-        inpCodigo.value = code.data;
-        stopCamera();
-        handleVerify(code.data);
-        return;
-      }
+    if(html5QrCodeInstance){
+      const instance = html5QrCodeInstance;
+      html5QrCodeInstance = null;
+      instance.stop().then(()=>instance.clear()).catch(()=>{});
     }
-    camRAF = requestAnimationFrame(scanLoop);
+    camBox.hidden=true;
   }
   btnCam.addEventListener('click', startCamera);
   btnCamStop.addEventListener('click', stopCamera);
