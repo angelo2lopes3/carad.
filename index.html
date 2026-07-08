@@ -308,10 +308,14 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     <div class="login-card">
       <p class="hero-eyebrow" style="margin-bottom:2px;">Acesso restrito</p>
       <h2 class="login-title">Área da comissão</h2>
-      <p class="login-sub">Entre com a senha da organização para editar o site e gerenciar os ingressos.</p>
+      <p class="login-sub">Entre com o e-mail e a senha da sua conta da comissão para editar o site e gerenciar os ingressos.</p>
+      <div class="field-dark">
+        <label for="loginEmail">E-mail</label>
+        <input type="email" id="loginEmail" placeholder="voce@exemplo.com" autocomplete="username">
+      </div>
       <div class="field-dark">
         <label for="loginPass">Senha</label>
-        <input type="password" id="loginPass" placeholder="••••••••">
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
       </div>
       <div class="login-err" id="loginErr" hidden></div>
       <button class="btn-cyan" id="btnLogin">Entrar</button>
@@ -373,10 +377,12 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       </div>
 
       <div class="card-dark">
-        <h3>Senha de acesso da comissão</h3>
-        <div class="field-dark"><label for="edPassword">Nova senha</label><input id="edPassword" type="text" placeholder="Deixe em branco para manter"></div>
-        <button class="btn-outline" id="btnSavePass">Atualizar senha</button>
+        <h3>Sua conta</h3>
+        <p class="lmi-text" id="accountEmailOut" style="margin-bottom:14px;"></p>
+        <div class="field-dark"><label for="edMyPassword">Nova senha (só para sua conta)</label><input id="edMyPassword" type="password" placeholder="Mínimo de 6 caracteres" autocomplete="new-password"></div>
+        <button class="btn-outline" id="btnSaveMyPass">Atualizar minha senha</button>
         <span class="pass-msg" id="passMsg"></span>
+        <p class="lmi-text" style="margin-top:14px;font-size:11px;">Para adicionar ou remover outras pessoas da comissão, use o Firebase Console → Authentication → Users. Isso não pode ser feito por aqui, de propósito — é o que impede qualquer pessoa de se auto-cadastrar como administradora.</p>
       </div>
     </div>
 
@@ -441,6 +447,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
 (function(){
   // =========================================================================
@@ -458,14 +465,15 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     appId: "1:787001867481:web:e8e4a864300e3de0ab12c8"
   };
 
-  const DEFAULT_PASSWORD = 'calourada2026';
   const COLLECTION = 'calourada';
 
   let content = null;
   let tickets = [];
   let isLoggedIn = false;
   let db = null;
+  let auth = null;
   let firebaseReady = false;
+  let unsubscribeTickets = null;
 
   function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
   function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
@@ -501,6 +509,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     try{
       firebase.initializeApp(firebaseConfig);
       db = firebase.firestore();
+      auth = firebase.auth();
       return true;
     }catch(e){
       console.error('Falha ao iniciar o Firebase', e);
@@ -509,17 +518,16 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     }
   }
 
-  // ---------------- content (site) ----------------
-  async function ensureContentDoc(){
-    const ref = db.collection(COLLECTION).doc('content');
-    const snap = await ref.get();
-    if(!snap.exists){
+  // ---------------- content (site) — leitura pública, escrita só autenticada ----------------
+  async function loadInitialContent(){
+    try{
+      const snap = await db.collection(COLLECTION).doc('content').get();
+      content = snap.exists ? snap.data() : defaultContent();
+    }catch(e){
+      console.error('Erro ao carregar conteúdo', e);
       content = defaultContent();
-      await ref.set(content);
-    } else {
-      content = snap.data();
-      if(content.heroImage === undefined) content.heroImage = '';
     }
+    if(content.heroImage === undefined) content.heroImage = '';
   }
   function watchContent(){
     db.collection(COLLECTION).doc('content').onSnapshot(snap=>{
@@ -539,41 +547,34 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     }
   }
 
-  // ---------------- password ----------------
-  async function getPassword(){
+  // ---------------- tickets — leitura e escrita só para quem está autenticado ----------------
+  async function startTicketsSync(){
     try{
-      const snap = await db.collection(COLLECTION).doc('auth').get();
-      return snap.exists && snap.data().password ? snap.data().password : DEFAULT_PASSWORD;
-    }catch(e){ return DEFAULT_PASSWORD; }
-  }
-  async function setPassword(p){
-    try{
-      await db.collection(COLLECTION).doc('auth').set({password: p});
-      const check = await db.collection(COLLECTION).doc('auth').get();
-      return !!(check.exists && check.data().password === p);
+      const ref = db.collection(COLLECTION).doc('tickets');
+      const snap = await ref.get();
+      if(!snap.exists){
+        tickets = [];
+        await ref.set({list: []});
+      } else {
+        tickets = snap.data().list || [];
+      }
     }catch(e){
-      console.error('Falha ao salvar a senha', e);
-      return false;
-    }
-  }
-
-  // ---------------- tickets ----------------
-  async function ensureTicketsDoc(){
-    const ref = db.collection(COLLECTION).doc('tickets');
-    const snap = await ref.get();
-    if(!snap.exists){
+      console.error('Erro ao carregar ingressos', e);
       tickets = [];
-      await ref.set({list: []});
-    } else {
-      tickets = snap.data().list || [];
     }
-  }
-  function watchTickets(){
-    db.collection(COLLECTION).doc('tickets').onSnapshot(snap=>{
+    updateCount();
+    if(unsubscribeTickets) unsubscribeTickets();
+    unsubscribeTickets = db.collection(COLLECTION).doc('tickets').onSnapshot(snap=>{
       tickets = snap.exists ? (snap.data().list || []) : [];
       updateCount();
-      if(document.getElementById('tpanel-lista') && !document.getElementById('tpanel-lista').hidden) renderLedger();
+      const listaPanel = document.getElementById('tpanel-lista');
+      if(listaPanel && !listaPanel.hidden) renderLedger();
     }, err=>console.error('Erro ao sincronizar ingressos', err));
+  }
+  function stopTicketsSync(){
+    if(unsubscribeTickets){ unsubscribeTickets(); unsubscribeTickets = null; }
+    tickets = [];
+    updateCount();
   }
   async function saveTickets(){
     try{
@@ -584,7 +585,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       return false;
     }
   }
-
 
   function flashSaved(){
     const tag = document.getElementById('savedTag');
@@ -616,28 +616,53 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     document.getElementById('navLogoutBtn').hidden = !isLoggedIn;
   }
   document.getElementById('navLogoutBtn').addEventListener('click', ()=>{
-    isLoggedIn = false;
-    updateNavAuth();
-    showView('home');
+    if(auth) auth.signOut();
   });
+
+  function watchAuthState(){
+    auth.onAuthStateChanged(async user=>{
+      isLoggedIn = !!user;
+      updateNavAuth();
+      if(isLoggedIn){
+        await startTicketsSync();
+      } else {
+        stopTicketsSync();
+        if(views.admin.classList.contains('active')) showView('home');
+      }
+    });
+  }
 
   // ---------------- LOGIN ----------------
   document.getElementById('btnLogin').addEventListener('click', async ()=>{
-    const val = document.getElementById('loginPass').value;
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value;
     const errEl = document.getElementById('loginErr');
-    const correct = await getPassword();
-    if(val === correct){
-      isLoggedIn = true;
-      errEl.hidden = true;
+    errEl.hidden = true;
+    if(!email || !pass){
+      errEl.textContent = 'Preencha e-mail e senha.';
+      errEl.hidden = false;
+      return;
+    }
+    if(!auth){
+      errEl.textContent = 'Firebase não está configurado neste site.';
+      errEl.hidden = false;
+      return;
+    }
+    try{
+      await auth.signInWithEmailAndPassword(email, pass);
+      document.getElementById('loginEmail').value = '';
       document.getElementById('loginPass').value = '';
-      updateNavAuth();
       showView('admin');
-    } else {
-      errEl.textContent = 'Senha incorreta.';
+    }catch(e){
+      console.error(e);
+      errEl.textContent = 'E-mail ou senha incorretos.';
       errEl.hidden = false;
     }
   });
   document.getElementById('loginPass').addEventListener('keydown', e=>{
+    if(e.key === 'Enter') document.getElementById('btnLogin').click();
+  });
+  document.getElementById('loginEmail').addEventListener('keydown', e=>{
     if(e.key === 'Enter') document.getElementById('btnLogin').click();
   });
 
@@ -700,6 +725,8 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     renderNewsManage();
     renderPhotoManage();
     updateCount();
+    const emailOut = document.getElementById('accountEmailOut');
+    if(emailOut) emailOut.textContent = (auth && auth.currentUser) ? 'Conectado como ' + auth.currentUser.email : '';
   }
 
   function updateHeroImgPreview(){
@@ -808,8 +835,8 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     flashSaved();
   });
 
-  document.getElementById('btnSavePass').addEventListener('click', async ()=>{
-    const val = document.getElementById('edPassword').value.trim();
+  document.getElementById('btnSaveMyPass').addEventListener('click', async ()=>{
+    const val = document.getElementById('edMyPassword').value.trim();
     const msg = document.getElementById('passMsg');
     msg.className = 'pass-msg';
     if(!val){
@@ -817,15 +844,30 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       msg.classList.add('err');
       return;
     }
+    if(val.length < 6){
+      msg.textContent = 'A senha precisa ter pelo menos 6 caracteres.';
+      msg.classList.add('err');
+      return;
+    }
+    if(!auth || !auth.currentUser){
+      msg.textContent = 'Você precisa estar logada(o) para trocar a senha.';
+      msg.classList.add('err');
+      return;
+    }
     msg.textContent = 'Salvando...';
-    const ok = await setPassword(val);
-    if(ok){
-      document.getElementById('edPassword').value='';
+    try{
+      await auth.currentUser.updatePassword(val);
+      document.getElementById('edMyPassword').value='';
       msg.textContent = 'Senha atualizada com sucesso.';
       msg.classList.add('ok');
       flashSaved();
-    } else {
-      msg.textContent = 'Não foi possível salvar a senha agora. Tente novamente.';
+    }catch(e){
+      console.error(e);
+      if(e.code === 'auth/requires-recent-login'){
+        msg.textContent = 'Por segurança, saia e entre de novo antes de trocar a senha.';
+      } else {
+        msg.textContent = 'Não foi possível atualizar a senha agora.';
+      }
       msg.classList.add('err');
     }
   });
@@ -1050,13 +1092,12 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     firebaseReady = initFirebase();
     if(firebaseReady){
       try{
-        await ensureContentDoc();
-        await ensureTicketsDoc();
+        await loadInitialContent();
         watchContent();
-        watchTickets();
+        watchAuthState();
       }catch(e){
         console.error('Erro ao conectar ao Firestore', e);
-        showConfigWarning('⚠ Não foi possível ler/escrever no Firestore. Confira se o banco foi criado e se as regras de segurança permitem leitura e escrita.');
+        showConfigWarning('⚠ Não foi possível ler do Firestore. Confira se o banco foi criado e se as regras de segurança permitem a leitura pública do documento "content".');
         content = defaultContent();
         tickets = [];
       }
