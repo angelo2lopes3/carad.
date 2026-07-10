@@ -6,7 +6,7 @@
 <title>Raio-X da Calourada — Radiologia</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
-  
+
 :root{
   --film-black:#0A0D13;
   --film-navy:#131B29;
@@ -107,7 +107,35 @@ img{max-width:100%;display:block;}
 .news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
 .news-card{
   background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;
+  position: relative;
 }
+
+/* Efeito de Radiação / Onda de Luz para a postagem mais recente */
+.news-latest-radiology {
+  border-color: var(--cyan);
+  box-shadow: 0 0 15px rgba(111, 217, 236, 0.2);
+  animation: raioX-pulse 3s infinite ease-in-out;
+}
+.news-latest-radiology::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  border-radius: 11px;
+  border: 1px solid var(--cyan);
+  opacity: 0.8;
+  pointer-events: none;
+  animation: raioX-wave 3s infinite cubic-bezier(0.25, 0, 0, 1);
+}
+
+@keyframes raioX-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(111, 217, 236, 0.25); border-color: rgba(111, 217, 236, 0.6); }
+  50% { box-shadow: 0 0 25px rgba(111, 217, 236, 0.6); border-color: var(--cyan); }
+}
+@keyframes raioX-wave {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.05, 1.12); opacity: 0; }
+}
+
 .news-date{font-family:'Space Mono',monospace;font-size:11px;color:var(--cyan);margin:0 0 8px;letter-spacing:.05em;}
 .news-title{font-family:'Oswald',sans-serif;font-size:18px;margin:0 0 8px;}
 .news-body{font-size:14px;color:var(--muted);line-height:1.5;margin:0;}
@@ -251,7 +279,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-stub-phone覆{font-family:'Space Mono',monospace;font-size:13px;color:var(--ink-soft);margin:0 0 10px;}
 .t-pill{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:700;}
 .t-pill.valido{background:var(--valid-bg);color:var(--valid);}
-.t-pill.usado{background:var(--used-bg);color:var(--used);}
+.t-pill.usado覆{background:var(--used-bg);color:var(--used);}
 .t-stamp{position:absolute;top:8px;right:20px;font-family:'Oswald',sans-serif;font-size:19px;color:var(--used);border:3px solid var(--used);border-radius:8px;padding:2px 9px;transform:rotate(8deg);opacity:.85;}
 .t-search-row{display:flex;gap:10px;margin-bottom:16px;}
 .t-search-row input{flex:1;}
@@ -296,7 +324,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 
 <div id="configWarning" class="config-warning" hidden></div>
 
-<!-- ============ HOME (public) ============ -->
 <div class="view active" id="view-home">
   <div class="hero">
     <p class="hero-eyebrow">Curso de Radiologia &middot; Recepção de calouros</p>
@@ -324,7 +351,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   <footer>Página mantida pela comissão de calourada &middot; Radiologia</footer>
 </div>
 
-<!-- ============ LOJA (public) ============ -->
 <div class="view" id="view-loja">
   <div class="hero" id="shopHeroEl" style="padding: 40px; margin-bottom: 0;">
     <p class="hero-eyebrow" id="shopHeroEyebrowOut">Produtos Oficiais</p>
@@ -338,7 +364,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   <footer>Página mantida pela comissão de calourada &middot; Radiologia</footer>
 </div>
 
-<!-- ============ LOGIN ============ -->
 <div class="view" id="view-login">
   <div class="login-wrap">
     <div class="login-card">
@@ -359,7 +384,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   </div>
 </div>
 
-<!-- ============ ADMIN ============ -->
 <div class="view" id="view-admin">
   <div class="admin-wrap">
     <div class="admin-head">
@@ -373,7 +397,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       <button class="subtab-btn" data-subtab="ingressos">Ingressos</button>
     </div>
 
-    <!-- ---- CONTEUDO ---- -->
     <div class="admin-panel active" id="admin-conteudo">
       <div class="card-dark">
         <h3>Cabeçalho (hero) - Página Inicial</h3>
@@ -409,6 +432,10 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           <div class="field-dark"><label for="newPhotoUrl">URL da imagem</label><input id="newPhotoUrl" type="text" placeholder="https://..."></div>
           <div class="field-dark"><label for="newPhotoCap">Legenda</label><input id="newPhotoCap" type="text" placeholder="Ex: Aula inaugural"></div>
         </div>
+        <div class="field-dark">
+          <label for="newPhotoFile">ou envie uma foto do dispositivo</label>
+          <input id="newPhotoFile" type="file" accept="image/*">
+        </div>
         <button class="btn-outline" id="btnAddPhoto">Adicionar foto</button>
         <div id="photoManageList" style="margin-top:14px;"></div>
       </div>
@@ -419,18 +446,19 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
         <div class="field-dark"><label for="edMyPassword">Nova senha (só para sua conta)</label><input id="edMyPassword" type="password" placeholder="Mínimo de 6 caracteres" autocomplete="new-password"></div>
         <button class="btn-outline" id="btnSaveMyPass">Atualizar minha senha</button>
         <span class="pass-msg" id="passMsg"></span>
-        <p class="lmi-text" style="margin-top:14px;font-size:11px;">Para adicionar ou remover outras pessoas da comissão, use o Firebase Console → Authentication → Users. Isso não pode ser feito por aqui, de propósito — é o que impede qualquer pessoa de se auto-cadastrar como administradora.</p>
       </div>
     </div>
 
-    <!-- ---- LOJA ADMIN ---- -->
     <div class="admin-panel" id="admin-loja">
-      <!-- NOVA SEÇÃO: Edição de Cabeçalho HERO da Loja -->
       <div class="card-dark">
         <h3>Cabeçalho (hero) - Página de Loja</h3>
         <div class="field-dark"><label for="edShopHeroTitle">Título da Loja</label><input id="edShopHeroTitle" type="text"></div>
         <div class="field-dark"><label for="edShopHeroSub">Subtítulo da Loja</label><input id="edShopHeroSub" type="text"></div>
         <div class="field-dark"><label for="edShopHeroImgUrl">Imagem de capa da Loja (URL)</label><input id="edShopHeroImgUrl" type="text" placeholder="https://..."></div>
+        <div class="field-dark">
+          <label for="edShopHeroImgFile">ou envie uma imagem de capa do dispositivo</label>
+          <input id="edShopHeroImgFile" type="file" accept="image/*">
+        </div>
         <button class="btn-outline" id="btnSaveShopHero" style="margin-top:6px;">Salvar cabeçalho da loja</button>
       </div>
 
@@ -442,7 +470,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
         </div>
         <div class="field-dark"><label for="shopItemDesc">Descrição</label><input id="shopItemDesc" type="text" placeholder="Ex: Tirante em nylon com engate rápido de 40cm"></div>
         <div class="field-dark"><label for="shopItemImgUrl">URL da Imagem do Produto</label><input id="shopItemImgUrl" type="text" placeholder="https://..."></div>
-        <!-- CAMPO SOLICITADO: Upload de Foto por Arquivo também -->
         <div class="field-dark">
           <label for="shopItemImgFile">ou envie uma foto do dispositivo</label>
           <input id="shopItemImgFile" type="file" accept="image/*">
@@ -455,7 +482,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       </div>
     </div>
 
-    <!-- ---- INGRESSOS ---- -->
     <div class="admin-panel" id="admin-ingressos">
       <div class="ticket-shell">
         <p class="t-eyebrow">Bilheteria &middot; sistema de emissão</p>
@@ -505,8 +531,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           </div>
           <div class="result-area" id="resultArea" style="margin-top:20px;"></div>
         </div>
-
-        <p class="t-shared-note">Os ingressos ficam salvos e são compartilhados entre todos que acessarem este painel.</p>
       </div>
     </div>
   </div>
@@ -550,26 +574,14 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       shopHeroTitle: 'Vitrine da Calourada',
       shopHeroSubtitle: 'Adquira os produtos oficiais do evento diretamente com a nossa comissão.',
       shopHeroImage: '',
-      announcements: [
-        {id: uid(), title:'Inscrições abertas para a calourada', date:'Em breve', body:'Garanta seu ingresso na aba de compras assim que abrirmos as vendas por aqui.'},
-        {id: uid(), title:'Camisa oficial da turma', date:'Em breve', body:'Modelo e cores da camisa serão revelados nas próximas semanas.'}
-      ],
+      announcements: [],
       photos: [],
       shopItems: []
     };
   }
 
-  function showConfigWarning(msg){
-    const banner = document.getElementById('configWarning');
-    if(banner){
-      banner.textContent = msg;
-      banner.hidden = false;
-    }
-  }
-
   function initFirebase(){
-    if(firebaseConfig.apiKey === 'SUA_API_KEY_AQUI'){
-      showConfigWarning('⚠ O Firebase ainda não foi configurado neste arquivo...');
+    if(firebaseConfig.apiKey === 'sua api' || firebaseConfig.apiKey.includes('AQUI')){
       return false;
     }
     try{
@@ -578,7 +590,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       auth = firebase.auth();
       return true;
     }catch(e){
-      console.error('Falha ao iniciar o Firebase', e);
       return false;
     }
   }
@@ -588,13 +599,10 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       const snap = await db.collection(COLLECTION).doc('content').get();
       content = snap.exists ? snap.data() : defaultContent();
     }catch(e){
-      console.error('Erro ao carregar conteúdo', e);
       content = defaultContent();
     }
-    if(!content.heroImage) content.heroImage = '';
-    if(!content.shopHeroTitle) content.shopHeroTitle = 'Vitrine da Calourada';
-    if(!content.shopHeroSubtitle) content.shopHeroSubtitle = 'Adquira os produtos oficiais do evento diretamente com a nossa comissão.';
-    if(!content.shopHeroImage) content.shopHeroImage = '';
+    if(!content.announcements) content.announcements = [];
+    if(!content.photos) content.photos = [];
     if(!content.shopItems) content.shopItems = [];
   }
   
@@ -602,71 +610,38 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     db.collection(COLLECTION).doc('content').onSnapshot(snap=>{
       if(!snap.exists) return;
       content = snap.data();
-      if(!content.heroImage) content.heroImage = '';
-      if(!content.shopHeroTitle) content.shopHeroTitle = 'Vitrine da Calourada';
-      if(!content.shopHeroSubtitle) content.shopHeroSubtitle = 'Adquira os produtos oficiais do evento diretamente com a nossa comissão.';
-      if(!content.shopHeroImage) content.shopHeroImage = '';
+      if(!content.announcements) content.announcements = [];
+      if(!content.photos) content.photos = [];
       if(!content.shopItems) content.shopItems = [];
       if(views.home.classList.contains('active')) renderHome();
       if(views.loja.classList.contains('active')) renderLoja();
-    }, err=>console.error('Erro ao sincronizar conteúdo', err));
+    });
   }
   
   async function saveContent(){
-    try{
-      await db.collection(COLLECTION).doc('content').set(content);
-      return true;
-    }catch(e){
-      console.error('Falha ao salvar conteúdo', e);
-      return false;
-    }
+    try{ await db.collection(COLLECTION).doc('content').set(content); return true; }catch(e){ return false; }
   }
 
   async function startTicketsSync(){
     try{
       const ref = db.collection(COLLECTION).doc('tickets');
       const snap = await ref.get();
-      if(!snap.exists){
-        tickets = [];
-        await ref.set({list: []});
-      } else {
-        tickets = snap.data().list || [];
-      }
-    }catch(e){
-      console.error('Erro ao carregar ingressos', e);
-    }
+      if(!snap.exists) await ref.set({list: []});
+      tickets = snap.exists ? (snap.data().list || []) : [];
+    }catch(e){}
     updateCount();
     if(unsubscribeTickets) unsubscribeTickets();
     unsubscribeTickets = db.collection(COLLECTION).doc('tickets').onSnapshot(snap=>{
       tickets = snap.exists ? (snap.data().list || []) : [];
       updateCount();
-      const listaPanel = document.getElementById('tpanel-lista');
-      if(listaPanel && !listaPanel.hidden) renderLedger();
-    }, err=>console.error('Erro ao sincronizar ingressos', err));
+      if(!document.getElementById('tpanel-lista').hidden) renderLedger();
+    });
   }
   
-  function stopTicketsSync(){
-    if(unsubscribeTickets){ unsubscribeTickets(); unsubscribeTickets = null; }
-    tickets = [];
-    updateCount();
-  }
-  
-  async function saveTickets(){
-    try{
-      await db.collection(COLLECTION).doc('tickets').set({list: tickets});
-      return true;
-    }catch(e){
-      return false;
-    }
-  }
+  function stopTicketsSync(){ if(unsubscribeTickets){ unsubscribeTickets().catch(()=>{}); unsubscribeTickets = null; } tickets = []; updateCount(); }
+  async function saveTickets(){ try{ await db.collection(COLLECTION).doc('tickets').set({list: tickets}); return true; }catch(e){ return false; } }
+  function flashSaved(){ const tag = document.getElementById('savedTag'); tag.classList.add('show'); setTimeout(()=>tag.classList.remove('show'), 1600); }
 
-  function flashSaved(){
-    const tag = document.getElementById('savedTag');
-    tag.classList.add('show');
-    setTimeout(()=>tag.classList.remove('show'), 1600);
-  }
-
-  // ---------------- NAV / VIEWS ----------------
   const views = {
     home: document.getElementById('view-home'),
     loja: document.getElementById('view-loja'),
@@ -684,133 +659,90 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   }
   
   document.getElementById('brandHome').addEventListener('click', ()=>showView('home'));
-  document.querySelectorAll('.nav-btn[data-nav]').forEach(b=>{
-    b.addEventListener('click', ()=>showView(b.dataset.nav));
-  });
-
+  document.querySelectorAll('.nav-btn[data-nav]').forEach(b=>{ b.addEventListener('click', ()=>showView(b.dataset.nav)); });
   function updateNavAuth(){
     document.getElementById('navLoginBtn').hidden = isLoggedIn;
     document.getElementById('navAdminBtn').hidden = !isLoggedIn;
     document.getElementById('navLogoutBtn').hidden = !isLoggedIn;
   }
-  
-  document.getElementById('navLogoutBtn').addEventListener('click', ()=>{
-    if(auth) auth.signOut();
-  });
+  document.getElementById('navLogoutBtn').addEventListener('click', ()=>{ if(auth) auth.signOut(); });
 
   function watchAuthState(){
     auth.onAuthStateChanged(async user=>{
       isLoggedIn = !!user;
       updateNavAuth();
-      if(isLoggedIn){
-        await startTicketsSync();
-      } else {
-        stopTicketsSync();
-        if(views.admin.classList.contains('active')) showView('home');
-      }
+      if(isLoggedIn){ await startTicketsSync(); } else { stopTicketsSync(); if(views.admin.classList.contains('active')) showView('home'); }
     });
   }
 
-  // ---------------- LOGIN ----------------
   document.getElementById('btnLogin').addEventListener('click', async ()=>{
     const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value;
-    const errEl = document.getElementById('loginErr');
-    errEl.hidden = true;
-    if(!email || !pass){
-      errEl.textContent = 'Preencha e-mail e senha.';
-      errEl.hidden = false;
-      return;
-    }
+    const errEl = document.getElementById('loginErr'); errEl.hidden = true;
+    if(!email || !pass){ errEl.textContent = 'Preencha e-mail e senha.'; errEl.hidden = false; return; }
     try{
       await auth.signInWithEmailAndPassword(email, pass);
-      document.getElementById('loginEmail').value = '';
-      document.getElementById('loginPass').value = '';
+      document.getElementById('loginEmail').value = ''; document.getElementById('loginPass').value = '';
       showView('admin');
-    }catch(e){
-      errEl.textContent = 'E-mail ou senha incorretos.';
-      errEl.hidden = false;
-    }
+    }catch(e){ errEl.textContent = 'E-mail ou senha incorretos.'; errEl.hidden = false; }
   });
 
-  // ---------------- HOME RENDER ----------------
   function renderHome(){
-    document.getElementById('heroTitleOut').textContent = content.heroTitle;
-    document.getElementById('heroSubOut').textContent = content.heroSubtitle;
-    document.getElementById('heroDateOut').textContent = content.heroDate;
+    document.getElementById('heroTitleOut').textContent = content.heroTitle || 'Carregando...';
+    document.getElementById('heroSubOut').textContent = content.heroSubtitle || '';
+    document.getElementById('heroDateOut').textContent = content.heroDate || '';
     const heroEl = document.querySelector('.hero');
-    if(content.heroImage){
-      heroEl.style.backgroundImage = `linear-gradient(180deg, rgba(10,13,19,.45), rgba(23,31,46,.88)), url("${content.heroImage}")`;
-    } else {
-      heroEl.style.backgroundImage = '';
-    }
+    heroEl.style.backgroundImage = content.heroImage ? `linear-gradient(180deg, rgba(10,13,19,.45), rgba(23,31,46,.88)), url("${content.heroImage}")` : '';
 
-    const newsGrid = document.getElementById('newsGrid');
-    newsGrid.innerHTML = '';
+    const newsGrid = document.getElementById('newsGrid'); newsGrid.innerHTML = '';
     if(content.announcements.length === 0){
       newsGrid.innerHTML = '<p class="empty-note">Nenhuma novidade publicada ainda.</p>';
     } else {
-      content.announcements.forEach(a=>{
-        const card = document.createElement('div');
-        card.className = 'news-card';
-        card.innerHTML = `<p class="news-date">${esc(a.date)}</p><h3 class="news-title">${esc(a.title)}</h3><p class="news-body">${esc(a.body)}</p>`;
-        newsGrid.appendChild(card);
+      content.announcements.forEach((a, index)=>{
+        // Adiciona a classe de animação 'news-latest-radiology' apenas para o elemento no índice 0 (a postagem mais recente)
+        const latestClass = (index === 0) ? ' news-latest-radiology' : '';
+        newsGrid.innerHTML += `<div class="news-card${latestClass}"><p class="news-date">${esc(a.date)}</p><h3 class="news-title">${esc(a.title)}</h3><p class="news-body">${esc(a.body)}</p></div>`;
       });
     }
 
-    const galGrid = document.getElementById('galleryGrid');
-    galGrid.innerHTML = '';
+    const galGrid = document.getElementById('galleryGrid'); galGrid.innerHTML = '';
     if(content.photos.length === 0){
       galGrid.innerHTML = '<p class="empty-note">Nenhuma foto publicada ainda.</p>';
     } else {
       content.photos.forEach(p=>{
-        const item = document.createElement('div');
-        item.className = 'gallery-item';
-        item.innerHTML = `<img src="${esc(p.url)}" alt="${esc(p.caption)}"><p class="gallery-cap">${esc(p.caption)}</p>`;
-        galGrid.appendChild(item);
+        galGrid.innerHTML += `<div class="gallery-item"><img src="${esc(p.url)}" alt="${esc(p.caption)}"><p class="gallery-cap">${esc(p.caption)}</p></div>`;
       });
     }
   }
 
-  // ---------------- LOJA RENDER (Public) ----------------
   function renderLoja(){
-    // Atualiza o Cabeçalho Dinâmico da Loja
     document.getElementById('shopHeroTitleOut').textContent = content.shopHeroTitle || 'Vitrine da Calourada';
     document.getElementById('shopHeroSubOut').textContent = content.shopHeroSubtitle || '';
     const shopHeroEl = document.getElementById('shopHeroEl');
-    if(content.shopHeroImage){
-      shopHeroEl.style.backgroundImage = `linear-gradient(180deg, rgba(10,13,19,.45), rgba(23,31,46,.88)), url("${content.shopHeroImage}")`;
-    } else {
-      shopHeroEl.style.backgroundImage = '';
-    }
+    shopHeroEl.style.backgroundImage = content.shopHeroImage ? `linear-gradient(180deg, rgba(10,13,19,.45), rgba(23,31,46,.88)), url("${content.shopHeroImage}")` : '';
 
-    const shopGrid = document.getElementById('shopGrid');
-    shopGrid.innerHTML = '';
+    const shopGrid = document.getElementById('shopGrid'); shopGrid.innerHTML = '';
     if(!content.shopItems || content.shopItems.length === 0){
       shopGrid.innerHTML = '<p class="empty-note">Nenhum produto anunciado na loja ainda.</p>';
       return;
     }
     content.shopItems.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'shop-card';
-      card.innerHTML = `
-        <div class="shop-img-box">
-          <img src="${item.imgUrl ? esc(item.imgUrl) : 'https://via.placeholder.com/300x220?text=Sem+Foto'}" alt="${esc(item.title)}">
-        </div>
-        <div class="shop-info">
-          <div class="shop-meta">
-            <h3 class="shop-title">${esc(item.title)}</h3>
-            <p class="shop-desc">${esc(item.desc)}</p>
-            <span class="shop-price">${esc(item.price)}</span>
+      shopGrid.innerHTML += `
+        <div class="shop-card">
+          <div class="shop-img-box"><img src="${item.imgUrl ? esc(item.imgUrl) : 'https://via.placeholder.com/300x220?text=Sem+Foto'}" alt="${esc(item.title)}"></div>
+          <div class="shop-info">
+            <div class="shop-meta">
+              <h3 class="shop-title">${esc(item.title)}</h3>
+              <p class="shop-desc">${esc(item.desc)}</p>
+              <span class="shop-price">${esc(item.price)}</span>
+            </div>
+            <a href="${esc(item.link)}" target="_blank" class="btn-buy">Comprar via WhatsApp / Link</a>
           </div>
-          <a href="${esc(item.link)}" target="_blank" class="btn-buy">Comprar via WhatsApp / Link</a>
         </div>
       `;
-      shopGrid.appendChild(card);
     });
   }
 
-  // ---------------- ADMIN: subtabs ----------------
   document.querySelectorAll('.subtabs .subtab-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('.subtabs .subtab-btn').forEach(b=>b.classList.remove('active'));
@@ -823,14 +755,15 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     });
   });
 
+  let uploadedShopHeroImgBase64 = '';
+  let uploadedGalleryImgBase64 = '';
+
   function renderAdmin(){
-    // Início admin
-    document.getElementById('edHeroTitle').value = content.heroTitle;
-    document.getElementById('edHeroSub').value = content.heroSubtitle;
-    document.getElementById('edHeroDate').value = content.heroDate;
+    document.getElementById('edHeroTitle').value = content.heroTitle || '';
+    document.getElementById('edHeroSub').value = content.heroSubtitle || '';
+    document.getElementById('edHeroDate').value = content.heroDate || '';
     document.getElementById('edHeroImgUrl').value = content.heroImage && !content.heroImage.startsWith('data:') ? content.heroImage : '';
     
-    // Loja admin hero
     document.getElementById('edShopHeroTitle').value = content.shopHeroTitle || 'Vitrine da Calourada';
     document.getElementById('edShopHeroSub').value = content.shopHeroSubtitle || '';
     document.getElementById('edShopHeroImgUrl').value = content.shopHeroImage && !content.shopHeroImage.startsWith('data:') ? content.shopHeroImage : '';
@@ -850,23 +783,15 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     if(content.heroImage){ img.src = content.heroImage; row.hidden = false; } else { row.hidden = true; }
   }
 
-  // Listener do upload em base64 do Hero da página Inicial
   document.getElementById('edHeroImgFile').addEventListener('change', function(e){
-    const file = e.target.files[0];
-    if(!file) return;
+    const file = e.target.files[0]; if(!file) return;
     const reader = new FileReader();
-    reader.onload = function(evt){
-      content.heroImage = evt.target.result;
-      updateHeroImgPreview();
-    };
+    reader.onload = function(evt){ content.heroImage = evt.target.result; updateHeroImgPreview(); };
     reader.readAsDataURL(file);
   });
 
   document.getElementById('btnRemoveHeroImg').addEventListener('click', ()=>{
-    content.heroImage = '';
-    document.getElementById('edHeroImgUrl').value = '';
-    document.getElementById('edHeroImgFile').value = '';
-    updateHeroImgPreview();
+    content.heroImage = ''; document.getElementById('edHeroImgUrl').value = ''; document.getElementById('edHeroImgFile').value = ''; updateHeroImgPreview();
   });
 
   document.getElementById('btnSaveHero').addEventListener('click', async ()=>{
@@ -875,18 +800,29 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     content.heroDate = document.getElementById('edHeroDate').value.trim();
     const urlVal = document.getElementById('edHeroImgUrl').value.trim();
     if(urlVal && !urlVal.startsWith('data:')) content.heroImage = urlVal;
-    await saveContent();
-    updateHeroImgPreview();
-    flashSaved();
+    await saveContent(); updateHeroImgPreview(); flashSaved();
   });
 
-  // Salvar o Cabeçalho da Loja
+  // Escuta upload do Hero da Loja no Painel
+  document.getElementById('edShopHeroImgFile').addEventListener('change', function(e) {
+    const file = e.target.files[0]; if(!file) { uploadedShopHeroImgBase64 = ''; return; }
+    const reader = new FileReader();
+    reader.onload = function(evt){ uploadedShopHeroImgBase64 = evt.target.result; };
+    reader.readAsDataURL(file);
+  });
+
   document.getElementById('btnSaveShopHero').addEventListener('click', async () => {
     content.shopHeroTitle = document.getElementById('edShopHeroTitle').value.trim() || 'Vitrine da Calourada';
     content.shopHeroSubtitle = document.getElementById('edShopHeroSub').value.trim();
-    const shopUrlVal = document.getElementById('edShopHeroImgUrl').value.trim();
+    let shopUrlVal = document.getElementById('edShopHeroImgUrl').value.trim();
+    
+    if(uploadedShopHeroImgBase64) {
+      shopUrlVal = uploadedShopHeroImgBase64;
+    }
     content.shopHeroImage = shopUrlVal;
     await saveContent();
+    document.getElementById('edShopHeroImgFile').value = '';
+    uploadedShopHeroImgBase64 = '';
     flashSaved();
   });
 
@@ -901,6 +837,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       wrap.appendChild(row);
     });
   }
+
   document.getElementById('btnAddNews').addEventListener('click', async ()=>{
     const title = document.getElementById('newTitle').value.trim();
     const date = document.getElementById('newDate').value.trim() || 'Sem data';
@@ -910,6 +847,14 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     await saveContent();
     document.getElementById('newTitle').value=''; document.getElementById('newDate').value=''; document.getElementById('newBody').value='';
     renderNewsManage(); flashSaved();
+  });
+
+  // Escuta upload da Foto de Galeria no Painel
+  document.getElementById('newPhotoFile').addEventListener('change', function(e) {
+    const file = e.target.files[0]; if(!file) { uploadedGalleryImgBase64 = ''; return; }
+    const reader = new FileReader();
+    reader.onload = function(evt){ uploadedGalleryImgBase64 = evt.target.result; };
+    reader.readAsDataURL(file);
   });
 
   function renderPhotoManage(){
@@ -923,55 +868,44 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       wrap.appendChild(row);
     });
   }
+
   document.getElementById('btnAddPhoto').addEventListener('click', async ()=>{
-    const url = document.getElementById('newPhotoUrl').value.trim();
+    let url = document.getElementById('newPhotoUrl').value.trim();
     const caption = document.getElementById('newPhotoCap').value.trim() || 'Sem legenda';
+    
+    if(uploadedGalleryImgBase64) {
+      url = uploadedGalleryImgBase64;
+    }
     if(!url) return;
+
     content.photos.unshift({id:uid(), url, caption});
     await saveContent();
     document.getElementById('newPhotoUrl').value=''; document.getElementById('newPhotoCap').value='';
+    document.getElementById('newPhotoFile').value = '';
+    uploadedGalleryImgBase64 = '';
     renderPhotoManage(); flashSaved();
   });
 
-  // ---------------- LOJA: ADMIN GERENCIAMENTO ----------------
   function renderShopManage(){
-    const wrap = document.getElementById('shopManageList');
-    wrap.innerHTML = '';
+    const wrap = document.getElementById('shopManageList'); wrap.innerHTML = '';
     if(!content.shopItems || content.shopItems.length === 0){
-      wrap.innerHTML = '<p class="lmi-text">Nenhum produto cadastrado.</p>';
-      return;
+      wrap.innerHTML = '<p class="lmi-text">Nenhum produto cadastrado.</p>'; return;
     }
     content.shopItems.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'list-manage-item';
-      row.innerHTML = `
-        <div class="thumb-row">
-          <img src="${item.imgUrl ? esc(item.imgUrl) : 'https://via.placeholder.com/52x40?text=No+Img'}">
-          <div class="lmi-text">
-            <b>${esc(item.title)} (${esc(item.price)})</b>
-            <span>${esc(item.desc)}</span>
-          </div>
-        </div>
-        <button class="del-btn">Excluir Anúncio</button>
-      `;
+      const row = document.createElement('div'); row.className = 'list-manage-item';
+      row.innerHTML = `<div class="thumb-row"><img src="${item.imgUrl ? esc(item.imgUrl) : 'https://via.placeholder.com/52x40?text=No+Img'}"><div class="lmi-text"><b>${esc(item.title)} (${esc(item.price)})</b><span>${esc(item.desc)}</span></div></div><button class="del-btn">Excluir Anúncio</button>`;
       row.querySelector('.del-btn').addEventListener('click', async () => {
-        content.shopItems = content.shopItems.filter(x => x.id !== item.id);
-        await saveContent();
-        renderShopManage();
+        content.shopItems = content.shopItems.filter(x => x.id !== item.id); await saveContent(); renderShopManage();
       });
       wrap.appendChild(row);
     });
   }
 
-  // Captura do arquivo enviado por upload para o produto (Converte para Base64 temporário)
   let uploadedShopItemImgBase64 = '';
   document.getElementById('shopItemImgFile').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if(!file) { uploadedShopItemImgBase64 = ''; return; }
+    const file = e.target.files[0]; if(!file) { uploadedShopItemImgBase64 = ''; return; }
     const reader = new FileReader();
-    reader.onload = function(evt) {
-      uploadedShopItemImgBase64 = evt.target.result;
-    };
+    reader.onload = function(evt) { uploadedShopItemImgBase64 = evt.target.result; };
     reader.readAsDataURL(file);
   });
 
@@ -982,39 +916,23 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     let imgUrl = document.getElementById('shopItemImgUrl').value.trim();
     const link = document.getElementById('shopItemLink').value.trim() || '#';
 
-    if(!title) {
-      alert('O nome do produto é obrigatório.');
-      return;
-    }
+    if(!title) { alert('O nome do produto é obrigatório.'); return; }
+    if(uploadedShopItemImgBase64) { imgUrl = uploadedShopItemImgBase64; }
 
-    // Se houver arquivo por upload, ele tem prioridade sobre o campo de texto URL
-    if(uploadedShopItemImgBase64) {
-      imgUrl = uploadedShopItemImgBase64;
-    }
-
-    if(!content.shopItems) content.shopItems = [];
     content.shopItems.unshift({ id: uid(), title, price, desc, imgUrl, link });
     await saveContent();
 
-    document.getElementById('shopItemTitle').value = '';
-    document.getElementById('shopItemPrice').value = '';
-    document.getElementById('shopItemDesc').value = '';
-    document.getElementById('shopItemImgUrl').value = '';
+    document.getElementById('shopItemTitle').value = ''; document.getElementById('shopItemPrice').value = '';
+    document.getElementById('shopItemDesc').value = ''; document.getElementById('shopItemImgUrl').value = '';
     document.getElementById('shopItemImgFile').value = '';
     uploadedShopItemImgBase64 = '';
 
-    renderShopManage();
-    flashSaved();
+    renderShopManage(); flashSaved();
   });
 
   document.getElementById('btnSaveMyPass').addEventListener('click', async ()=>{
-    const val = document.getElementById('edMyPassword').value.trim();
-    if(val.length < 6) return;
-    try{
-      await auth.currentUser.updatePassword(val);
-      document.getElementById('edMyPassword').value='';
-      flashSaved();
-    }catch(e){}
+    const val = document.getElementById('edMyPassword').value.trim(); if(val.length < 6) return;
+    try{ await auth.currentUser.updatePassword(val); document.getElementById('edMyPassword').value=''; flashSaved(); }catch(e){}
   });
 
   // ================== TICKET TOOL ==================
@@ -1040,8 +958,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   }
 
   document.getElementById('btnEmitir').addEventListener('click', async ()=>{
-    const name = document.getElementById('inpNome').value.trim();
-    const phone = document.getElementById('inpTel').value.trim();
+    const name = document.getElementById('inpNome').value.trim(); const phone = document.getElementById('inpTel').value.trim();
     if(!name || !phone) return;
     const ticket = {id: genId(), name, phone, used:false, createdAt:new Date().toISOString(), usedAt:null};
     tickets.unshift(ticket); await saveTickets(); updateCount();
@@ -1072,20 +989,11 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     if(document.getElementById('cUsados')) document.getElementById('cUsados').textContent = usados;
   }
 
-  // ---------------- INIT ----------------
   (async function init(){
     firebaseReady = initFirebase();
     if(firebaseReady){
-      try{
-        await loadInitialContent();
-        watchContent();
-        watchAuthState();
-      }catch(e){
-        content = defaultContent(); tickets = [];
-      }
-    } else {
-      content = defaultContent(); tickets = [];
-    }
+      try{ await loadInitialContent(); watchContent(); watchAuthState(); }catch(e){ content = defaultContent(); tickets = []; }
+    } else { content = defaultContent(); tickets = []; }
     updateNavAuth(); updateCount(); showView('home');
   })();
 })();
