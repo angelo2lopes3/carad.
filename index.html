@@ -29,7 +29,7 @@
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--film-black);color:var(--bone);font-family:'Inter',sans-serif;}
-a{color:inherit;}
+a{color:inherit;text-decoration:none;}
 button{font-family:inherit;}
 img{max-width:100%;display:block;}
 
@@ -118,6 +118,27 @@ img{max-width:100%;display:block;}
 .gallery-item img{width:100%;height:160px;object-fit:cover;filter:saturate(.9) contrast(1.05);}
 .gallery-cap{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);padding:8px 10px;}
 
+/* ---------------- LOJA / SHOP VITRINE ---------------- */
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
+.shop-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  display:flex;flex-direction:column;transition:transform 0.2s;
+}
+.shop-card:hover{transform:translateY(-4px);border-color:var(--cyan-dim);}
+.shop-img-box{width:100%;height:220px;background:var(--film-navy);position:relative;overflow:hidden;border-bottom:1px solid var(--line);}
+.shop-img-box img{width:100%;height:100%;object-fit:cover;}
+.shop-info{padding:20px;flex:1;display:flex;flex-direction:column;justify-content:space-between;}
+.shop-meta{margin-bottom:14px;}
+.shop-title{font-family:'Oswald',sans-serif;font-size:22px;margin:0 0 6px;color:var(--bone);}
+.shop-desc{font-size:13.5px;color:var(--muted);line-height:1.4;margin:0 0 12px;}
+.shop-price{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--cyan);}
+.btn-buy{
+  display:block;text-align:center;background:var(--cyan);color:var(--film-black);
+  font-weight:700;padding:10px;border-radius:6px;font-size:14px;cursor:pointer;
+  transition:background 0.2s;
+}
+.btn-buy:hover{background:#8FE4F2;}
+
 footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12px;font-family:'Space Mono',monospace;}
 
 /* ---------------- LOGIN ---------------- */
@@ -149,6 +170,8 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .admin-wrap{max-width:1040px;margin:36px auto;padding:0 20px 60px;}
 .admin-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px;}
 .admin-title{font-family:'Oswald',sans-serif;font-size:26px;margin:0;}
+.saved-tag{font-size:12px;color:var(--valid);font-family:'Space Mono',monospace;margin-left:10px;opacity:0;transition:opacity .3s;}
+.saved-tag.show{opacity:1;}
 .subtabs{display:flex;gap:8px;margin-bottom:26px;}
 .subtab-btn{
   background:transparent;border:1px solid var(--line);color:var(--muted);
@@ -177,8 +200,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .del-btn{background:none;border:none;color:#F0897C;cursor:pointer;font-size:12px;font-family:'Space Mono',monospace;}
 .thumb-row{display:flex;gap:10px;align-items:center;}
 .thumb-row img{width:52px;height:40px;object-fit:cover;border-radius:4px;border:1px solid var(--line);}
-.saved-tag{font-size:12px;color:var(--valid);font-family:'Space Mono',monospace;margin-left:10px;opacity:0;transition:opacity .3s;}
-.saved-tag.show{opacity:1;}
 .hero-img-preview-row{display:flex;align-items:center;gap:12px;margin:-6px 0 16px;}
 .hero-img-preview-row img{width:110px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--line);}
 .pass-msg{font-size:12px;margin-left:10px;font-family:'Space Mono',monospace;}
@@ -190,7 +211,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   padding:12px 24px;text-align:center;
 }
 
-/* ---------------- TICKET TOOL (reused, light paper theme, intentionally contrasting) ---------------- */
+/* ---------------- TICKET TOOL ---------------- */
 .ticket-shell{background:var(--paper);color:var(--ink);border-radius:12px;padding:28px;}
 .ticket-shell *{box-sizing:border-box;}
 .t-eyebrow{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 4px;}
@@ -227,7 +248,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-stub-info{flex:1;min-width:0;}
 .t-stub-code{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);margin:0 0 6px;}
 .t-stub-name{font-family:'Oswald',sans-serif;font-size:21px;margin:0 0 4px;line-height:1.1;word-break:break-word;}
-.t-stub-phone{font-family:'Space Mono',monospace;font-size:13px;color:var(--ink-soft);margin:0 0 10px;}
+.t-stub-phone覆{font-family:'Space Mono',monospace;font-size:13px;color:var(--ink-soft);margin:0 0 10px;}
 .t-pill{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:700;}
 .t-pill.valido{background:var(--valid-bg);color:var(--valid);}
 .t-pill.usado{background:var(--used-bg);color:var(--used);}
@@ -266,6 +287,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   </div>
   <div class="nav-links">
     <button class="nav-btn" data-nav="home">Início</button>
+    <button class="nav-btn" data-nav="loja">Loja</button>
     <button class="nav-btn" id="navLoginBtn" data-nav="login">Entrar</button>
     <button class="nav-btn" id="navAdminBtn" data-nav="admin" hidden>Painel</button>
     <button class="nav-btn" id="navLogoutBtn" hidden>Sair</button>
@@ -302,6 +324,20 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   <footer>Página mantida pela comissão de calourada &middot; Radiologia</footer>
 </div>
 
+<!-- ============ LOJA (public) ============ -->
+<div class="view" id="view-loja">
+  <div class="hero" id="shopHeroEl" style="padding: 40px; margin-bottom: 0;">
+    <p class="hero-eyebrow" id="shopHeroEyebrowOut">Produtos Oficiais</p>
+    <h1 class="hero-title" id="shopHeroTitleOut" style="font-size: 34px; margin: 0;">Vitrine da Calourada</h1>
+    <p class="hero-sub" id="shopHeroSubOut" style="margin: 8px 0 0;">Adquira os produtos oficiais do evento diretamente com a nossa comissão.</p>
+  </div>
+  
+  <div class="section">
+    <div class="shop-grid" id="shopGrid"></div>
+  </div>
+  <footer>Página mantida pela comissão de calourada &middot; Radiologia</footer>
+</div>
+
 <!-- ============ LOGIN ============ -->
 <div class="view" id="view-login">
   <div class="login-wrap">
@@ -333,13 +369,14 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 
     <div class="subtabs">
       <button class="subtab-btn active" data-subtab="conteudo">Página inicial</button>
+      <button class="subtab-btn" data-subtab="loja">Loja</button>
       <button class="subtab-btn" data-subtab="ingressos">Ingressos</button>
     </div>
 
     <!-- ---- CONTEUDO ---- -->
     <div class="admin-panel active" id="admin-conteudo">
       <div class="card-dark">
-        <h3>Cabeçalho (hero)</h3>
+        <h3>Cabeçalho (hero) - Página Inicial</h3>
         <div class="field-dark"><label for="edHeroTitle">Título</label><input id="edHeroTitle" type="text"></div>
         <div class="field-dark"><label for="edHeroSub">Subtítulo</label><input id="edHeroSub" type="text"></div>
         <div class="field-dark"><label for="edHeroDate">Data / selo</label><input id="edHeroDate" type="text"></div>
@@ -386,7 +423,39 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       </div>
     </div>
 
-    <!-- ---- INGRESSOS (bilheteria embutida) ---- -->
+    <!-- ---- LOJA ADMIN ---- -->
+    <div class="admin-panel" id="admin-loja">
+      <!-- NOVA SEÇÃO: Edição de Cabeçalho HERO da Loja -->
+      <div class="card-dark">
+        <h3>Cabeçalho (hero) - Página de Loja</h3>
+        <div class="field-dark"><label for="edShopHeroTitle">Título da Loja</label><input id="edShopHeroTitle" type="text"></div>
+        <div class="field-dark"><label for="edShopHeroSub">Subtítulo da Loja</label><input id="edShopHeroSub" type="text"></div>
+        <div class="field-dark"><label for="edShopHeroImgUrl">Imagem de capa da Loja (URL)</label><input id="edShopHeroImgUrl" type="text" placeholder="https://..."></div>
+        <button class="btn-outline" id="btnSaveShopHero" style="margin-top:6px;">Salvar cabeçalho da loja</button>
+      </div>
+
+      <div class="card-dark">
+        <h3>Cadastrar Novo Item na Loja</h3>
+        <div class="row-flex">
+          <div class="field-dark"><label for="shopItemTitle">Nome do Produto</label><input id="shopItemTitle" type="text" placeholder="Ex: Tirante Radiologia"></div>
+          <div class="field-dark"><label for="shopItemPrice">Preço (R$)</label><input id="shopItemPrice" type="text" placeholder="Ex: R$ 15,00"></div>
+        </div>
+        <div class="field-dark"><label for="shopItemDesc">Descrição</label><input id="shopItemDesc" type="text" placeholder="Ex: Tirante em nylon com engate rápido de 40cm"></div>
+        <div class="field-dark"><label for="shopItemImgUrl">URL da Imagem do Produto</label><input id="shopItemImgUrl" type="text" placeholder="https://..."></div>
+        <!-- CAMPO SOLICITADO: Upload de Foto por Arquivo também -->
+        <div class="field-dark">
+          <label for="shopItemImgFile">ou envie uma foto do dispositivo</label>
+          <input id="shopItemImgFile" type="file" accept="image/*">
+        </div>
+        <div class="field-dark"><label for="shopItemLink">Link para Compra (WhatsApp ou Instagram)</label><input id="shopItemLink" type="text" placeholder="https://wa.me/... ou https://instagram.com/..."></div>
+        <button class="btn-outline" id="btnAddShopItem">Cadastrar Item</button>
+        
+        <h3 style="margin-top:30px; border-top:1px solid var(--line); padding-top:20px;">Produtos Cadastrados</h3>
+        <div id="shopManageList"></div>
+      </div>
+    </div>
+
+    <!-- ---- INGRESSOS ---- -->
     <div class="admin-panel" id="admin-ingressos">
       <div class="ticket-shell">
         <p class="t-eyebrow">Bilheteria &middot; sistema de emissão</p>
@@ -450,12 +519,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
 (function(){
-  // =========================================================================
-  // CONFIGURAÇÃO DO FIREBASE — troque pelos dados do SEU projeto
-  // Console: https://console.firebase.google.com → criar projeto → Firestore
-  // Database → criar banco → Configurações do projeto → "Seus apps" → Web (</>)
-  // Copie o objeto "firebaseConfig" gerado lá e cole aqui embaixo.
-  // =========================================================================
   const firebaseConfig = {
     apiKey: "AIzaSyBFKZWyOD1BhhyJidfZJarw0DV-o8tWq9g",
     authDomain: "sitecarad.firebaseapp.com",
@@ -484,11 +547,15 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       heroSubtitle: 'A turma mais nova do curso já entrou em exame de admissão à calourada. Fiquem de olho nas novidades e chapas do evento.',
       heroDate: 'Data a definir',
       heroImage: '',
+      shopHeroTitle: 'Vitrine da Calourada',
+      shopHeroSubtitle: 'Adquira os produtos oficiais do evento diretamente com a nossa comissão.',
+      shopHeroImage: '',
       announcements: [
         {id: uid(), title:'Inscrições abertas para a calourada', date:'Em breve', body:'Garanta seu ingresso na aba de compras assim que abrirmos as vendas por aqui.'},
         {id: uid(), title:'Camisa oficial da turma', date:'Em breve', body:'Modelo e cores da camisa serão revelados nas próximas semanas.'}
       ],
-      photos: []
+      photos: [],
+      shopItems: []
     };
   }
 
@@ -500,10 +567,9 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     }
   }
 
-  // ---------------- Firebase init ----------------
   function initFirebase(){
     if(firebaseConfig.apiKey === 'SUA_API_KEY_AQUI'){
-      showConfigWarning('⚠ O Firebase ainda não foi configurado neste arquivo. Os dados não vão salvar nem sincronizar entre dispositivos até você colocar as credenciais do seu projeto no código (veja o comentário no início do <script>).');
+      showConfigWarning('⚠ O Firebase ainda não foi configurado neste arquivo...');
       return false;
     }
     try{
@@ -513,12 +579,10 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       return true;
     }catch(e){
       console.error('Falha ao iniciar o Firebase', e);
-      showConfigWarning('⚠ Não foi possível conectar ao Firebase. Confira se as credenciais no código estão corretas.');
       return false;
     }
   }
 
-  // ---------------- content (site) — leitura pública, escrita só autenticada ----------------
   async function loadInitialContent(){
     try{
       const snap = await db.collection(COLLECTION).doc('content').get();
@@ -527,16 +591,27 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       console.error('Erro ao carregar conteúdo', e);
       content = defaultContent();
     }
-    if(content.heroImage === undefined) content.heroImage = '';
+    if(!content.heroImage) content.heroImage = '';
+    if(!content.shopHeroTitle) content.shopHeroTitle = 'Vitrine da Calourada';
+    if(!content.shopHeroSubtitle) content.shopHeroSubtitle = 'Adquira os produtos oficiais do evento diretamente com a nossa comissão.';
+    if(!content.shopHeroImage) content.shopHeroImage = '';
+    if(!content.shopItems) content.shopItems = [];
   }
+  
   function watchContent(){
     db.collection(COLLECTION).doc('content').onSnapshot(snap=>{
       if(!snap.exists) return;
       content = snap.data();
-      if(content.heroImage === undefined) content.heroImage = '';
+      if(!content.heroImage) content.heroImage = '';
+      if(!content.shopHeroTitle) content.shopHeroTitle = 'Vitrine da Calourada';
+      if(!content.shopHeroSubtitle) content.shopHeroSubtitle = 'Adquira os produtos oficiais do evento diretamente com a nossa comissão.';
+      if(!content.shopHeroImage) content.shopHeroImage = '';
+      if(!content.shopItems) content.shopItems = [];
       if(views.home.classList.contains('active')) renderHome();
+      if(views.loja.classList.contains('active')) renderLoja();
     }, err=>console.error('Erro ao sincronizar conteúdo', err));
   }
+  
   async function saveContent(){
     try{
       await db.collection(COLLECTION).doc('content').set(content);
@@ -547,7 +622,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     }
   }
 
-  // ---------------- tickets — leitura e escrita só para quem está autenticado ----------------
   async function startTicketsSync(){
     try{
       const ref = db.collection(COLLECTION).doc('tickets');
@@ -560,7 +634,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       }
     }catch(e){
       console.error('Erro ao carregar ingressos', e);
-      tickets = [];
     }
     updateCount();
     if(unsubscribeTickets) unsubscribeTickets();
@@ -571,17 +644,18 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       if(listaPanel && !listaPanel.hidden) renderLedger();
     }, err=>console.error('Erro ao sincronizar ingressos', err));
   }
+  
   function stopTicketsSync(){
     if(unsubscribeTickets){ unsubscribeTickets(); unsubscribeTickets = null; }
     tickets = [];
     updateCount();
   }
+  
   async function saveTickets(){
     try{
       await db.collection(COLLECTION).doc('tickets').set({list: tickets});
       return true;
     }catch(e){
-      console.error('Falha ao salvar ingressos', e);
       return false;
     }
   }
@@ -595,16 +669,20 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   // ---------------- NAV / VIEWS ----------------
   const views = {
     home: document.getElementById('view-home'),
+    loja: document.getElementById('view-loja'),
     login: document.getElementById('view-login'),
     admin: document.getElementById('view-admin'),
   };
+  
   function showView(name){
     if(name === 'admin' && !isLoggedIn) name = 'login';
     Object.keys(views).forEach(k => views[k].classList.toggle('active', k===name));
     document.querySelectorAll('.nav-btn[data-nav]').forEach(b=>b.classList.toggle('active', b.dataset.nav===name));
     if(name === 'home') renderHome();
+    if(name === 'loja') renderLoja();
     if(name === 'admin') renderAdmin();
   }
+  
   document.getElementById('brandHome').addEventListener('click', ()=>showView('home'));
   document.querySelectorAll('.nav-btn[data-nav]').forEach(b=>{
     b.addEventListener('click', ()=>showView(b.dataset.nav));
@@ -615,6 +693,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     document.getElementById('navAdminBtn').hidden = !isLoggedIn;
     document.getElementById('navLogoutBtn').hidden = !isLoggedIn;
   }
+  
   document.getElementById('navLogoutBtn').addEventListener('click', ()=>{
     if(auth) auth.signOut();
   });
@@ -643,27 +722,15 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       errEl.hidden = false;
       return;
     }
-    if(!auth){
-      errEl.textContent = 'Firebase não está configurado neste site.';
-      errEl.hidden = false;
-      return;
-    }
     try{
       await auth.signInWithEmailAndPassword(email, pass);
       document.getElementById('loginEmail').value = '';
       document.getElementById('loginPass').value = '';
       showView('admin');
     }catch(e){
-      console.error(e);
       errEl.textContent = 'E-mail ou senha incorretos.';
       errEl.hidden = false;
     }
-  });
-  document.getElementById('loginPass').addEventListener('keydown', e=>{
-    if(e.key === 'Enter') document.getElementById('btnLogin').click();
-  });
-  document.getElementById('loginEmail').addEventListener('keydown', e=>{
-    if(e.key === 'Enter') document.getElementById('btnLogin').click();
   });
 
   // ---------------- HOME RENDER ----------------
@@ -705,25 +772,73 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     }
   }
 
+  // ---------------- LOJA RENDER (Public) ----------------
+  function renderLoja(){
+    // Atualiza o Cabeçalho Dinâmico da Loja
+    document.getElementById('shopHeroTitleOut').textContent = content.shopHeroTitle || 'Vitrine da Calourada';
+    document.getElementById('shopHeroSubOut').textContent = content.shopHeroSubtitle || '';
+    const shopHeroEl = document.getElementById('shopHeroEl');
+    if(content.shopHeroImage){
+      shopHeroEl.style.backgroundImage = `linear-gradient(180deg, rgba(10,13,19,.45), rgba(23,31,46,.88)), url("${content.shopHeroImage}")`;
+    } else {
+      shopHeroEl.style.backgroundImage = '';
+    }
+
+    const shopGrid = document.getElementById('shopGrid');
+    shopGrid.innerHTML = '';
+    if(!content.shopItems || content.shopItems.length === 0){
+      shopGrid.innerHTML = '<p class="empty-note">Nenhum produto anunciado na loja ainda.</p>';
+      return;
+    }
+    content.shopItems.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'shop-card';
+      card.innerHTML = `
+        <div class="shop-img-box">
+          <img src="${item.imgUrl ? esc(item.imgUrl) : 'https://via.placeholder.com/300x220?text=Sem+Foto'}" alt="${esc(item.title)}">
+        </div>
+        <div class="shop-info">
+          <div class="shop-meta">
+            <h3 class="shop-title">${esc(item.title)}</h3>
+            <p class="shop-desc">${esc(item.desc)}</p>
+            <span class="shop-price">${esc(item.price)}</span>
+          </div>
+          <a href="${esc(item.link)}" target="_blank" class="btn-buy">Comprar via WhatsApp / Link</a>
+        </div>
+      `;
+      shopGrid.appendChild(card);
+    });
+  }
+
   // ---------------- ADMIN: subtabs ----------------
-  document.querySelectorAll('.subtab-btn').forEach(btn=>{
+  document.querySelectorAll('.subtabs .subtab-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.subtabs .subtab-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('admin-conteudo').classList.toggle('active', btn.dataset.subtab==='conteudo');
+      document.getElementById('admin-loja').classList.toggle('active', btn.dataset.subtab==='loja');
       document.getElementById('admin-ingressos').classList.toggle('active', btn.dataset.subtab==='ingressos');
       if(btn.dataset.subtab==='ingressos') renderLedger();
+      if(btn.dataset.subtab==='loja') renderShopManage();
     });
   });
 
   function renderAdmin(){
+    // Início admin
     document.getElementById('edHeroTitle').value = content.heroTitle;
     document.getElementById('edHeroSub').value = content.heroSubtitle;
     document.getElementById('edHeroDate').value = content.heroDate;
     document.getElementById('edHeroImgUrl').value = content.heroImage && !content.heroImage.startsWith('data:') ? content.heroImage : '';
+    
+    // Loja admin hero
+    document.getElementById('edShopHeroTitle').value = content.shopHeroTitle || 'Vitrine da Calourada';
+    document.getElementById('edShopHeroSub').value = content.shopHeroSubtitle || '';
+    document.getElementById('edShopHeroImgUrl').value = content.shopHeroImage && !content.shopHeroImage.startsWith('data:') ? content.shopHeroImage : '';
+
     updateHeroImgPreview();
     renderNewsManage();
     renderPhotoManage();
+    renderShopManage();
     updateCount();
     const emailOut = document.getElementById('accountEmailOut');
     if(emailOut) emailOut.textContent = (auth && auth.currentUser) ? 'Conectado como ' + auth.currentUser.email : '';
@@ -732,64 +847,56 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   function updateHeroImgPreview(){
     const row = document.getElementById('heroImgPreviewRow');
     const img = document.getElementById('heroImgPreview');
-    if(content.heroImage){
-      img.src = content.heroImage;
-      row.hidden = false;
-    } else {
-      row.hidden = true;
-    }
+    if(content.heroImage){ img.src = content.heroImage; row.hidden = false; } else { row.hidden = true; }
   }
+
+  // Listener do upload em base64 do Hero da página Inicial
+  document.getElementById('edHeroImgFile').addEventListener('change', function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt){
+      content.heroImage = evt.target.result;
+      updateHeroImgPreview();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('btnRemoveHeroImg').addEventListener('click', ()=>{
+    content.heroImage = '';
+    document.getElementById('edHeroImgUrl').value = '';
+    document.getElementById('edHeroImgFile').value = '';
+    updateHeroImgPreview();
+  });
 
   document.getElementById('btnSaveHero').addEventListener('click', async ()=>{
     content.heroTitle = document.getElementById('edHeroTitle').value.trim() || content.heroTitle;
     content.heroSubtitle = document.getElementById('edHeroSub').value.trim();
     content.heroDate = document.getElementById('edHeroDate').value.trim();
     const urlVal = document.getElementById('edHeroImgUrl').value.trim();
-    if(urlVal) content.heroImage = urlVal;
+    if(urlVal && !urlVal.startsWith('data:')) content.heroImage = urlVal;
     await saveContent();
     updateHeroImgPreview();
     flashSaved();
   });
 
-  document.getElementById('edHeroImgFile').addEventListener('change', async (e)=>{
-    const file = e.target.files && e.target.files[0];
-    if(!file) return;
-    if(file.size > 3.5 * 1024 * 1024){
-      alert('Essa imagem é muito grande. Use um arquivo de até ~3,5MB ou cole um link de imagem no campo de URL.');
-      e.target.value = '';
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = async ()=>{
-      content.heroImage = reader.result;
-      document.getElementById('edHeroImgUrl').value = '';
-      await saveContent();
-      updateHeroImgPreview();
-      flashSaved();
-      e.target.value = '';
-    };
-    reader.readAsDataURL(file);
-  });
-
-  document.getElementById('btnRemoveHeroImg').addEventListener('click', async ()=>{
-    content.heroImage = '';
-    document.getElementById('edHeroImgUrl').value = '';
+  // Salvar o Cabeçalho da Loja
+  document.getElementById('btnSaveShopHero').addEventListener('click', async () => {
+    content.shopHeroTitle = document.getElementById('edShopHeroTitle').value.trim() || 'Vitrine da Calourada';
+    content.shopHeroSubtitle = document.getElementById('edShopHeroSub').value.trim();
+    const shopUrlVal = document.getElementById('edShopHeroImgUrl').value.trim();
+    content.shopHeroImage = shopUrlVal;
     await saveContent();
-    updateHeroImgPreview();
     flashSaved();
   });
 
   function renderNewsManage(){
-    const wrap = document.getElementById('newsManageList');
-    wrap.innerHTML = '';
+    const wrap = document.getElementById('newsManageList'); wrap.innerHTML = '';
     content.announcements.forEach(a=>{
-      const row = document.createElement('div');
-      row.className = 'list-manage-item';
+      const row = document.createElement('div'); row.className = 'list-manage-item';
       row.innerHTML = `<div class="lmi-text"><b>${esc(a.title)}</b>${esc(a.date)} — ${esc(a.body)}</div><button class="del-btn">Remover</button>`;
       row.querySelector('.del-btn').addEventListener('click', async ()=>{
-        content.announcements = content.announcements.filter(x=>x.id!==a.id);
-        await saveContent();
-        renderNewsManage();
+        content.announcements = content.announcements.filter(x=>x.id!==a.id); await saveContent(); renderNewsManage();
       });
       wrap.appendChild(row);
     });
@@ -801,24 +908,17 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     if(!title) return;
     content.announcements.unshift({id:uid(), title, date, body});
     await saveContent();
-    document.getElementById('newTitle').value='';
-    document.getElementById('newDate').value='';
-    document.getElementById('newBody').value='';
-    renderNewsManage();
-    flashSaved();
+    document.getElementById('newTitle').value=''; document.getElementById('newDate').value=''; document.getElementById('newBody').value='';
+    renderNewsManage(); flashSaved();
   });
 
   function renderPhotoManage(){
-    const wrap = document.getElementById('photoManageList');
-    wrap.innerHTML = '';
+    const wrap = document.getElementById('photoManageList'); wrap.innerHTML = '';
     content.photos.forEach(p=>{
-      const row = document.createElement('div');
-      row.className = 'list-manage-item';
+      const row = document.createElement('div'); row.className = 'list-manage-item';
       row.innerHTML = `<div class="thumb-row"><img src="${esc(p.url)}"><div class="lmi-text"><b>${esc(p.caption)}</b></div></div><button class="del-btn">Remover</button>`;
       row.querySelector('.del-btn').addEventListener('click', async ()=>{
-        content.photos = content.photos.filter(x=>x.id!==p.id);
-        await saveContent();
-        renderPhotoManage();
+        content.photos = content.photos.filter(x=>x.id!==p.id); await saveContent(); renderPhotoManage();
       });
       wrap.appendChild(row);
     });
@@ -829,50 +929,95 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     if(!url) return;
     content.photos.unshift({id:uid(), url, caption});
     await saveContent();
-    document.getElementById('newPhotoUrl').value='';
-    document.getElementById('newPhotoCap').value='';
-    renderPhotoManage();
+    document.getElementById('newPhotoUrl').value=''; document.getElementById('newPhotoCap').value='';
+    renderPhotoManage(); flashSaved();
+  });
+
+  // ---------------- LOJA: ADMIN GERENCIAMENTO ----------------
+  function renderShopManage(){
+    const wrap = document.getElementById('shopManageList');
+    wrap.innerHTML = '';
+    if(!content.shopItems || content.shopItems.length === 0){
+      wrap.innerHTML = '<p class="lmi-text">Nenhum produto cadastrado.</p>';
+      return;
+    }
+    content.shopItems.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'list-manage-item';
+      row.innerHTML = `
+        <div class="thumb-row">
+          <img src="${item.imgUrl ? esc(item.imgUrl) : 'https://via.placeholder.com/52x40?text=No+Img'}">
+          <div class="lmi-text">
+            <b>${esc(item.title)} (${esc(item.price)})</b>
+            <span>${esc(item.desc)}</span>
+          </div>
+        </div>
+        <button class="del-btn">Excluir Anúncio</button>
+      `;
+      row.querySelector('.del-btn').addEventListener('click', async () => {
+        content.shopItems = content.shopItems.filter(x => x.id !== item.id);
+        await saveContent();
+        renderShopManage();
+      });
+      wrap.appendChild(row);
+    });
+  }
+
+  // Captura do arquivo enviado por upload para o produto (Converte para Base64 temporário)
+  let uploadedShopItemImgBase64 = '';
+  document.getElementById('shopItemImgFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if(!file) { uploadedShopItemImgBase64 = ''; return; }
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      uploadedShopItemImgBase64 = evt.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('btnAddShopItem').addEventListener('click', async () => {
+    const title = document.getElementById('shopItemTitle').value.trim();
+    const price = document.getElementById('shopItemPrice').value.trim() || 'Sob consulta';
+    const desc = document.getElementById('shopItemDesc').value.trim() || 'Sem descrição';
+    let imgUrl = document.getElementById('shopItemImgUrl').value.trim();
+    const link = document.getElementById('shopItemLink').value.trim() || '#';
+
+    if(!title) {
+      alert('O nome do produto é obrigatório.');
+      return;
+    }
+
+    // Se houver arquivo por upload, ele tem prioridade sobre o campo de texto URL
+    if(uploadedShopItemImgBase64) {
+      imgUrl = uploadedShopItemImgBase64;
+    }
+
+    if(!content.shopItems) content.shopItems = [];
+    content.shopItems.unshift({ id: uid(), title, price, desc, imgUrl, link });
+    await saveContent();
+
+    document.getElementById('shopItemTitle').value = '';
+    document.getElementById('shopItemPrice').value = '';
+    document.getElementById('shopItemDesc').value = '';
+    document.getElementById('shopItemImgUrl').value = '';
+    document.getElementById('shopItemImgFile').value = '';
+    uploadedShopItemImgBase64 = '';
+
+    renderShopManage();
     flashSaved();
   });
 
   document.getElementById('btnSaveMyPass').addEventListener('click', async ()=>{
     const val = document.getElementById('edMyPassword').value.trim();
-    const msg = document.getElementById('passMsg');
-    msg.className = 'pass-msg';
-    if(!val){
-      msg.textContent = 'Digite a nova senha antes de salvar.';
-      msg.classList.add('err');
-      return;
-    }
-    if(val.length < 6){
-      msg.textContent = 'A senha precisa ter pelo menos 6 caracteres.';
-      msg.classList.add('err');
-      return;
-    }
-    if(!auth || !auth.currentUser){
-      msg.textContent = 'Você precisa estar logada(o) para trocar a senha.';
-      msg.classList.add('err');
-      return;
-    }
-    msg.textContent = 'Salvando...';
+    if(val.length < 6) return;
     try{
       await auth.currentUser.updatePassword(val);
       document.getElementById('edMyPassword').value='';
-      msg.textContent = 'Senha atualizada com sucesso.';
-      msg.classList.add('ok');
       flashSaved();
-    }catch(e){
-      console.error(e);
-      if(e.code === 'auth/requires-recent-login'){
-        msg.textContent = 'Por segurança, saia e entre de novo antes de trocar a senha.';
-      } else {
-        msg.textContent = 'Não foi possível atualizar a senha agora.';
-      }
-      msg.classList.add('err');
-    }
+    }catch(e){}
   });
 
-  // ================== TICKET TOOL (embedded) ==================
+  // ================== TICKET TOOL ==================
   document.querySelectorAll('.t-tab-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('.t-tab-btn').forEach(b=>b.classList.remove('active'));
@@ -881,211 +1026,51 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       document.getElementById('tpanel-lista').hidden = btn.dataset.ttab!=='lista';
       document.getElementById('tpanel-validar').hidden = btn.dataset.ttab!=='validar';
       if(btn.dataset.ttab==='lista') renderLedger();
-      if(btn.dataset.ttab!=='validar') stopCamera();
     });
   });
 
-  function genId(){
-    const t = Date.now().toString(36).toUpperCase();
-    const r = Math.random().toString(36).slice(2,6).toUpperCase();
-    return 'T-'+t+r;
-  }
-  function fmtDate(iso){
-    const d = new Date(iso);
-    return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  }
-  function renderQR(container, text, size){
-    container.innerHTML='';
-    new QRCode(container, {text:text, width:size, height:size, colorDark:'#211C14', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.M});
-  }
+  function genId(){ return 'T-'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,6).toUpperCase(); }
+  function fmtDate(iso){ const d = new Date(iso); return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+  function renderQR(container, text, size){ container.innerHTML=''; new QRCode(container, {text:text, width:size, height:size, colorDark:'#211C14', colorLight:'#ffffff'}); }
   function statusPill(t){ return t.used ? '<span class="t-pill usado">Usado</span>' : '<span class="t-pill valido">Válido</span>'; }
   function buildStubEl(t, qrSize){
-    const el = document.createElement('div');
-    el.className = 't-stub';
-    el.innerHTML = `
-      ${t.used ? '<div class="t-stamp">USADO</div>' : ''}
-      <div class="t-stub-info">
-        <p class="t-stub-code">${t.id}</p>
-        <p class="t-stub-name">${esc(t.name)}</p>
-        <p class="t-stub-phone">${esc(t.phone)}</p>
-        ${statusPill(t)}
-      </div>
-      <div class="stub-qr" data-qr></div>
-    `;
-    renderQR(el.querySelector('[data-qr]'), 'TICKET:'+t.id, qrSize||96);
-    return el;
+    const el = document.createElement('div'); el.className = 't-stub';
+    el.innerHTML = `${t.used ? '<div class="t-stamp">USADO</div>' : ''}<div class="t-stub-info"><p class="t-stub-code">${t.id}</p><p class="t-stub-name">${esc(t.name)}</p><p class="t-stub-phone">${esc(t.phone)}</p>${statusPill(t)}</div><div class="stub-qr" data-qr></div>`;
+    renderQR(el.querySelector('[data-qr]'), 'TICKET:'+t.id, qrSize||96); return el;
   }
 
-  const btnEmitir = document.getElementById('btnEmitir');
-  const inpNome = document.getElementById('inpNome');
-  const inpTel = document.getElementById('inpTel');
-  const emitirErro = document.getElementById('emitirErro');
-  const novoWrap = document.getElementById('novoIngressoWrap');
-
-  btnEmitir.addEventListener('click', async ()=>{
-    const name = inpNome.value.trim();
-    const phone = inpTel.value.trim();
-    emitirErro.hidden = true;
-    if(!name || !phone){
-      emitirErro.textContent = 'Preencha nome e telefone para emitir o ingresso.';
-      emitirErro.hidden = false;
-      return;
-    }
-    btnEmitir.disabled = true;
+  document.getElementById('btnEmitir').addEventListener('click', async ()=>{
+    const name = document.getElementById('inpNome').value.trim();
+    const phone = document.getElementById('inpTel').value.trim();
+    if(!name || !phone) return;
     const ticket = {id: genId(), name, phone, used:false, createdAt:new Date().toISOString(), usedAt:null};
-    tickets.unshift(ticket);
-    await saveTickets();
-    updateCount();
-    inpNome.value=''; inpTel.value='';
-    novoWrap.hidden = false;
-    novoWrap.innerHTML = '';
-    novoWrap.appendChild(buildStubEl(ticket, 110));
-    btnEmitir.disabled = false;
+    tickets.unshift(ticket); await saveTickets(); updateCount();
+    document.getElementById('inpNome').value=''; document.getElementById('inpTel').value='';
+    document.getElementById('novoIngressoWrap').hidden = false; document.getElementById('novoIngressoWrap').innerHTML = '';
+    document.getElementById('novoIngressoWrap').appendChild(buildStubEl(ticket, 110));
   });
 
-  const ledgerBody = document.getElementById('ledgerBody');
-  const inpBusca = document.getElementById('inpBusca');
   function renderLedger(){
-    const q = inpBusca.value.trim().toLowerCase();
+    const q = document.getElementById('inpBusca').value.trim().toLowerCase();
     const filtered = tickets.filter(t => !q || t.name.toLowerCase().includes(q) || t.phone.toLowerCase().includes(q) || t.id.toLowerCase().includes(q));
-    ledgerBody.innerHTML = '';
-    if(filtered.length===0){
-      ledgerBody.innerHTML = `<div class="t-empty">${tickets.length===0 ? 'Nenhum ingresso emitido ainda.' : 'Nenhum ingresso encontrado.'}</div>`;
-      return;
-    }
+    const body = document.getElementById('ledgerBody'); body.innerHTML = '';
+    if(filtered.length===0){ body.innerHTML = '<div class="t-empty">Nenhum ingresso encontrado.</div>'; return; }
     filtered.forEach(t=>{
-      const row = document.createElement('div');
-      row.className = 't-ledger-row';
+      const row = document.createElement('div'); row.className = 't-ledger-row';
       row.innerHTML = `<div class="t-qr-mini" data-qr></div><div class="t-ledger-name">${esc(t.name)}</div><div class="t-col-hide">${t.id}</div><div class="t-col-hide">${statusPill(t)}</div><div>${fmtDate(t.createdAt).split(' ')[0]}</div>`;
       renderQR(row.querySelector('[data-qr]'), 'TICKET:'+t.id, 34);
-      row.querySelector('[data-qr]').addEventListener('click', ()=>{
-        document.querySelector('.t-tab-btn[data-ttab="emitir"]').click();
-        novoWrap.hidden = false;
-        novoWrap.innerHTML = '';
-        novoWrap.appendChild(buildStubEl(t, 110));
-      });
-      ledgerBody.appendChild(row);
+      body.appendChild(row);
     });
   }
-  inpBusca.addEventListener('input', renderLedger);
-
-  document.getElementById('btnReset').addEventListener('click', async ()=>{
-    if(!confirm('Isso vai apagar TODOS os ingressos cadastrados. Confirmar?')) return;
-    tickets = [];
-    await saveTickets();
-    updateCount();
-    renderLedger();
-  });
+  document.getElementById('inpBusca').addEventListener('input', renderLedger);
 
   function updateCount(){
-    const total = tickets.length;
-    const usados = tickets.filter(t=>t.used).length;
-    const validos = total - usados;
-    const badge = document.getElementById('tCountBadge');
-    if(badge) badge.textContent = total === 1 ? '1 cadastrado' : total + ' cadastrados';
-    const cTotal = document.getElementById('cTotal');
-    const cValidos = document.getElementById('cValidos');
-    const cUsados = document.getElementById('cUsados');
-    if(cTotal) cTotal.textContent = total;
-    if(cValidos) cValidos.textContent = validos;
-    if(cUsados) cUsados.textContent = usados;
+    const total = tickets.length; const usados = tickets.filter(t=>t.used).length;
+    if(document.getElementById('tCountBadge')) document.getElementById('tCountBadge').textContent = total + ' cadastrados';
+    if(document.getElementById('cTotal')) document.getElementById('cTotal').textContent = total;
+    if(document.getElementById('cValidos')) document.getElementById('cValidos').textContent = total - usados;
+    if(document.getElementById('cUsados')) document.getElementById('cUsados').textContent = usados;
   }
-
-  const inpCodigo = document.getElementById('inpCodigo');
-  const btnVerificar = document.getElementById('btnVerificar');
-  const resultArea = document.getElementById('resultArea');
-  function normalizeCode(raw){
-    let c = raw.trim();
-    if(c.toUpperCase().startsWith('TICKET:')) c = c.slice(7);
-    return c.trim().toUpperCase();
-  }
-  async function handleVerify(rawCode, autoConfirm){
-    const code = normalizeCode(rawCode);
-    resultArea.innerHTML = '';
-    if(!code) return;
-    const ticket = tickets.find(t => t.id.toUpperCase() === code);
-    if(!ticket){
-      resultArea.innerHTML = `<p class="t-error">Nenhum ingresso encontrado com o código "${esc(code)}".</p>`;
-      return;
-    }
-
-    if(autoConfirm && !ticket.used){
-      ticket.used = true;
-      ticket.usedAt = new Date().toISOString();
-      await saveTickets();
-      updateCount();
-    }
-
-    resultArea.appendChild(buildStubEl(ticket, 120));
-    if(!ticket.used){
-      const confirmBtn = document.createElement('button');
-      confirmBtn.className = 't-btn';
-      confirmBtn.style.marginTop = '16px';
-      confirmBtn.textContent = 'Confirmar entrada (marcar como usado)';
-      confirmBtn.addEventListener('click', async ()=>{
-        ticket.used = true;
-        ticket.usedAt = new Date().toISOString();
-        await saveTickets();
-        updateCount();
-        handleVerify(ticket.id);
-      });
-      resultArea.appendChild(confirmBtn);
-    } else {
-      const p = document.createElement('p');
-      p.style.cssText = 'font-size:12px;color:var(--ink-soft);margin-top:12px;';
-      p.textContent = autoConfirm
-        ? 'Entrada confirmada automaticamente pela leitura do QR code em ' + fmtDate(ticket.usedAt) + '.'
-        : 'Este ingresso já foi utilizado em ' + fmtDate(ticket.usedAt) + '.';
-      resultArea.appendChild(p);
-    }
-  }
-  btnVerificar.addEventListener('click', ()=>handleVerify(inpCodigo.value, false));
-  inpCodigo.addEventListener('keydown', e=>{ if(e.key==='Enter') handleVerify(inpCodigo.value, false); });
-
-  const btnCam=document.getElementById('btnCam'), btnCamStop=document.getElementById('btnCamStop');
-  const camBox=document.getElementById('camBox'), camStatus=document.getElementById('camStatus');
-  let html5QrCodeInstance = null;
-  let camBusy = false;
-  async function startCamera(){
-    if(typeof Html5Qrcode === 'undefined'){
-      camBox.hidden=false;
-      camStatus.textContent='Não foi possível carregar o leitor de câmera. Digite o código manualmente.';
-      return;
-    }
-    camBox.hidden=false;
-    camStatus.textContent='Solicitando acesso à câmera...';
-    camBusy = false;
-    try{
-      html5QrCodeInstance = new Html5Qrcode('qrReader');
-      await html5QrCodeInstance.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: 220 },
-        (decodedText)=>{
-          if(camBusy) return;
-          camBusy = true;
-          camStatus.textContent='QR code lido!';
-          inpCodigo.value = decodedText;
-          stopCamera();
-          handleVerify(decodedText, true);
-        },
-        ()=>{ /* frame sem QR legível, ignorar */ }
-      );
-      camStatus.textContent='Aponte a câmera para o QR code do ingresso.';
-    }catch(e){
-      console.error(e);
-      camStatus.textContent='Não foi possível acessar a câmera. Digite o código manualmente.';
-    }
-  }
-  function stopCamera(){
-    if(html5QrCodeInstance){
-      const instance = html5QrCodeInstance;
-      html5QrCodeInstance = null;
-      instance.stop().then(()=>instance.clear()).catch(()=>{});
-    }
-    camBox.hidden=true;
-  }
-  btnCam.addEventListener('click', startCamera);
-  btnCamStop.addEventListener('click', stopCamera);
 
   // ---------------- INIT ----------------
   (async function init(){
@@ -1096,19 +1081,12 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
         watchContent();
         watchAuthState();
       }catch(e){
-        console.error('Erro ao conectar ao Firestore', e);
-        showConfigWarning('⚠ Não foi possível ler do Firestore. Confira se o banco foi criado e se as regras de segurança permitem a leitura pública do documento "content".');
-        content = defaultContent();
-        tickets = [];
+        content = defaultContent(); tickets = [];
       }
     } else {
-      // sem Firebase configurado: roda só na memória local desta aba, nada é salvo
-      content = defaultContent();
-      tickets = [];
+      content = defaultContent(); tickets = [];
     }
-    updateNavAuth();
-    updateCount();
-    showView('home');
+    updateNavAuth(); updateCount(); showView('home');
   })();
 })();
 </script>
