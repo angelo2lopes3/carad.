@@ -512,7 +512,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           </div>
           <div class="t-search-row"><input id="inpBusca" type="text" placeholder="Buscar por nome, telefone ou código..."></div>
           <div class="t-ledger">
-            <div class="t-ledger-head"><div>QR</div><div>Nome</div><div class="t-col-hide">Código</div><div class="t-col-hide">Status</div><div>Data</div></div>
+            <div class="t-ledger-head"> <div>QR</div> <div>Nome</div> <div class="t-col-hide">Código</div> <div class="t-col-hide">Status</div> <div>Data</div> <div>PDF</div> </div>
             <div id="ledgerBody"></div>
           </div>
           <button class="t-reset" id="btnReset">Limpar todos os ingressos cadastrados</button>
@@ -537,6 +537,8 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -955,6 +957,41 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     const el = document.createElement('div'); el.className = 't-stub';
     el.innerHTML = `${t.used ? '<div class="t-stamp">USADO</div>' : ''}<div class="t-stub-info"><p class="t-stub-code">${t.id}</p><p class="t-stub-name">${esc(t.name)}</p><p class="t-stub-phone">${esc(t.phone)}</p>${statusPill(t)}</div><div class="stub-qr" data-qr></div>`;
     renderQR(el.querySelector('[data-qr]'), 'TICKET:'+t.id, qrSize||96); return el;
+  async function baixarIngressoPDF(ticket){
+
+    const stub = buildStubEl(ticket,180);
+
+    stub.style.position = "fixed";
+    stub.style.left = "-9999px";
+    stub.style.top = "0";
+    stub.style.width = "720px";
+    stub.style.background = "#fff";
+
+    document.body.appendChild(stub);
+
+    const canvas = await html2canvas(stub,{
+        scale:2,
+        backgroundColor:"#ffffff"
+    });
+
+    document.body.removeChild(stub);
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF("p","mm","a4");
+
+    pdf.setFontSize(20);
+    pdf.text("Ingresso da Calourada",105,15,{align:"center"});
+
+    const img = canvas.toDataURL("image/png");
+
+    const largura = 190;
+    const altura = canvas.height * largura / canvas.width;
+
+    pdf.addImage(img,"PNG",10,25,largura,altura);
+
+    pdf.save("Ingresso-"+ticket.id+".pdf");
+}
   }
 
   document.getElementById('btnEmitir').addEventListener('click', async ()=>{
@@ -964,7 +1001,23 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     tickets.unshift(ticket); await saveTickets(); updateCount();
     document.getElementById('inpNome').value=''; document.getElementById('inpTel').value='';
     document.getElementById('novoIngressoWrap').hidden = false; document.getElementById('novoIngressoWrap').innerHTML = '';
-    document.getElementById('novoIngressoWrap').appendChild(buildStubEl(ticket, 110));
+    const wrap = document.getElementById("novoIngressoWrap");
+
+wrap.innerHTML="";
+
+const stub = buildStubEl(ticket,110);
+
+wrap.appendChild(stub);
+
+const btnPdf = document.createElement("button");
+
+btnPdf.className="t-btn";
+btnPdf.style.marginTop="20px";
+btnPdf.innerHTML="📄 Baixar PDF";
+
+btnPdf.onclick=()=>baixarIngressoPDF(ticket);
+
+wrap.appendChild(btnPdf);
   });
 
   function renderLedger(){
@@ -974,7 +1027,18 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     if(filtered.length===0){ body.innerHTML = '<div class="t-empty">Nenhum ingresso encontrado.</div>'; return; }
     filtered.forEach(t=>{
       const row = document.createElement('div'); row.className = 't-ledger-row';
-      row.innerHTML = `<div class="t-qr-mini" data-qr></div><div class="t-ledger-name">${esc(t.name)}</div><div class="t-col-hide">${t.id}</div><div class="t-col-hide">${statusPill(t)}</div><div>${fmtDate(t.createdAt).split(' ')[0]}</div>`;
+      row.innerHTML = `
+<div class="t-qr-mini" data-qr></div>
+<div class="t-ledger-name">${esc(t.name)}</div>
+<div class="t-col-hide">${t.id}</div>
+<div class="t-col-hide">${statusPill(t)}</div>
+<div>${fmtDate(t.createdAt).split(' ')[0]}</div>
+<div>
+<button class="t-btn pdf-btn">PDF</button>
+</div>
+`;
+
+row.querySelector(".pdf-btn").onclick=()=>baixarIngressoPDF(t);
       renderQR(row.querySelector('[data-qr]'), 'TICKET:'+t.id, 34);
       body.appendChild(row);
     });
