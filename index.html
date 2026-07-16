@@ -957,6 +957,8 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     const el = document.createElement('div'); el.className = 't-stub';
     el.innerHTML = `${t.used ? '<div class="t-stamp">USADO</div>' : ''}<div class="t-stub-info"><p class="t-stub-code">${t.id}</p><p class="t-stub-name">${esc(t.name)}</p><p class="t-stub-phone">${esc(t.phone)}</p>${statusPill(t)}</div><div class="stub-qr" data-qr></div>`;
     renderQR(el.querySelector('[data-qr]'), 'TICKET:'+t.id, qrSize||96); return el;
+  }
+
   async function baixarIngressoPDF(ticket){
 
     const stub = buildStubEl(ticket,180);
@@ -991,7 +993,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     pdf.addImage(img,"PNG",10,25,largura,altura);
 
     pdf.save("Ingresso-"+ticket.id+".pdf");
-}
   }
 
   document.getElementById('btnEmitir').addEventListener('click', async ()=>{
