@@ -276,10 +276,10 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-stub-info{flex:1;min-width:0;}
 .t-stub-code{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);margin:0 0 6px;}
 .t-stub-name{font-family:'Oswald',sans-serif;font-size:21px;margin:0 0 4px;line-height:1.1;word-break:break-word;}
-.t-stub-phone覆{font-family:'Space Mono',monospace;font-size:13px;color:var(--ink-soft);margin:0 0 10px;}
+.t-stub-phone{font-family:'Space Mono',monospace;font-size:13px;color:var(--ink-soft);margin:0 0 10px;}
 .t-pill{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:700;}
 .t-pill.valido{background:var(--valid-bg);color:var(--valid);}
-.t-pill.usado覆{background:var(--used-bg);color:var(--used);}
+.t-pill.usado{background:var(--used-bg);color:var(--used);}
 .t-stamp{position:absolute;top:8px;right:20px;font-family:'Oswald',sans-serif;font-size:19px;color:var(--used);border:3px solid var(--used);border-radius:8px;padding:2px 9px;transform:rotate(8deg);opacity:.85;}
 .t-search-row{display:flex;gap:10px;margin-bottom:16px;}
 .t-search-row input{flex:1;}
@@ -297,6 +297,12 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-cam-box{margin-top:12px;border:2px dashed var(--rule);border-radius:8px;padding:12px;text-align:center;}
 .t-cam-box video{width:100%;max-width:320px;border-radius:6px;}
 .t-cam-status{font-size:11px;color:var(--ink-soft);margin-top:8px;font-family:'Space Mono',monospace;}
+.t-result-box{border:2px solid var(--rule);border-radius:10px;padding:18px 20px;}
+.t-result-box.t-result-ok{border-color:var(--valid);background:var(--valid-bg);}
+.t-result-box.t-result-used{border-color:var(--used);background:var(--used-bg);}
+.t-result-box.t-result-invalid{border-color:var(--used);background:var(--used-bg);}
+.t-result-title{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;margin:0 0 10px;}
+.t-result-sub{font-size:13px;color:var(--ink-soft);margin:0;}
 .t-shared-note{font-size:11px;color:var(--ink-soft);margin-top:18px;border-top:1px solid var(--rule);padding-top:12px;}
 
 @media (max-width:640px){
@@ -653,6 +659,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   
   function showView(name){
     if(name === 'admin' && !isLoggedIn) name = 'login';
+    if(name !== 'admin' && typeof stopScanner === 'function') stopScanner();
     Object.keys(views).forEach(k => views[k].classList.toggle('active', k===name));
     document.querySelectorAll('.nav-btn[data-nav]').forEach(b=>b.classList.toggle('active', b.dataset.nav===name));
     if(name === 'home') renderHome();
@@ -817,7 +824,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     content.shopHeroTitle = document.getElementById('edShopHeroTitle').value.trim() || 'Vitrine da Calourada';
     content.shopHeroSubtitle = document.getElementById('edShopHeroSub').value.trim();
     let shopUrlVal = document.getElementById('edShopHeroImgUrl').value.trim();
-   
+    
     if(uploadedShopHeroImgBase64) {
       shopUrlVal = uploadedShopHeroImgBase64;
     }
@@ -1045,6 +1052,162 @@ row.querySelector(".pdf-btn").onclick=()=>baixarIngressoPDF(t);
     });
   }
   document.getElementById('inpBusca').addEventListener('input', renderLedger);
+
+  // ================== VALIDAR INGRESSO (código manual + câmera) ==================
+  let html5QrCode = null;
+  let scannerRunning = false;
+
+  function findTicketByCode(raw){
+    let code = (raw || '').trim();
+    if(!code) return null;
+    code = code.replace(/^TICKET:/i,'').trim();
+    return tickets.find(t => t.id.toLowerCase() === code.toLowerCase()) || null;
+  }
+
+  function renderResult(ticket, codeTried){
+    const area = document.getElementById('resultArea');
+    if(!ticket){
+      area.innerHTML = `<div class="t-result-box t-result-invalid"><p class="t-result-title">Código não encontrado</p><p class="t-result-sub">"${esc(codeTried || '')}" não corresponde a nenhum ingresso cadastrado.</p></div>`;
+      return;
+    }
+    const already = ticket.used;
+    area.innerHTML = `
+      <div class="t-result-box ${already ? 't-result-used' : 't-result-ok'}">
+        <p class="t-result-title">${already ? 'Ingresso já utilizado' : 'Ingresso válido'}</p>
+        <div class="t-stub-info" style="margin-bottom:12px;">
+          <p class="t-stub-code">${ticket.id}</p>
+          <p class="t-stub-name">${esc(ticket.name)}</p>
+          <p class="t-stub-phone">${esc(ticket.phone)}</p>
+          ${statusPill(ticket)}
+        </div>
+        ${already
+          ? `<p class="t-result-sub">Uso registrado em ${ticket.usedAt ? fmtDate(ticket.usedAt) : '—'}.</p>`
+          : `<button class="t-btn" id="btnMarcarUsado">Marcar como usado</button>`}
+      </div>`;
+    if(!already){
+      document.getElementById('btnMarcarUsado').addEventListener('click', async () => {
+        ticket.used = true; ticket.usedAt = new Date().toISOString();
+        await saveTickets(); updateCount();
+        renderResult(ticket, codeTried);
+        renderLedger();
+      });
+    }
+  }
+
+  document.getElementById('btnVerificar').addEventListener('click', () => {
+    const code = document.getElementById('inpCodigo').value;
+    renderResult(findTicketByCode(code), code);
+  });
+  document.getElementById('inpCodigo').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') document.getElementById('btnVerificar').click();
+  });
+
+  async function stopScanner(){
+    if(html5QrCode && scannerRunning){
+      try{ await html5QrCode.stop(); }catch(e){}
+      try{ await html5QrCode.clear(); }catch(e){}
+    }
+    scannerRunning = false;
+    const camBox = document.getElementById('camBox');
+    if(camBox) camBox.hidden = true;
+  }
+
+  document.getElementById('btnCam').addEventListener('click', async () => {
+    const camBox = document.getElementById('camBox');
+    const status = document.getElementById('camStatus');
+    camBox.hidden = false;
+    status.style.color = 'var(--ink-soft)';
+    status.style.fontWeight = 'normal';
+
+    function showError(msg, raw){
+      status.textContent = msg;
+      status.style.color = 'var(--used)';
+      status.style.fontWeight = '700';
+      if(raw) console.error('[QR Scanner]', raw);
+    }
+
+    try{
+      if(!window.isSecureContext){
+        showError('A câmera só funciona em conexão segura (https://). Abra o site com https:// para usar o leitor.');
+        return;
+      }
+      if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+        showError('Este navegador não permite acesso à câmera. Tente atualizar o Safari (iOS) ou o Chrome (Android).');
+        return;
+      }
+      if(typeof Html5Qrcode === 'undefined'){
+        showError('Não foi possível carregar o leitor de QR code (falha ao baixar a biblioteca). Verifique sua conexão e recarregue a página.');
+        return;
+      }
+      if(scannerRunning) return;
+
+      status.textContent = 'Solicitando permissão da câmera...';
+      if(!html5QrCode) html5QrCode = new Html5Qrcode('qrReader');
+
+      const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+
+      const onScanSuccess = async (decodedText) => {
+        if(!scannerRunning) return;
+        status.textContent = 'Código lido!';
+        await stopScanner();
+        document.getElementById('inpCodigo').value = decodedText.replace(/^TICKET:/i,'');
+        renderResult(findTicketByCode(decodedText), decodedText);
+      };
+      const onScanFailure = () => {};
+
+      let started = false;
+      let lastErr = null;
+
+      try{
+        await html5QrCode.start({ facingMode: 'environment' }, config, onScanSuccess, onScanFailure);
+        started = true;
+      }catch(err1){
+        lastErr = err1;
+        try{
+          const cameras = await Html5Qrcode.getCameras();
+          if(cameras && cameras.length){
+            const cam = cameras.find(c => /back|traseira|rear|environment/i.test(c.label)) || cameras[cameras.length - 1];
+            await html5QrCode.start({ deviceId: { exact: cam.id } }, config, onScanSuccess, onScanFailure);
+            started = true;
+          } else {
+            showError('Nenhuma câmera foi encontrada neste dispositivo.', err1);
+            return;
+          }
+        }catch(err2){
+          lastErr = err2;
+        }
+      }
+
+      if(started){
+        scannerRunning = true;
+        status.textContent = 'Aponte a câmera para o QR code do ingresso.';
+        status.style.color = 'var(--ink-soft)';
+        status.style.fontWeight = 'normal';
+        return;
+      }
+
+      const name = (lastErr && lastErr.name) || '';
+      let msg = 'Não foi possível acessar a câmera' + (lastErr && lastErr.message ? (': ' + lastErr.message) : '.');
+      if(name === 'NotAllowedError' || /permission/i.test(String(lastErr))){
+        msg = 'Permissão da câmera negada. No navegador, toque no ícone de cadeado/site na barra de endereço e libere a Câmera para este site (no iOS: Ajustes > Safari > Câmera > Permitir).';
+      } else if(name === 'NotFoundError'){
+        msg = 'Nenhuma câmera encontrada neste dispositivo.';
+      } else if(name === 'NotReadableError'){
+        msg = 'A câmera já está em uso por outro aplicativo. Feche outros apps que usam a câmera e tente novamente.';
+      } else if(name === 'OverconstrainedError'){
+        msg = 'A câmera traseira não foi encontrada com essas configurações. Tentando novamente com outra câmera pode ajudar — recarregue a página.';
+      }
+      showError(msg, lastErr);
+    }catch(fatal){
+      showError('Erro inesperado ao abrir a câmera: ' + (fatal && fatal.message ? fatal.message : String(fatal)), fatal);
+    }
+  });
+
+  document.getElementById('btnCamStop').addEventListener('click', stopScanner);
+
+  document.querySelectorAll('.t-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => { if(btn.dataset.ttab !== 'validar') stopScanner(); });
+  });
 
   function updateCount(){
     const total = tickets.length; const usados = tickets.filter(t=>t.used).length;
