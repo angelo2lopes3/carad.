@@ -284,7 +284,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-search-row{display:flex;gap:10px;margin-bottom:16px;}
 .t-search-row input{flex:1;}
 .t-ledger{border:1px solid var(--rule);border-radius:8px;overflow:hidden;}
-.t-ledger-head,.t-ledger-row{display:grid;grid-template-columns:40px 1.3fr 1fr 1.1fr 90px;gap:10px;align-items:center;padding:9px 12px;}
+.t-ledger-head,.t-ledger-row{display:grid;grid-template-columns:24px 34px 1.2fr 1fr .9fr .9fr .9fr 90px;gap:10px;align-items:center;padding:9px 12px;}
 .t-ledger-head{background:var(--ink);color:var(--paper);font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.05em;}
 .t-ledger-row{background:#fff;font-family:'Space Mono',monospace;font-size:12px;border-top:1px solid var(--rule);}
 .t-ledger-row:nth-child(even){background:#F7F2E4;}
@@ -305,9 +305,51 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-result-sub{font-size:13px;color:var(--ink-soft);margin:0;}
 .t-shared-note{font-size:11px;color:var(--ink-soft);margin-top:18px;border-top:1px solid var(--rule);padding-top:12px;}
 
+/* ---------------- EVENTOS (classificação de ingressos) ---------------- */
+.t-select{width:100%;font-family:'Space Mono',monospace;font-size:14px;padding:10px 11px;border:2px solid var(--rule);border-radius:6px;background:#fff;color:var(--ink);}
+.t-select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold);}
+.t-hint{font-size:12px;color:var(--ink-soft);margin:-6px 0 12px;}
+.t-hint.warn{color:var(--used);font-weight:600;}
+.lmi-actions{display:flex;gap:12px;flex-shrink:0;}
+.edit-btn{background:none;border:none;color:var(--gold);cursor:pointer;font-size:12px;font-family:'Space Mono',monospace;}
+.evt-form-title{font-family:'Oswald',sans-serif;font-size:15px;margin:0 0 12px;color:var(--ink-soft);}
+.evt-editing-tag{display:inline-block;background:var(--gold);color:#fff;font-size:10px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:20px;margin-bottom:12px;}
+
+.t-evt-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.t-evt-chip{
+  font-family:'Space Mono',monospace;font-size:12px;font-weight:600;background:#fff;
+  border:2px solid var(--rule);color:var(--ink-soft);padding:7px 14px;border-radius:20px;cursor:pointer;
+}
+.t-evt-chip.active{border-color:var(--ink);color:var(--ink);background:var(--paper);}
+.t-pill.evento{background:#F1E7CE;color:var(--ink-soft);}
+.t-stub-event{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-soft);margin:0 0 6px;text-transform:uppercase;letter-spacing:.04em;}
+
+.t-bulkbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.t-bulk-left{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-soft);font-family:'Space Mono',monospace;}
+.t-bulk-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.t-btn.danger{background:var(--used);color:#fff;}
+.t-btn.danger:hover{background:#8a2c22;}
+.t-btn:disabled{opacity:.45;cursor:not-allowed;}
+.t-check{width:16px;height:16px;cursor:pointer;accent-color:var(--ink);}
+.t-del-icon{background:none;border:none;color:var(--used);cursor:pointer;font-size:15px;padding:2px;line-height:1;}
+
+/* modal de confirmação */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(10,13,19,.72);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay[hidden]{display:none;}
+.modal-box{
+  background:var(--paper);color:var(--ink);border-radius:12px;padding:26px 26px 22px;
+  max-width:400px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.4);
+}
+.modal-title{font-family:'Oswald',sans-serif;font-size:19px;margin:0 0 10px;}
+.modal-msg{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 22px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;}
+
 @media (max-width:640px){
   .hero-title{font-size:32px;}
-  .t-ledger-head,.t-ledger-row{grid-template-columns:30px 1fr 1fr;}
+  .t-ledger-head,.t-ledger-row{grid-template-columns:22px 30px 1fr 1fr 70px;}
   .t-col-hide{display:none;}
 }
 </style>
@@ -497,12 +539,35 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
         </div>
 
         <div class="t-tabs">
-          <button class="t-tab-btn active" data-ttab="emitir">Emitir</button>
+          <button class="t-tab-btn active" data-ttab="eventos">Eventos</button>
+          <button class="t-tab-btn" data-ttab="emitir">Emitir</button>
           <button class="t-tab-btn" data-ttab="lista">Ingressos</button>
           <button class="t-tab-btn" data-ttab="validar">Validar</button>
         </div>
 
-        <div class="t-panel" id="tpanel-emitir">
+        <div class="t-panel" id="tpanel-eventos">
+          <p class="evt-form-title" id="evtFormTitle">Cadastrar novo evento</p>
+          <span class="evt-editing-tag" id="evtEditingTag" hidden>Editando evento</span>
+          <div class="t-field"><label for="inpEvtNome">Nome do evento</label><input id="inpEvtNome" type="text" placeholder="Ex: Calourada Radiologia 2026"></div>
+          <div class="row-flex">
+            <div class="t-field" style="flex:1;min-width:160px;"><label for="inpEvtData">Data</label><input id="inpEvtData" type="text" placeholder="Ex: 20/09/2026"></div>
+            <div class="t-field" style="flex:1;min-width:160px;"><label for="inpEvtLocal">Local (opcional)</label><input id="inpEvtLocal" type="text" placeholder="Ex: Salão de festas"></div>
+          </div>
+          <div id="evtErro" class="t-error" hidden></div>
+          <div style="display:flex;gap:10px;">
+            <button class="t-btn" id="btnSalvarEvento">Cadastrar evento</button>
+            <button class="t-btn secondary" id="btnCancelarEdicaoEvento" hidden>Cancelar edição</button>
+          </div>
+          <h3 style="margin-top:26px;margin-bottom:10px;font-family:'Oswald',sans-serif;font-size:15px;color:var(--ink-soft);">Eventos cadastrados</h3>
+          <div id="eventosManageList"></div>
+        </div>
+
+        <div class="t-panel" id="tpanel-emitir" hidden>
+          <div class="t-field">
+            <label for="inpEvento">Evento</label>
+            <select id="inpEvento" class="t-select"></select>
+          </div>
+          <div id="emitirSemEvento" class="t-hint warn" hidden>Cadastre um evento na aba "Eventos" antes de emitir ingressos.</div>
           <div class="t-field"><label for="inpNome">Nome do comprador</label><input id="inpNome" type="text" placeholder="Ex: Ana Souza"></div>
           <div class="t-field"><label for="inpTel">Telefone</label><input id="inpTel" type="text" placeholder="Ex: (11) 91234-5678"></div>
           <div id="emitirErro" class="t-error" hidden></div>
@@ -516,12 +581,19 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
             <div class="t-counter-box valido"><span class="t-counter-num" id="cValidos">0</span><span class="t-counter-label">válidos</span></div>
             <div class="t-counter-box usado"><span class="t-counter-num" id="cUsados">0</span><span class="t-counter-label">usados</span></div>
           </div>
+          <div class="t-evt-chips" id="evtFilterChips"></div>
           <div class="t-search-row"><input id="inpBusca" type="text" placeholder="Buscar por nome, telefone ou código..."></div>
+          <div class="t-bulkbar">
+            <div class="t-bulk-left"><span id="bulkCountLabel">0 selecionado(s)</span></div>
+            <div class="t-bulk-actions">
+              <button class="t-btn secondary" id="btnExcluirSelecionados" disabled>Excluir selecionados</button>
+              <button class="t-btn danger" id="btnExcluirTodos">Excluir todos (nesta classificação)</button>
+            </div>
+          </div>
           <div class="t-ledger">
-            <div class="t-ledger-head"> <div>QR</div> <div>Nome</div> <div class="t-col-hide">Código</div> <div class="t-col-hide">Status</div> <div>Data</div> <div>PDF</div> </div>
+            <div class="t-ledger-head"> <div><input type="checkbox" class="t-check" id="chkSelectAll"></div> <div>QR</div> <div>Nome</div> <div class="t-col-hide">Evento</div> <div class="t-col-hide">Código</div> <div class="t-col-hide">Status</div> <div>Data</div> <div>Ações</div> </div>
             <div id="ledgerBody"></div>
           </div>
-          <button class="t-reset" id="btnReset">Limpar todos os ingressos cadastrados</button>
         </div>
 
         <div class="t-panel" id="tpanel-validar" hidden>
@@ -538,6 +610,17 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           <div class="result-area" id="resultArea" style="margin-top:20px;"></div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="confirmModal" hidden>
+  <div class="modal-box">
+    <h3 class="modal-title" id="confirmModalTitle">Confirmar ação</h3>
+    <p class="modal-msg" id="confirmModalMsg">Tem certeza?</p>
+    <div class="modal-actions">
+      <button class="t-btn secondary" id="confirmModalCancel">Cancelar</button>
+      <button class="t-btn danger" id="confirmModalOk">Confirmar</button>
     </div>
   </div>
 </div>
@@ -564,6 +647,10 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 
   let content = null;
   let tickets = [];
+  let events = [];
+  let editingEventId = null;
+  let selectedTicketIds = new Set();
+  let currentEventFilter = 'todos';
   let isLoggedIn = false;
   let db = null;
   let auth = null;
@@ -634,20 +721,25 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     try{
       const ref = db.collection(COLLECTION).doc('tickets');
       const snap = await ref.get();
-      if(!snap.exists) await ref.set({list: []});
+      if(!snap.exists) await ref.set({list: [], events: []});
       tickets = snap.exists ? (snap.data().list || []) : [];
+      events = snap.exists ? (snap.data().events || []) : [];
     }catch(e){}
     updateCount();
     if(unsubscribeTickets) unsubscribeTickets();
     unsubscribeTickets = db.collection(COLLECTION).doc('tickets').onSnapshot(snap=>{
       tickets = snap.exists ? (snap.data().list || []) : [];
+      events = snap.exists ? (snap.data().events || []) : [];
       updateCount();
+      renderEventSelect();
+      renderEventFilterChips();
+      if(!document.getElementById('tpanel-eventos').hidden) renderEventsManage();
       if(!document.getElementById('tpanel-lista').hidden) renderLedger();
     });
   }
   
-  function stopTicketsSync(){ if(unsubscribeTickets){ unsubscribeTickets().catch(()=>{}); unsubscribeTickets = null; } tickets = []; updateCount(); }
-  async function saveTickets(){ try{ await db.collection(COLLECTION).doc('tickets').set({list: tickets}); return true; }catch(e){ return false; } }
+  function stopTicketsSync(){ if(unsubscribeTickets){ unsubscribeTickets().catch(()=>{}); unsubscribeTickets = null; } tickets = []; events = []; updateCount(); }
+  async function saveTickets(){ try{ await db.collection(COLLECTION).doc('tickets').set({list: tickets, events: events}); return true; }catch(e){ return false; } }
   function flashSaved(){ const tag = document.getElementById('savedTag'); tag.classList.add('show'); setTimeout(()=>tag.classList.remove('show'), 1600); }
 
   const views = {
@@ -759,7 +851,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       document.getElementById('admin-conteudo').classList.toggle('active', btn.dataset.subtab==='conteudo');
       document.getElementById('admin-loja').classList.toggle('active', btn.dataset.subtab==='loja');
       document.getElementById('admin-ingressos').classList.toggle('active', btn.dataset.subtab==='ingressos');
-      if(btn.dataset.subtab==='ingressos') renderLedger();
+      if(btn.dataset.subtab==='ingressos'){ renderEventsManage(); renderEventSelect(); renderEventFilterChips(); renderLedger(); }
       if(btn.dataset.subtab==='loja') renderShopManage();
     });
   });
@@ -781,6 +873,9 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     renderNewsManage();
     renderPhotoManage();
     renderShopManage();
+    renderEventsManage();
+    renderEventSelect();
+    renderEventFilterChips();
     updateCount();
     const emailOut = document.getElementById('accountEmailOut');
     if(emailOut) emailOut.textContent = (auth && auth.currentUser) ? 'Conectado como ' + auth.currentUser.email : '';
@@ -944,15 +1039,147 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     try{ await auth.currentUser.updatePassword(val); document.getElementById('edMyPassword').value=''; flashSaved(); }catch(e){}
   });
 
+  // ================== CONFIRMAÇÃO GENÉRICA ==================
+  function showConfirm(title, message, onConfirm){
+    const overlay = document.getElementById('confirmModal');
+    document.getElementById('confirmModalTitle').textContent = title;
+    document.getElementById('confirmModalMsg').textContent = message;
+    overlay.hidden = false;
+    const okBtn = document.getElementById('confirmModalOk');
+    const cancelBtn = document.getElementById('confirmModalCancel');
+    function close(){ overlay.hidden = true; okBtn.onclick = null; cancelBtn.onclick = null; }
+    okBtn.onclick = async ()=>{ close(); await onConfirm(); };
+    cancelBtn.onclick = ()=> close();
+  }
+
+  // ================== EVENTOS (classificação de ingressos) ==================
+  function renderEventsManage(){
+    const wrap = document.getElementById('eventosManageList'); if(!wrap) return;
+    wrap.innerHTML = '';
+    if(events.length === 0){ wrap.innerHTML = '<p class="lmi-text">Nenhum evento cadastrado ainda.</p>'; return; }
+    events.forEach(ev=>{
+      const count = tickets.filter(t=>t.eventId===ev.id).length;
+      const row = document.createElement('div'); row.className = 'list-manage-item';
+      row.innerHTML = `<div class="lmi-text"><b>${esc(ev.name)}</b>${esc(ev.date || 'Sem data')}${ev.local ? ' — ' + esc(ev.local) : ''} · ${count} ingresso(s)</div>
+        <div class="lmi-actions"><button class="edit-btn">Editar</button><button class="del-btn">Excluir</button></div>`;
+      row.querySelector('.edit-btn').addEventListener('click', ()=> startEditEvent(ev.id));
+      row.querySelector('.del-btn').addEventListener('click', ()=>{
+        showConfirm(
+          'Excluir evento',
+          `Tem certeza que deseja excluir "${ev.name}"? ${count > 0 ? 'Os ' + count + ' ingresso(s) vinculado(s) a ele deixarão de ter uma classificação, mas não serão apagados.' : ''}`,
+          async ()=>{
+            events = events.filter(x=>x.id!==ev.id);
+            tickets.forEach(t=>{ if(t.eventId===ev.id){ t.eventId = null; t.eventName = '(evento removido)'; } });
+            if(editingEventId===ev.id) cancelEditEvent();
+            await saveTickets();
+            renderEventsManage(); renderEventSelect(); renderEventFilterChips(); renderLedger();
+          }
+        );
+      });
+      wrap.appendChild(row);
+    });
+  }
+
+  function startEditEvent(id){
+    const ev = events.find(e=>e.id===id); if(!ev) return;
+    editingEventId = id;
+    document.getElementById('inpEvtNome').value = ev.name;
+    document.getElementById('inpEvtData').value = ev.date || '';
+    document.getElementById('inpEvtLocal').value = ev.local || '';
+    document.getElementById('evtFormTitle').textContent = 'Editar evento';
+    document.getElementById('evtEditingTag').hidden = false;
+    document.getElementById('btnSalvarEvento').textContent = 'Salvar alterações';
+    document.getElementById('btnCancelarEdicaoEvento').hidden = false;
+    document.getElementById('inpEvtNome').scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  function cancelEditEvent(){
+    editingEventId = null;
+    document.getElementById('inpEvtNome').value = '';
+    document.getElementById('inpEvtData').value = '';
+    document.getElementById('inpEvtLocal').value = '';
+    document.getElementById('evtFormTitle').textContent = 'Cadastrar novo evento';
+    document.getElementById('evtEditingTag').hidden = true;
+    document.getElementById('btnSalvarEvento').textContent = 'Cadastrar evento';
+    document.getElementById('btnCancelarEdicaoEvento').hidden = true;
+    document.getElementById('evtErro').hidden = true;
+  }
+
+  document.getElementById('btnCancelarEdicaoEvento').addEventListener('click', cancelEditEvent);
+
+  document.getElementById('btnSalvarEvento').addEventListener('click', async ()=>{
+    const name = document.getElementById('inpEvtNome').value.trim();
+    const date = document.getElementById('inpEvtData').value.trim();
+    const local = document.getElementById('inpEvtLocal').value.trim();
+    const errEl = document.getElementById('evtErro');
+    if(!name){ errEl.textContent = 'Informe o nome do evento.'; errEl.hidden = false; return; }
+    errEl.hidden = true;
+
+    if(editingEventId){
+      const ev = events.find(e=>e.id===editingEventId);
+      if(ev){
+        ev.name = name; ev.date = date; ev.local = local;
+        tickets.forEach(t=>{ if(t.eventId===ev.id) t.eventName = ev.name; });
+      }
+    } else {
+      events.unshift({id: uid(), name, date, local});
+    }
+    await saveTickets();
+    cancelEditEvent();
+    renderEventsManage(); renderEventSelect(); renderEventFilterChips(); renderLedger();
+    flashSaved();
+  });
+
+  function renderEventSelect(){
+    const sel = document.getElementById('inpEvento'); if(!sel) return;
+    const prev = sel.value;
+    if(events.length === 0){
+      sel.innerHTML = '<option value="">Nenhum evento cadastrado</option>';
+      sel.disabled = true;
+      document.getElementById('emitirSemEvento').hidden = false;
+      document.getElementById('btnEmitir').disabled = true;
+    } else {
+      sel.innerHTML = '<option value="">Selecione um evento...</option>' + events.map(ev=>`<option value="${ev.id}">${esc(ev.name)}</option>`).join('');
+      sel.disabled = false;
+      document.getElementById('emitirSemEvento').hidden = true;
+      document.getElementById('btnEmitir').disabled = false;
+      if(events.some(ev=>ev.id===prev)) sel.value = prev;
+    }
+  }
+
+  function renderEventFilterChips(){
+    const wrap = document.getElementById('evtFilterChips'); if(!wrap) return;
+    if(!events.some(ev=>ev.id===currentEventFilter)) currentEventFilter = 'todos';
+    let html = `<button type="button" class="t-evt-chip${currentEventFilter==='todos' ? ' active' : ''}" data-evtfilter="todos">Todos</button>`;
+    events.forEach(ev=>{
+      html += `<button type="button" class="t-evt-chip${currentEventFilter===ev.id ? ' active' : ''}" data-evtfilter="${ev.id}">${esc(ev.name)}</button>`;
+    });
+    if(tickets.some(t=>!t.eventId)){
+      html += `<button type="button" class="t-evt-chip${currentEventFilter==='sem' ? ' active' : ''}" data-evtfilter="sem">Sem classificação</button>`;
+    }
+    wrap.innerHTML = html;
+    wrap.querySelectorAll('.t-evt-chip').forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        currentEventFilter = chip.dataset.evtfilter;
+        selectedTicketIds.clear();
+        renderEventFilterChips();
+        renderLedger();
+      });
+    });
+  }
+
   // ================== TICKET TOOL ==================
   document.querySelectorAll('.t-tab-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('.t-tab-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
+      document.getElementById('tpanel-eventos').hidden = btn.dataset.ttab!=='eventos';
       document.getElementById('tpanel-emitir').hidden = btn.dataset.ttab!=='emitir';
       document.getElementById('tpanel-lista').hidden = btn.dataset.ttab!=='lista';
       document.getElementById('tpanel-validar').hidden = btn.dataset.ttab!=='validar';
-      if(btn.dataset.ttab==='lista') renderLedger();
+      if(btn.dataset.ttab==='eventos') renderEventsManage();
+      if(btn.dataset.ttab==='emitir') renderEventSelect();
+      if(btn.dataset.ttab==='lista'){ renderEventFilterChips(); renderLedger(); }
     });
   });
 
@@ -962,7 +1189,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   function statusPill(t){ return t.used ? '<span class="t-pill usado">Usado</span>' : '<span class="t-pill valido">Válido</span>'; }
   function buildStubEl(t, qrSize){
     const el = document.createElement('div'); el.className = 't-stub';
-    el.innerHTML = `${t.used ? '<div class="t-stamp">USADO</div>' : ''}<div class="t-stub-info"><p class="t-stub-code">${t.id}</p><p class="t-stub-name">${esc(t.name)}</p><p class="t-stub-phone">${esc(t.phone)}</p>${statusPill(t)}</div><div class="stub-qr" data-qr></div>`;
+    el.innerHTML = `${t.used ? '<div class="t-stamp">USADO</div>' : ''}<div class="t-stub-info">${t.eventName ? `<p class="t-stub-event">${esc(t.eventName)}</p>` : ''}<p class="t-stub-code">${t.id}</p><p class="t-stub-name">${esc(t.name)}</p><p class="t-stub-phone">${esc(t.phone)}</p>${statusPill(t)}</div><div class="stub-qr" data-qr></div>`;
     renderQR(el.querySelector('[data-qr]'), 'TICKET:'+t.id, qrSize||96); return el;
   }
 
@@ -1004,9 +1231,14 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 
   document.getElementById('btnEmitir').addEventListener('click', async ()=>{
     const name = document.getElementById('inpNome').value.trim(); const phone = document.getElementById('inpTel').value.trim();
-    if(!name || !phone) return;
-    const ticket = {id: genId(), name, phone, used:false, createdAt:new Date().toISOString(), usedAt:null};
-    tickets.unshift(ticket); await saveTickets(); updateCount();
+    const eventId = document.getElementById('inpEvento').value;
+    const errEl = document.getElementById('emitirErro');
+    if(!eventId){ errEl.textContent = 'Selecione o evento ao qual este ingresso pertence.'; errEl.hidden = false; return; }
+    if(!name || !phone){ errEl.textContent = 'Preencha nome e telefone do comprador.'; errEl.hidden = false; return; }
+    errEl.hidden = true;
+    const ev = events.find(e=>e.id===eventId);
+    const ticket = {id: genId(), name, phone, eventId, eventName: ev ? ev.name : '', used:false, createdAt:new Date().toISOString(), usedAt:null};
+    tickets.unshift(ticket); await saveTickets(); updateCount(); renderEventFilterChips(); renderEventsManage();
     document.getElementById('inpNome').value=''; document.getElementById('inpTel').value='';
     document.getElementById('novoIngressoWrap').hidden = false; document.getElementById('novoIngressoWrap').innerHTML = '';
     const wrap = document.getElementById("novoIngressoWrap");
@@ -1028,30 +1260,85 @@ btnPdf.onclick=()=>baixarIngressoPDF(ticket);
 wrap.appendChild(btnPdf);
   });
 
+  function eventFilteredTickets(){
+    if(currentEventFilter==='todos') return tickets.slice();
+    if(currentEventFilter==='sem') return tickets.filter(t=>!t.eventId);
+    return tickets.filter(t=>t.eventId===currentEventFilter);
+  }
+
+  function updateBulkBar(visibleIds){
+    const n = selectedTicketIds.size;
+    document.getElementById('bulkCountLabel').textContent = n + ' selecionado(s)';
+    document.getElementById('btnExcluirSelecionados').disabled = n===0;
+    const allChecked = visibleIds.length>0 && visibleIds.every(id=>selectedTicketIds.has(id));
+    document.getElementById('chkSelectAll').checked = allChecked;
+    document.getElementById('chkSelectAll').disabled = visibleIds.length===0;
+  }
+
+  async function deleteTicketsByIds(ids){
+    const idSet = new Set(ids);
+    tickets = tickets.filter(t=>!idSet.has(t.id));
+    idSet.forEach(id=>selectedTicketIds.delete(id));
+    await saveTickets(); updateCount(); renderEventFilterChips(); renderEventsManage(); renderLedger();
+  }
+
   function renderLedger(){
     const q = document.getElementById('inpBusca').value.trim().toLowerCase();
-    const filtered = tickets.filter(t => !q || t.name.toLowerCase().includes(q) || t.phone.toLowerCase().includes(q) || t.id.toLowerCase().includes(q));
+    const byEvent = eventFilteredTickets();
+    const filtered = byEvent.filter(t => !q || t.name.toLowerCase().includes(q) || t.phone.toLowerCase().includes(q) || t.id.toLowerCase().includes(q));
     const body = document.getElementById('ledgerBody'); body.innerHTML = '';
+    updateBulkBar(filtered.map(t=>t.id));
+
     if(filtered.length===0){ body.innerHTML = '<div class="t-empty">Nenhum ingresso encontrado.</div>'; return; }
     filtered.forEach(t=>{
       const row = document.createElement('div'); row.className = 't-ledger-row';
       row.innerHTML = `
+<div><input type="checkbox" class="t-check row-check" ${selectedTicketIds.has(t.id) ? 'checked' : ''}></div>
 <div class="t-qr-mini" data-qr></div>
 <div class="t-ledger-name">${esc(t.name)}</div>
+<div class="t-col-hide">${esc(t.eventName || 'Sem classificação')}</div>
 <div class="t-col-hide">${t.id}</div>
 <div class="t-col-hide">${statusPill(t)}</div>
 <div>${fmtDate(t.createdAt).split(' ')[0]}</div>
-<div>
-<button class="t-btn pdf-btn">PDF</button>
+<div style="display:flex;gap:8px;align-items:center;">
+<button class="t-btn pdf-btn" style="padding:8px 10px;font-size:12px;">PDF</button>
+<button class="t-del-icon" title="Excluir ingresso">🗑</button>
 </div>
 `;
 
 row.querySelector(".pdf-btn").onclick=()=>baixarIngressoPDF(t);
+row.querySelector(".row-check").addEventListener('change', (e)=>{
+  if(e.target.checked) selectedTicketIds.add(t.id); else selectedTicketIds.delete(t.id);
+  updateBulkBar(filtered.map(x=>x.id));
+});
+row.querySelector(".t-del-icon").addEventListener('click', ()=>{
+  showConfirm('Excluir ingresso', `Tem certeza que deseja excluir o ingresso de "${t.name}" (${t.id})? Essa ação não pode ser desfeita.`, ()=> deleteTicketsByIds([t.id]));
+});
       renderQR(row.querySelector('[data-qr]'), 'TICKET:'+t.id, 34);
       body.appendChild(row);
     });
   }
   document.getElementById('inpBusca').addEventListener('input', renderLedger);
+
+  document.getElementById('chkSelectAll').addEventListener('change', (e)=>{
+    const q = document.getElementById('inpBusca').value.trim().toLowerCase();
+    const visible = eventFilteredTickets().filter(t => !q || t.name.toLowerCase().includes(q) || t.phone.toLowerCase().includes(q) || t.id.toLowerCase().includes(q));
+    if(e.target.checked) visible.forEach(t=>selectedTicketIds.add(t.id));
+    else visible.forEach(t=>selectedTicketIds.delete(t.id));
+    renderLedger();
+  });
+
+  document.getElementById('btnExcluirSelecionados').addEventListener('click', ()=>{
+    const n = selectedTicketIds.size; if(n===0) return;
+    showConfirm('Excluir ingressos selecionados', `Tem certeza que deseja excluir ${n} ingresso(s) selecionado(s)? Essa ação não pode ser desfeita.`, ()=> deleteTicketsByIds([...selectedTicketIds]));
+  });
+
+  document.getElementById('btnExcluirTodos').addEventListener('click', ()=>{
+    const scope = eventFilteredTickets();
+    if(scope.length===0) return;
+    const scopeLabel = currentEventFilter==='todos' ? 'TODOS os ingressos cadastrados' : (currentEventFilter==='sem' ? 'todos os ingressos sem classificação' : 'todos os ingressos deste evento');
+    showConfirm('Excluir ingressos', `Tem certeza que deseja excluir ${scopeLabel} (${scope.length} ingresso(s))? Essa ação não pode ser desfeita.`, ()=> deleteTicketsByIds(scope.map(t=>t.id)));
+  });
 
   // ================== VALIDAR INGRESSO (código manual + câmera) ==================
   let html5QrCode = null;
@@ -1075,6 +1362,7 @@ row.querySelector(".pdf-btn").onclick=()=>baixarIngressoPDF(t);
       <div class="t-result-box ${already ? 't-result-used' : 't-result-ok'}">
         <p class="t-result-title">${already ? 'Ingresso já utilizado' : 'Ingresso válido'}</p>
         <div class="t-stub-info" style="margin-bottom:12px;">
+          ${ticket.eventName ? `<p class="t-stub-event">${esc(ticket.eventName)}</p>` : ''}
           <p class="t-stub-code">${ticket.id}</p>
           <p class="t-stub-name">${esc(ticket.name)}</p>
           <p class="t-stub-phone">${esc(ticket.phone)}</p>
