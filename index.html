@@ -347,14 +347,180 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .modal-msg{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 22px;}
 .modal-actions{display:flex;justify-content:flex-end;gap:10px;}
 
+/* ---------------- REGULAMENTO ---------------- */
+.rules-wrap{
+  position:relative;
+  background:linear-gradient(180deg,var(--film-navy),var(--panel));
+  border:1px solid var(--line);border-radius:14px;
+  padding:44px 36px 36px;
+  overflow:hidden;
+}
+.rules-wrap::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(0deg,rgba(111,217,236,.035) 0px,rgba(111,217,236,.035) 1px,transparent 1px,transparent 26px);
+  opacity:.6;
+}
+.rules-intro{position:relative;z-index:1;max-width:620px;margin:0 0 30px;}
+.rules-eyebrow{
+  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--amber);margin:0 0 10px;
+}
+.rules-lede{color:var(--muted);font-size:14.5px;line-height:1.6;margin:0;}
+
+.rules-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;}
+.rule-card{
+  background:rgba(23,31,46,.75);border:1px solid var(--line);border-radius:10px;
+  padding:20px 20px 18px;position:relative;
+  transition:border-color .2s,transform .2s;
+}
+.rule-card:hover{border-color:var(--cyan-dim);transform:translateY(-2px);}
+.rule-num{
+  font-family:'Space Mono',monospace;font-size:11px;color:var(--film-black);
+  background:var(--cyan);display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;font-weight:700;margin-right:10px;
+}
+.rule-head{display:flex;align-items:center;gap:2px;margin-bottom:12px;}
+.rule-icon{font-size:17px;line-height:1;margin-right:8px;}
+.rule-title{font-family:'Oswald',sans-serif;font-size:15.5px;font-weight:600;color:var(--bone);margin:0;letter-spacing:.01em;}
+.rule-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;}
+.rule-list li{
+  font-size:13px;line-height:1.55;color:var(--muted);padding-left:14px;position:relative;
+}
+.rule-list li::before{
+  content:'';position:absolute;left:0;top:7px;width:5px;height:5px;border-radius:50%;
+  background:var(--cyan-dim);
+}
+.rule-list b{color:var(--bone);font-weight:600;}
+
+.rule-card.warn{border-color:rgba(165,54,43,.5);background:rgba(165,54,43,.08);}
+.rule-card.warn .rule-num{background:var(--used);color:#fff;}
+.rule-card.warn .rule-list li::before{background:var(--used);}
+
+.rules-banner{
+  position:relative;z-index:1;margin-top:22px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  background:rgba(232,162,60,.08);border:1px solid rgba(232,162,60,.4);
+  border-radius:10px;padding:14px 18px;
+}
+.rules-banner-icon{font-size:20px;}
+.rules-banner p{margin:0;font-size:13px;color:var(--bone);line-height:1.5;}
+.rules-banner b{color:var(--amber);}
+
+/* ---------------- POP-UP REGRAS ---------------- */
+.rules-modal-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(6,8,12,.82);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  backdrop-filter:blur(3px);
+}
+.rules-modal-overlay[hidden]{display:none;}
+.rules-modal{
+  width:100%;max-width:780px;max-height:88vh;
+  background:var(--film-navy);border:1px solid var(--line);border-radius:14px;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+.rules-modal-head{padding:26px 26px 6px;flex-shrink:0;}
+.rules-modal-title{font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;margin:4px 0 10px;color:var(--bone);}
+.rules-modal-body{padding:6px 26px 22px;overflow-y:auto;}
+.rules-modal-foot{
+  padding:16px 26px;border-top:1px solid var(--line);flex-shrink:0;
+  display:flex;justify-content:flex-end;background:var(--panel);
+}
+.rules-modal-foot .nav-btn.primary{padding:10px 22px;font-size:14px;}
+.rules-modal-body::-webkit-scrollbar{width:8px;}
+.rules-modal-body::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
+
 @media (max-width:640px){
   .hero-title{font-size:32px;}
   .t-ledger-head,.t-ledger-row{grid-template-columns:22px 30px 1fr 1fr 70px;}
   .t-col-hide{display:none;}
+  .rules-wrap{padding:32px 20px 26px;}
+  .rules-modal{max-height:92vh;}
+  .rules-modal-head{padding:20px 18px 4px;}
+  .rules-modal-body{padding:4px 18px 18px;}
+  .rules-modal-foot{padding:14px 18px;}
 }
 </style>
 </head>
 <body>
+
+<div class="rules-modal-overlay" id="rulesModalOverlay" hidden>
+  <div class="rules-modal">
+    <div class="rules-modal-head">
+      <p class="rules-eyebrow">📜 Regulamento da Calourada</p>
+      <h2 class="rules-modal-title">Antes de continuar, leia o regulamento</h2>
+      <p class="rules-lede">Para garantir uma festa segura, divertida e acolhedora para todos, pedimos que todos os presentes leiam e sigam as regras abaixo antes de acessar o site.</p>
+    </div>
+
+    <div class="rules-modal-body">
+      <div class="rules-grid">
+
+        <div class="rule-card warn">
+          <div class="rule-head"><span class="rule-num">1</span><span class="rule-icon">🤝</span><h3 class="rule-title">Respeito e Convivência — Tolerância Zero</h3></div>
+          <ul class="rule-list">
+            <li><b>Respeito mútuo:</b> não será tolerado nenhum tipo de assédio, discriminação, preconceito (machismo, racismo, LGBTfobia etc.) ou agressão física/verbal.</li>
+            <li><b>Consentimento é tudo:</b> "não é não". Qualquer atitude desrespeitosa resulta em expulsão imediata, sem reembolso, e nas medidas administrativas cabíveis.</li>
+            <li><b>Trote consciente:</b> deve ser 100% voluntário e integrativo. É proibido forçar calouros(as) a brincadeiras constrangedoras ou a ingerir álcool/substâncias contra a vontade.</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <div class="rule-head"><span class="rule-num">2</span><span class="rule-icon">🪪</span><h3 class="rule-title">Acesso e Identificação</h3></div>
+          <ul class="rule-list">
+            <li><b>Documentação:</b> entrada permitida somente com documento oficial com foto (RG, CNH ou Passaporte) e ingresso.</li>
+            <li><b>Classificação indicativa:</b> evento para maiores de 18 anos.</li>
+          </ul>
+        </div>
+
+        <div class="rule-card warn">
+          <div class="rule-head"><span class="rule-num">3</span><span class="rule-icon">🚫</span><h3 class="rule-title">Segurança e Itens Proibidos</h3></div>
+          <ul class="rule-list">
+            <li>Armas de fogo, objetos cortantes, perfurantes ou de vidro (garrafas, copos de vidro).</li>
+            <li>Substâncias ilícitas de qualquer natureza.</li>
+            <li>Fogos de artifício ou artefatos pirotécnicos.</li>
+            <li>Alimentos e bebidas comprados fora do evento (salvo restrição alimentar avisada à comissão).</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <div class="rule-head"><span class="rule-num">4</span><span class="rule-icon">💧</span><h3 class="rule-title">Bebidas e Consumo Responsável</h3></div>
+          <ul class="rule-list">
+            <li><b>Água grátis:</b> ponto de hidratação disponível gratuitamente durante todo o evento.</li>
+            <li><b>Mantenha-se hidratado:</b> beba com moderação e intercale álcool com água e alimentação.</li>
+            <li><b>Se beber, não dirija!</b></li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <div class="rule-head"><span class="rule-num">5</span><span class="rule-icon">♻️</span><h3 class="rule-title">Cuidados com o Espaço e Estrutura</h3></div>
+          <ul class="rule-list">
+            <li><b>Sustentabilidade:</b> descarte o lixo nas lixeiras indicadas e ajude a manter o local limpo.</li>
+            <li><b>Patrimônio:</b> danos ao local ou aos equipamentos da organização são de responsabilidade financeira do infrator.</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <div class="rule-head"><span class="rule-num">6</span><span class="rule-icon">🆘</span><h3 class="rule-title">Comissão e Apoio</h3></div>
+          <ul class="rule-list">
+            <li><b>Ponto de apoio/acolhimento:</b> se sentir mal, enjoado(a) ou presenciar alguma situação inadequada, procure imediatamente um membro da comissão organizadora ou a equipe de segurança.</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="rules-banner">
+        <span class="rules-banner-icon">⚠️</span>
+        <p>Ao entrar no evento, você declara estar <b>ciente e de acordo</b> com todas as regras deste regulamento.</p>
+      </div>
+    </div>
+
+    <div class="rules-modal-foot">
+      <button class="nav-btn primary" id="btnAceitarRegras">Li e aceito as regras</button>
+    </div>
+  </div>
+</div>
 
 <nav class="nav">
   <div class="brand" id="brandHome">
@@ -364,6 +530,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   <div class="nav-links">
     <button class="nav-btn" data-nav="home">Início</button>
     <button class="nav-btn" data-nav="loja">Loja</button>
+    <button class="nav-btn" data-nav="regras">Regras</button>
     <button class="nav-btn" id="navLoginBtn" data-nav="login">Entrar</button>
     <button class="nav-btn" id="navAdminBtn" data-nav="admin" hidden>Painel</button>
     <button class="nav-btn" id="navLogoutBtn" hidden>Sair</button>
@@ -394,6 +561,85 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       <span class="section-tag">Chapas reveladas</span>
     </div>
     <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+
+  <footer>Página oficial mantida pelo CARAD &middot; Centro Acadêmico de Radiologia Uninassau</footer>
+</div>
+
+<div class="view" id="view-regras">
+  <div class="hero" id="rulesHeroEl" style="padding: 40px; margin-bottom: 0;">
+    <p class="hero-eyebrow">Curso de Radiologia &middot; Recepção de calouros</p>
+    <h1 class="hero-title" style="font-size: 34px; margin: 0;">Regulamento Geral</h1>
+    <p class="hero-sub" style="margin: 8px 0 0;">Leitura obrigatória para todos os participantes do evento.</p>
+  </div>
+
+  <div class="section">
+    <div class="rules-wrap">
+      <div class="rules-intro">
+        <p class="rules-eyebrow">📜 Regulamento da Calourada</p>
+        <p class="rules-lede">Para garantir uma festa segura, divertida e acolhedora para todos, pedimos que todos os presentes leiam e sigam as regras abaixo.</p>
+      </div>
+
+      <div class="rules-grid">
+
+        <div class="rule-card warn">
+          <div class="rule-head"><span class="rule-num">1</span><span class="rule-icon">🤝</span><h3 class="rule-title">Respeito e Convivência — Tolerância Zero</h3></div>
+          <ul class="rule-list">
+            <li><b>Respeito mútuo:</b> não será tolerado nenhum tipo de assédio, discriminação, preconceito (machismo, racismo, LGBTfobia etc.) ou agressão física/verbal.</li>
+            <li><b>Consentimento é tudo:</b> "não é não". Qualquer atitude desrespeitosa resulta em expulsão imediata, sem reembolso, e nas medidas administrativas cabíveis.</li>
+            <li><b>Trote consciente:</b> deve ser 100% voluntário e integrativo. É proibido forçar calouros(as) a brincadeiras constrangedoras ou a ingerir álcool/substâncias contra a vontade.</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <div class="rule-head"><span class="rule-num">2</span><span class="rule-icon">🪪</span><h3 class="rule-title">Acesso e Identificação</h3></div>
+          <ul class="rule-list">
+            <li><b>Documentação:</b> entrada permitida somente com documento oficial com foto (RG, CNH ou Passaporte) e ingresso.</li>
+            <li><b>Classificação indicativa:</b> evento para maiores de 18 anos.</li>
+          </ul>
+        </div>
+
+        <div class="rule-card warn">
+          <div class="rule-head"><span class="rule-num">3</span><span class="rule-icon">🚫</span><h3 class="rule-title">Segurança e Itens Proibidos</h3></div>
+          <ul class="rule-list">
+            <li>Armas de fogo, objetos cortantes, perfurantes ou de vidro (garrafas, copos de vidro).</li>
+            <li>Substâncias ilícitas de qualquer natureza.</li>
+            <li>Fogos de artifício ou artefatos pirotécnicos.</li>
+            <li>Alimentos e bebidas comprados fora do evento (salvo restrição alimentar avisada à comissão).</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <div class="rule-head"><span class="rule-num">4</span><span class="rule-icon">💧</span><h3 class="rule-title">Bebidas e Consumo Responsável</h3></div>
+          <ul class="rule-list">
+            <li><b>Água grátis:</b> ponto de hidratação disponível gratuitamente durante todo o evento.</li>
+            <li><b>Mantenha-se hidratado:</b> beba com moderação e intercale álcool com água e alimentação.</li>
+            <li><b>Se beber, não dirija!</b></li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <div class="rule-head"><span class="rule-num">5</span><span class="rule-icon">♻️</span><h3 class="rule-title">Cuidados com o Espaço e Estrutura</h3></div>
+          <ul class="rule-list">
+            <li><b>Sustentabilidade:</b> descarte o lixo nas lixeiras indicadas e ajude a manter o local limpo.</li>
+            <li><b>Patrimônio:</b> danos ao local ou aos equipamentos da organização são de responsabilidade financeira do infrator.</li>
+          </ul>
+        </div>
+
+        <div class="rule-card">
+          <div class="rule-head"><span class="rule-num">6</span><span class="rule-icon">🆘</span><h3 class="rule-title">Comissão e Apoio</h3></div>
+          <ul class="rule-list">
+            <li><b>Ponto de apoio/acolhimento:</b> se sentir mal, enjoado(a) ou presenciar alguma situação inadequada, procure imediatamente um membro da comissão organizadora ou a equipe de segurança.</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="rules-banner">
+        <span class="rules-banner-icon">⚠️</span>
+        <p>Ao entrar no evento, você declara estar <b>ciente e de acordo</b> com todas as regras deste regulamento.</p>
+      </div>
+    </div>
   </div>
 
   <footer>Página oficial mantida pelo CARAD &middot; Centro Acadêmico de Radiologia Uninassau</footer>
@@ -634,6 +880,21 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script>
 (function(){
+  // ================== POP-UP DE ACEITE DAS REGRAS ==================
+  (function rulesModalInit(){
+    const RULES_KEY = 'raioxCalourada_regrasAceitas_v1';
+    const overlay = document.getElementById('rulesModalOverlay');
+    const btn = document.getElementById('btnAceitarRegras');
+    if(!overlay || !btn) return;
+    let alreadyAccepted = false;
+    try{ alreadyAccepted = localStorage.getItem(RULES_KEY) === '1'; }catch(e){ alreadyAccepted = false; }
+    if(!alreadyAccepted){ overlay.hidden = false; }
+    btn.addEventListener('click', ()=>{
+      try{ localStorage.setItem(RULES_KEY, '1'); }catch(e){}
+      overlay.hidden = true;
+    });
+  })();
+
   const firebaseConfig = {
     apiKey: "AIzaSyBFKZWyOD1BhhyJidfZJarw0DV-o8tWq9g",
     authDomain: "sitecarad.firebaseapp.com",
@@ -745,6 +1006,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   const views = {
     home: document.getElementById('view-home'),
     loja: document.getElementById('view-loja'),
+    regras: document.getElementById('view-regras'),
     login: document.getElementById('view-login'),
     admin: document.getElementById('view-admin'),
   };
