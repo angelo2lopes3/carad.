@@ -67,8 +67,16 @@ img{max-width:100%;display:block;}
   margin:28px auto 0;max-width:1040px;
   padding:60px 40px;
   background:linear-gradient(180deg,var(--film-navy),var(--panel));
-  background-size:cover;background-position:center;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
   border:1px solid var(--line);border-radius:14px;
+}
+.hero-standard{
+  padding:40px;margin-bottom:0;
+  min-height:260px;
+  display:flex;flex-direction:column;justify-content:center;
+}
+@media (max-width:640px){
+  .hero-standard{min-height:200px;}
 }
 .hero::after{
   content:'';position:absolute;left:0;right:0;height:2px;z-index:3;
@@ -110,7 +118,6 @@ img{max-width:100%;display:block;}
   position: relative;
 }
 
-/* Efeito de Radiação / Onda de Luz para a postagem mais recente */
 .news-latest-radiology {
   border-color: var(--cyan);
   box-shadow: 0 0 15px rgba(111, 217, 236, 0.2);
@@ -200,12 +207,42 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .admin-title{font-family:'Oswald',sans-serif;font-size:26px;margin:0;}
 .saved-tag{font-size:12px;color:var(--valid);font-family:'Space Mono',monospace;margin-left:10px;opacity:0;transition:opacity .3s;}
 .saved-tag.show{opacity:1;}
-.subtabs{display:flex;gap:8px;margin-bottom:26px;}
+
+/* SEPARAÇÃO / SUBDIVISÃO DE SUB-PÁGINAS NO PAINEL */
+.subtabs-group{
+  display:flex;
+  gap:16px;
+  margin-bottom:26px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--line);
+  flex-wrap:wrap;
+}
+.subtab-section{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(19, 27, 41, 0.6);
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid rgba(42, 53, 71, 0.6);
+}
+.subtab-section-label{
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--cyan);
+  font-weight:700;
+  padding-right:4px;
+  border-right:1px solid var(--line);
+}
+.subtabs{display:flex;gap:6px;}
 .subtab-btn{
   background:transparent;border:1px solid var(--line);color:var(--muted);
-  padding:9px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;
+  padding:7px 13px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;
 }
-.subtab-btn.active{border-color:var(--cyan);color:var(--cyan);}
+.subtab-btn.active{border-color:var(--cyan);color:var(--cyan);background:var(--panel);}
+
 .admin-panel{display:none;}
 .admin-panel.active{display:block;}
 
@@ -230,6 +267,55 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .thumb-row img{width:52px;height:40px;object-fit:cover;border-radius:4px;border:1px solid var(--line);}
 .hero-img-preview-row{display:flex;align-items:center;gap:12px;margin:-6px 0 16px;}
 .hero-img-preview-row img{width:110px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--line);}
+
+/* Caixa de pré-visualização e ajuste de corte interativo */
+.upload-preview-box{
+  position:relative;width:100%;max-width:420px;
+  border:2px dashed var(--cyan);border-radius:10px;overflow:hidden;
+  background:rgba(111,217,236,.05);
+  display:flex;align-items:center;justify-content:center;
+  margin:10px 0 6px;transition:border-color .2s,background .2s;
+  user-select:none;touch-action:none;
+}
+.upload-preview-box .upload-preview-hint{
+  padding:16px;text-align:center;font-family:'Space Mono',monospace;font-size:11px;
+  color:var(--muted);line-height:1.5;pointer-events:none;
+}
+.upload-preview-box img{
+  position:absolute;top:0;left:0;
+  max-width:none;max-height:none;
+  display:none;cursor:grab;
+}
+.upload-preview-box img:active{
+  cursor:grabbing;
+}
+.upload-preview-box.has-img{border-style:dashed;border-color:var(--cyan);background:var(--film-navy);}
+.upload-preview-box.has-img img{display:block;}
+.upload-preview-box.has-img .upload-preview-hint{display:none;}
+.upload-preview-remove{margin:4px 0 16px;display:inline-block;}
+
+/* Controles de Zoom para as caixas de seleção */
+.zoom-control-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  max-width: 420px;
+}
+.zoom-control-wrap label {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--cyan);
+}
+.zoom-control-wrap input[type="range"] {
+  flex: 1;
+  accent-color: var(--cyan);
+}
+
+.preview-ratio-hero{aspect-ratio:4/1;}
+@media (max-width:640px){.preview-ratio-hero{aspect-ratio:2.4/1;}}
+.preview-ratio-gallery{aspect-ratio:5/4;max-width:220px;}
+.preview-ratio-shop{aspect-ratio:14/11;max-width:300px;}
 .pass-msg{font-size:12px;margin-left:10px;font-family:'Space Mono',monospace;}
 .pass-msg.ok{color:var(--valid);}
 .pass-msg.err{color:#F0897C;}
@@ -305,7 +391,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-result-sub{font-size:13px;color:var(--ink-soft);margin:0;}
 .t-shared-note{font-size:11px;color:var(--ink-soft);margin-top:18px;border-top:1px solid var(--rule);padding-top:12px;}
 
-/* ---------------- EVENTOS (classificação de ingressos) ---------------- */
+/* ---------------- EVENTOS ---------------- */
 .t-select{width:100%;font-family:'Space Mono',monospace;font-size:14px;padding:10px 11px;border:2px solid var(--rule);border-radius:6px;background:#fff;color:var(--ink);}
 .t-select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold);}
 .t-hint{font-size:12px;color:var(--ink-soft);margin:-6px 0 12px;}
@@ -333,7 +419,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-check{width:16px;height:16px;cursor:pointer;accent-color:var(--ink);}
 .t-del-icon{background:none;border:none;color:var(--used);cursor:pointer;font-size:15px;padding:2px;line-height:1;}
 
-/* modal de confirmação */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(10,13,19,.72);z-index:200;
   display:flex;align-items:center;justify-content:center;padding:20px;
@@ -567,10 +652,10 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 </div>
 
 <div class="view" id="view-regras">
-  <div class="hero" id="rulesHeroEl" style="padding: 40px; margin-bottom: 0;">
-    <p class="hero-eyebrow">Curso de Radiologia &middot; Recepção de calouros</p>
-    <h1 class="hero-title" style="font-size: 34px; margin: 0;">Regulamento Geral</h1>
-    <p class="hero-sub" style="margin: 8px 0 0;">Leitura obrigatória para todos os participantes do evento.</p>
+  <div class="hero hero-standard" id="rulesHeroEl">
+    <p class="hero-eyebrow" id="rulesHeroEyebrowOut">Curso de Radiologia &middot; Recepção de calouros</p>
+    <h1 class="hero-title" id="rulesHeroTitleOut" style="font-size: 34px; margin: 0;">Regulamento Geral</h1>
+    <p class="hero-sub" id="rulesHeroSubOut" style="margin: 8px 0 0;">Leitura obrigatória para todos os participantes do evento.</p>
   </div>
 
   <div class="section">
@@ -646,7 +731,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 </div>
 
 <div class="view" id="view-loja">
-  <div class="hero" id="shopHeroEl" style="padding: 40px; margin-bottom: 0;">
+  <div class="hero hero-standard" id="shopHeroEl">
     <p class="hero-eyebrow" id="shopHeroEyebrowOut">Produtos Oficiais</p>
     <h1 class="hero-title" id="shopHeroTitleOut" style="font-size: 34px; margin: 0;">Vitrine da Calourada</h1>
     <p class="hero-sub" id="shopHeroSubOut" style="margin: 8px 0 0;">Adquira os produtos oficiais do evento diretamente com a nossa comissão.</p>
@@ -685,10 +770,22 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       <span class="saved-tag" id="savedTag">Alterações salvas</span>
     </div>
 
-    <div class="subtabs">
-      <button class="subtab-btn active" data-subtab="conteudo">Página inicial</button>
-      <button class="subtab-btn" data-subtab="loja">Loja</button>
-      <button class="subtab-btn" data-subtab="ingressos">Ingressos</button>
+    <!-- SEPARAÇÃO ORGANIZADA DAS SUB-PÁGINAS NO PAINEL -->
+    <div class="subtabs-group">
+      <div class="subtab-section">
+        <span class="subtab-section-label">Conteúdo do Site</span>
+        <div class="subtabs">
+          <button class="subtab-btn active" data-subtab="conteudo">Página Inicial</button>
+          <button class="subtab-btn" data-subtab="loja">Loja</button>
+          <button class="subtab-btn" data-subtab="regras">Regras</button>
+        </div>
+      </div>
+      <div class="subtab-section">
+        <span class="subtab-section-label">Gestão</span>
+        <div class="subtabs">
+          <button class="subtab-btn" data-subtab="ingressos">Ingressos</button>
+        </div>
+      </div>
     </div>
 
     <div class="admin-panel active" id="admin-conteudo">
@@ -702,10 +799,15 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           <label for="edHeroImgFile">ou envie uma imagem do dispositivo</label>
           <input id="edHeroImgFile" type="file" accept="image/*">
         </div>
-        <div class="hero-img-preview-row" id="heroImgPreviewRow" hidden>
+        <div class="upload-preview-box preview-ratio-hero" id="heroImgPreviewBox">
+          <div class="upload-preview-hint">Arraste a imagem para enquadrar como será exibida no site.</div>
           <img id="heroImgPreview" alt="Pré-visualização da capa">
-          <button class="del-btn" id="btnRemoveHeroImg" type="button">Remover imagem</button>
         </div>
+        <div class="zoom-control-wrap" id="heroZoomWrap" hidden>
+          <label for="heroZoomRange">Zoom:</label>
+          <input type="range" id="heroZoomRange" min="1" max="3" step="0.05" value="1">
+        </div>
+        <button class="del-btn upload-preview-remove" id="btnRemoveHeroImg" type="button" hidden>Remover imagem</button>
         <button class="btn-outline" id="btnSaveHero" style="margin-top:6px;">Salvar cabeçalho</button>
       </div>
 
@@ -730,6 +832,15 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           <label for="newPhotoFile">ou envie uma foto do dispositivo</label>
           <input id="newPhotoFile" type="file" accept="image/*">
         </div>
+        <div class="upload-preview-box preview-ratio-gallery" id="galleryImgPreviewBox">
+          <div class="upload-preview-hint">Arraste a imagem para enquadrar como será exibida na galeria.</div>
+          <img id="galleryImgPreview" alt="Pré-visualização da foto">
+        </div>
+        <div class="zoom-control-wrap" id="galleryZoomWrap" hidden>
+          <label for="galleryZoomRange">Zoom:</label>
+          <input type="range" id="galleryZoomRange" min="1" max="3" step="0.05" value="1">
+        </div>
+        <button class="del-btn upload-preview-remove" id="btnRemoveGalleryImg" type="button" hidden>Remover imagem</button>
         <button class="btn-outline" id="btnAddPhoto">Adicionar foto</button>
         <div id="photoManageList" style="margin-top:14px;"></div>
       </div>
@@ -753,6 +864,15 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           <label for="edShopHeroImgFile">ou envie uma imagem de capa do dispositivo</label>
           <input id="edShopHeroImgFile" type="file" accept="image/*">
         </div>
+        <div class="upload-preview-box preview-ratio-hero" id="shopHeroImgPreviewBox">
+          <div class="upload-preview-hint">Arraste a imagem para enquadrar como será exibida na loja.</div>
+          <img id="shopHeroImgPreview" alt="Pré-visualização da capa da loja">
+        </div>
+        <div class="zoom-control-wrap" id="shopHeroZoomWrap" hidden>
+          <label for="shopHeroZoomRange">Zoom:</label>
+          <input type="range" id="shopHeroZoomRange" min="1" max="3" step="0.05" value="1">
+        </div>
+        <button class="del-btn upload-preview-remove" id="btnRemoveShopHeroImg" type="button" hidden>Remover imagem</button>
         <button class="btn-outline" id="btnSaveShopHero" style="margin-top:6px;">Salvar cabeçalho da loja</button>
       </div>
 
@@ -768,11 +888,44 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           <label for="shopItemImgFile">ou envie uma foto do dispositivo</label>
           <input id="shopItemImgFile" type="file" accept="image/*">
         </div>
+        <div class="upload-preview-box preview-ratio-shop" id="shopItemImgPreviewBox">
+          <div class="upload-preview-hint">Arraste a imagem para enquadrar como será exibida no cartão do produto.</div>
+          <img id="shopItemImgPreview" alt="Pré-visualização do produto">
+        </div>
+        <div class="zoom-control-wrap" id="shopItemZoomWrap" hidden>
+          <label for="shopItemZoomRange">Zoom:</label>
+          <input type="range" id="shopItemZoomRange" min="1" max="3" step="0.05" value="1">
+        </div>
+        <button class="del-btn upload-preview-remove" id="btnRemoveShopItemImg" type="button" hidden>Remover imagem</button>
         <div class="field-dark"><label for="shopItemLink">Link para Compra (WhatsApp ou Instagram)</label><input id="shopItemLink" type="text" placeholder="https://wa.me/... ou https://instagram.com/..."></div>
         <button class="btn-outline" id="btnAddShopItem">Cadastrar Item</button>
         
         <h3 style="margin-top:30px; border-top:1px solid var(--line); padding-top:20px;">Produtos Cadastrados</h3>
         <div id="shopManageList"></div>
+      </div>
+    </div>
+
+    <!-- NOVA SUB-PÁGINA: EDIÇÃO E UPLOAD PARA "REGRAS" -->
+    <div class="admin-panel" id="admin-regras">
+      <div class="card-dark">
+        <h3>Cabeçalho (hero) - Página de Regras</h3>
+        <div class="field-dark"><label for="edRulesHeroTitle">Título da Página de Regras</label><input id="edRulesHeroTitle" type="text"></div>
+        <div class="field-dark"><label for="edRulesHeroSub">Subtítulo da Página de Regras</label><input id="edRulesHeroSub" type="text"></div>
+        <div class="field-dark"><label for="edRulesHeroImgUrl">Imagem de Capa (URL)</label><input id="edRulesHeroImgUrl" type="text" placeholder="https://..."></div>
+        <div class="field-dark">
+          <label for="edRulesHeroImgFile">ou envie uma imagem de capa do dispositivo</label>
+          <input id="edRulesHeroImgFile" type="file" accept="image/*">
+        </div>
+        <div class="upload-preview-box preview-ratio-hero" id="rulesHeroImgPreviewBox">
+          <div class="upload-preview-hint">Arraste a imagem para enquadrar como será exibida na página de regras.</div>
+          <img id="rulesHeroImgPreview" alt="Pré-visualização da capa das regras">
+        </div>
+        <div class="zoom-control-wrap" id="rulesHeroZoomWrap" hidden>
+          <label for="rulesHeroZoomRange">Zoom:</label>
+          <input type="range" id="rulesHeroZoomRange" min="1" max="3" step="0.05" value="1">
+        </div>
+        <button class="del-btn upload-preview-remove" id="btnRemoveRulesHeroImg" type="button" hidden>Remover imagem</button>
+        <button class="btn-outline" id="btnSaveRulesHero" style="margin-top:6px;">Salvar cabeçalho de regras</button>
       </div>
     </div>
 
@@ -872,7 +1025,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -930,6 +1083,9 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       shopHeroTitle: 'Vitrine da Calourada',
       shopHeroSubtitle: 'Adquira os produtos oficiais do evento diretamente com a nossa comissão.',
       shopHeroImage: '',
+      rulesHeroTitle: 'Regulamento Geral',
+      rulesHeroSubtitle: 'Leitura obrigatória para todos os participantes do evento.',
+      rulesHeroImage: '',
       announcements: [],
       photos: [],
       shopItems: []
@@ -971,6 +1127,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       if(!content.shopItems) content.shopItems = [];
       if(views.home.classList.contains('active')) renderHome();
       if(views.loja.classList.contains('active')) renderLoja();
+      if(views.regras.classList.contains('active')) renderRegrasView();
     });
   }
   
@@ -998,6 +1155,17 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       if(!document.getElementById('tpanel-lista').hidden) renderLedger();
     });
   }
+
+  function updateCount(){
+    const badge = document.getElementById('tCountBadge');
+    if(badge) badge.textContent = tickets.length + ' cadastrados';
+    const cTotal = document.getElementById('cTotal');
+    const cValidos = document.getElementById('cValidos');
+    const cUsados = document.getElementById('cUsados');
+    if(cTotal) cTotal.textContent = tickets.length;
+    if(cValidos) cValidos.textContent = tickets.filter(t=>!t.used).length;
+    if(cUsados) cUsados.textContent = tickets.filter(t=>t.used).length;
+  }
   
   function stopTicketsSync(){ if(unsubscribeTickets){ unsubscribeTickets().catch(()=>{}); unsubscribeTickets = null; } tickets = []; events = []; updateCount(); }
   async function saveTickets(){ try{ await db.collection(COLLECTION).doc('tickets').set({list: tickets, events: events}); return true; }catch(e){ return false; } }
@@ -1018,6 +1186,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     document.querySelectorAll('.nav-btn[data-nav]').forEach(b=>b.classList.toggle('active', b.dataset.nav===name));
     if(name === 'home') renderHome();
     if(name === 'loja') renderLoja();
+    if(name === 'regras') renderRegrasView();
     if(name === 'admin') renderAdmin();
   }
   
@@ -1062,7 +1231,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       newsGrid.innerHTML = '<p class="empty-note">Nenhuma novidade publicada ainda.</p>';
     } else {
       content.announcements.forEach((a, index)=>{
-        // Adiciona a classe de animação 'news-latest-radiology' apenas para o elemento no índice 0 (a postagem mais recente)
         const latestClass = (index === 0) ? ' news-latest-radiology' : '';
         newsGrid.innerHTML += `<div class="news-card${latestClass}"><p class="news-date">${esc(a.date)}</p><h3 class="news-title">${esc(a.title)}</h3><p class="news-body">${esc(a.body)}</p></div>`;
       });
@@ -1106,20 +1274,188 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     });
   }
 
+  function renderRegrasView(){
+    document.getElementById('rulesHeroTitleOut').textContent = content.rulesHeroTitle || 'Regulamento Geral';
+    document.getElementById('rulesHeroSubOut').textContent = content.rulesHeroSubtitle || 'Leitura obrigatória para todos os participantes do evento.';
+    const rulesHeroEl = document.getElementById('rulesHeroEl');
+    rulesHeroEl.style.backgroundImage = content.rulesHeroImage ? `linear-gradient(180deg, rgba(10,13,19,.45), rgba(23,31,46,.88)), url("${content.rulesHeroImage}")` : '';
+  }
+
   document.querySelectorAll('.subtabs .subtab-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('.subtabs .subtab-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('admin-conteudo').classList.toggle('active', btn.dataset.subtab==='conteudo');
       document.getElementById('admin-loja').classList.toggle('active', btn.dataset.subtab==='loja');
+      document.getElementById('admin-regras').classList.toggle('active', btn.dataset.subtab==='regras');
       document.getElementById('admin-ingressos').classList.toggle('active', btn.dataset.subtab==='ingressos');
       if(btn.dataset.subtab==='ingressos'){ renderEventsManage(); renderEventSelect(); renderEventFilterChips(); renderLedger(); }
       if(btn.dataset.subtab==='loja') renderShopManage();
     });
   });
 
-  let uploadedShopHeroImgBase64 = '';
-  let uploadedGalleryImgBase64 = '';
+  // ================== FERRAMENTA DE CROP / AJUSTE DE IMAGEM ==================
+  function makeInteractiveCropBox(boxId, imgId, removeBtnId, zoomRangeId, zoomWrapId){
+    const box = document.getElementById(boxId);
+    const img = document.getElementById(imgId);
+    const removeBtn = removeBtnId ? document.getElementById(removeBtnId) : null;
+    const zoomRange = zoomRangeId ? document.getElementById(zoomRangeId) : null;
+    const zoomWrap = zoomWrapId ? document.getElementById(zoomWrapId) : null;
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let posX = 0, posY = 0;
+    let scale = 1;
+    let imgNaturalW = 0, imgNaturalH = 0;
+
+    function applyBounds(){
+      const boxRect = box.getBoundingClientRect();
+      const currentW = imgNaturalW * scale;
+      const currentH = imgNaturalH * scale;
+
+      const minX = boxRect.width - currentW;
+      const maxX = 0;
+      const minY = boxRect.height - currentH;
+      const maxY = 0;
+
+      if(currentW < boxRect.width){
+        posX = (boxRect.width - currentW) / 2;
+      } else {
+        posX = Math.min(maxX, Math.max(minX, posX));
+      }
+
+      if(currentH < boxRect.height){
+        posY = (boxRect.height - currentH) / 2;
+      } else {
+        posY = Math.min(maxY, Math.max(minY, posY));
+      }
+
+      img.style.width = currentW + 'px';
+      img.style.height = currentH + 'px';
+      img.style.left = posX + 'px';
+      img.style.top = posY + 'px';
+    }
+
+    function initPos(){
+      const boxRect = box.getBoundingClientRect();
+      if(!imgNaturalW || !imgNaturalH) return;
+
+      const coverScale = Math.max(boxRect.width / imgNaturalW, boxRect.height / imgNaturalH);
+      scale = coverScale * (zoomRange ? parseFloat(zoomRange.value) : 1);
+      
+      posX = (boxRect.width - imgNaturalW * scale) / 2;
+      posY = (boxRect.height - imgNaturalH * scale) / 2;
+
+      applyBounds();
+    }
+
+    img.onload = function(){
+      imgNaturalW = img.naturalWidth;
+      imgNaturalH = img.naturalHeight;
+      if(zoomRange) zoomRange.value = 1;
+      initPos();
+    };
+
+    if(zoomRange){
+      zoomRange.addEventListener('input', function(){
+        if(!imgNaturalW) return;
+        const boxRect = box.getBoundingClientRect();
+        const oldScale = scale;
+        const coverScale = Math.max(boxRect.width / imgNaturalW, boxRect.height / imgNaturalH);
+        scale = coverScale * parseFloat(this.value);
+
+        const centerX = boxRect.width / 2;
+        const centerY = boxRect.height / 2;
+        posX = centerX - ((centerX - posX) * (scale / oldScale));
+        posY = centerY - ((centerY - posY) * (scale / oldScale));
+
+        applyBounds();
+      });
+    }
+
+    function onPointerDown(e){
+      if(!box.classList.contains('has-img')) return;
+      isDragging = true;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      startX = clientX - posX;
+      startY = clientY - posY;
+      e.preventDefault();
+    }
+
+    function onPointerMove(e){
+      if(!isDragging) return;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      posX = clientX - startX;
+      posY = clientY - startY;
+      applyBounds();
+    }
+
+    function onPointerUp(){
+      isDragging = false;
+    }
+
+    box.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    box.addEventListener('touchstart', onPointerDown, {passive:false});
+    window.addEventListener('touchmove', onPointerMove, {passive:false});
+    window.addEventListener('touchend', onPointerUp);
+
+    return {
+      show(url){
+        if(!url){ this.clear(); return; }
+        img.src = url;
+        box.classList.add('has-img');
+        if(removeBtn) removeBtn.hidden = false;
+        if(zoomWrap) zoomWrap.hidden = false;
+      },
+      clear(){
+        img.removeAttribute('src');
+        img.style.left = '0px';
+        img.style.top = '0px';
+        img.style.width = 'auto';
+        img.style.height = 'auto';
+        box.classList.remove('has-img');
+        if(removeBtn) removeBtn.hidden = true;
+        if(zoomWrap) zoomWrap.hidden = true;
+        imgNaturalW = 0;
+        imgNaturalH = 0;
+      },
+      getCroppedCanvas(targetWidth){
+        if(!box.classList.contains('has-img') || !imgNaturalW) return null;
+        const boxRect = box.getBoundingClientRect();
+        const aspect = boxRect.width / boxRect.height;
+        const tw = targetWidth || 1200;
+        const th = Math.round(tw / aspect);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = tw;
+        canvas.height = th;
+        const ctx = canvas.getContext('2d');
+
+        const srcX = (0 - posX) / scale;
+        const srcY = (0 - posY) / scale;
+        const srcW = boxRect.width / scale;
+        const srcH = boxRect.height / scale;
+
+        ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, tw, th);
+        return canvas;
+      },
+      getCroppedBase64(targetWidth, quality){
+        const cvs = this.getCroppedCanvas(targetWidth);
+        return cvs ? cvs.toDataURL('image/jpeg', quality || 0.85) : null;
+      }
+    };
+  }
+
+  const heroPreviewCtrl = makeInteractiveCropBox('heroImgPreviewBox', 'heroImgPreview', 'btnRemoveHeroImg', 'heroZoomRange', 'heroZoomWrap');
+  const shopHeroPreviewCtrl = makeInteractiveCropBox('shopHeroImgPreviewBox', 'shopHeroImgPreview', 'btnRemoveShopHeroImg', 'shopHeroZoomRange', 'shopHeroZoomWrap');
+  const rulesHeroPreviewCtrl = makeInteractiveCropBox('rulesHeroImgPreviewBox', 'rulesHeroImgPreview', 'btnRemoveRulesHeroImg', 'rulesHeroZoomRange', 'rulesHeroZoomWrap');
+  const galleryPreviewCtrl = makeInteractiveCropBox('galleryImgPreviewBox', 'galleryImgPreview', 'btnRemoveGalleryImg', 'galleryZoomRange', 'galleryZoomWrap');
+  const shopItemPreviewCtrl = makeInteractiveCropBox('shopItemImgPreviewBox', 'shopItemImgPreview', 'btnRemoveShopItemImg', 'shopItemZoomRange', 'shopItemZoomWrap');
 
   function renderAdmin(){
     document.getElementById('edHeroTitle').value = content.heroTitle || '';
@@ -1131,7 +1467,13 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     document.getElementById('edShopHeroSub').value = content.shopHeroSubtitle || '';
     document.getElementById('edShopHeroImgUrl').value = content.shopHeroImage && !content.shopHeroImage.startsWith('data:') ? content.shopHeroImage : '';
 
-    updateHeroImgPreview();
+    document.getElementById('edRulesHeroTitle').value = content.rulesHeroTitle || 'Regulamento Geral';
+    document.getElementById('edRulesHeroSub').value = content.rulesHeroSubtitle || 'Leitura obrigatória para todos os participantes do evento.';
+    document.getElementById('edRulesHeroImgUrl').value = content.rulesHeroImage && !content.rulesHeroImage.startsWith('data:') ? content.rulesHeroImage : '';
+
+    heroPreviewCtrl.show(content.heroImage || '');
+    shopHeroPreviewCtrl.show(content.shopHeroImage || '');
+    rulesHeroPreviewCtrl.show(content.rulesHeroImage || '');
     renderNewsManage();
     renderPhotoManage();
     renderShopManage();
@@ -1143,52 +1485,99 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     if(emailOut) emailOut.textContent = (auth && auth.currentUser) ? 'Conectado como ' + auth.currentUser.email : '';
   }
 
-  function updateHeroImgPreview(){
-    const row = document.getElementById('heroImgPreviewRow');
-    const img = document.getElementById('heroImgPreview');
-    if(content.heroImage){ img.src = content.heroImage; row.hidden = false; } else { row.hidden = true; }
-  }
-
   document.getElementById('edHeroImgFile').addEventListener('change', function(e){
     const file = e.target.files[0]; if(!file) return;
     const reader = new FileReader();
-    reader.onload = function(evt){ content.heroImage = evt.target.result; updateHeroImgPreview(); };
+    reader.onload = function(evt){ heroPreviewCtrl.show(evt.target.result); };
     reader.readAsDataURL(file);
   });
 
+  document.getElementById('edHeroImgUrl').addEventListener('input', function(e){
+    const val = e.target.value.trim();
+    if(val){ heroPreviewCtrl.show(val); }
+  });
+
   document.getElementById('btnRemoveHeroImg').addEventListener('click', ()=>{
-    content.heroImage = ''; document.getElementById('edHeroImgUrl').value = ''; document.getElementById('edHeroImgFile').value = ''; updateHeroImgPreview();
+    content.heroImage = ''; document.getElementById('edHeroImgUrl').value = ''; document.getElementById('edHeroImgFile').value = ''; heroPreviewCtrl.clear();
   });
 
   document.getElementById('btnSaveHero').addEventListener('click', async ()=>{
     content.heroTitle = document.getElementById('edHeroTitle').value.trim() || content.heroTitle;
     content.heroSubtitle = document.getElementById('edHeroSub').value.trim();
     content.heroDate = document.getElementById('edHeroDate').value.trim();
-    const urlVal = document.getElementById('edHeroImgUrl').value.trim();
-    if(urlVal && !urlVal.startsWith('data:')) content.heroImage = urlVal;
-    await saveContent(); updateHeroImgPreview(); flashSaved();
+    
+    const cropped = heroPreviewCtrl.getCroppedBase64(1200, 0.85);
+    if(cropped){
+      content.heroImage = cropped;
+    } else {
+      const urlVal = document.getElementById('edHeroImgUrl').value.trim();
+      if(urlVal) content.heroImage = urlVal;
+    }
+    await saveContent(); flashSaved();
   });
 
-  // Escuta upload do Hero da Loja no Painel
   document.getElementById('edShopHeroImgFile').addEventListener('change', function(e) {
-    const file = e.target.files[0]; if(!file) { uploadedShopHeroImgBase64 = ''; return; }
+    const file = e.target.files[0]; if(!file) return;
     const reader = new FileReader();
-    reader.onload = function(evt){ uploadedShopHeroImgBase64 = evt.target.result; };
+    reader.onload = function(evt){ shopHeroPreviewCtrl.show(evt.target.result); };
     reader.readAsDataURL(file);
+  });
+
+  document.getElementById('edShopHeroImgUrl').addEventListener('input', function(e){
+    const val = e.target.value.trim();
+    if(val) shopHeroPreviewCtrl.show(val);
+  });
+
+  document.getElementById('btnRemoveShopHeroImg').addEventListener('click', () => {
+    document.getElementById('edShopHeroImgUrl').value = '';
+    document.getElementById('edShopHeroImgFile').value = '';
+    shopHeroPreviewCtrl.clear();
   });
 
   document.getElementById('btnSaveShopHero').addEventListener('click', async () => {
     content.shopHeroTitle = document.getElementById('edShopHeroTitle').value.trim() || 'Vitrine da Calourada';
     content.shopHeroSubtitle = document.getElementById('edShopHeroSub').value.trim();
-    let shopUrlVal = document.getElementById('edShopHeroImgUrl').value.trim();
     
-    if(uploadedShopHeroImgBase64) {
-      shopUrlVal = uploadedShopHeroImgBase64;
+    const cropped = shopHeroPreviewCtrl.getCroppedBase64(1200, 0.85);
+    if(cropped) {
+      content.shopHeroImage = cropped;
+    } else {
+      content.shopHeroImage = document.getElementById('edShopHeroImgUrl').value.trim();
     }
-    content.shopHeroImage = shopUrlVal;
     await saveContent();
-    document.getElementById('edShopHeroImgFile').value = '';
-    uploadedShopHeroImgBase64 = '';
+    flashSaved();
+  });
+
+  // LÓGICA DE EDIÇÃO E UPLOAD PARA REGRAS
+  document.getElementById('edRulesHeroImgFile').addEventListener('change', function(e) {
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt){ rulesHeroPreviewCtrl.show(evt.target.result); };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('edRulesHeroImgUrl').addEventListener('input', function(e){
+    const val = e.target.value.trim();
+    if(val) rulesHeroPreviewCtrl.show(val);
+  });
+
+  document.getElementById('btnRemoveRulesHeroImg').addEventListener('click', () => {
+    document.getElementById('edRulesHeroImgUrl').value = '';
+    document.getElementById('edRulesHeroImgFile').value = '';
+    rulesHeroPreviewCtrl.clear();
+  });
+
+  document.getElementById('btnSaveRulesHero').addEventListener('click', async () => {
+    content.rulesHeroTitle = document.getElementById('edRulesHeroTitle').value.trim() || 'Regulamento Geral';
+    content.rulesHeroSubtitle = document.getElementById('edRulesHeroSub').value.trim();
+    
+    const cropped = rulesHeroPreviewCtrl.getCroppedBase64(1200, 0.85);
+    if(cropped) {
+      content.rulesHeroImage = cropped;
+    } else {
+      content.rulesHeroImage = document.getElementById('edRulesHeroImgUrl').value.trim();
+    }
+    await saveContent();
     flashSaved();
   });
 
@@ -1215,12 +1604,22 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     renderNewsManage(); flashSaved();
   });
 
-  // Escuta upload da Foto de Galeria no Painel
   document.getElementById('newPhotoFile').addEventListener('change', function(e) {
-    const file = e.target.files[0]; if(!file) { uploadedGalleryImgBase64 = ''; return; }
+    const file = e.target.files[0]; if(!file) return;
     const reader = new FileReader();
-    reader.onload = function(evt){ uploadedGalleryImgBase64 = evt.target.result; };
+    reader.onload = function(evt){ galleryPreviewCtrl.show(evt.target.result); };
     reader.readAsDataURL(file);
+  });
+
+  document.getElementById('newPhotoUrl').addEventListener('input', function(e){
+    const val = e.target.value.trim();
+    if(val) galleryPreviewCtrl.show(val);
+  });
+
+  document.getElementById('btnRemoveGalleryImg').addEventListener('click', () => {
+    document.getElementById('newPhotoUrl').value = '';
+    document.getElementById('newPhotoFile').value = '';
+    galleryPreviewCtrl.clear();
   });
 
   function renderPhotoManage(){
@@ -1236,19 +1635,17 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   }
 
   document.getElementById('btnAddPhoto').addEventListener('click', async ()=>{
-    let url = document.getElementById('newPhotoUrl').value.trim();
+    let url = galleryPreviewCtrl.getCroppedBase64(800, 0.85);
+    if(!url) url = document.getElementById('newPhotoUrl').value.trim();
     const caption = document.getElementById('newPhotoCap').value.trim() || 'Sem legenda';
     
-    if(uploadedGalleryImgBase64) {
-      url = uploadedGalleryImgBase64;
-    }
     if(!url) return;
 
     content.photos.unshift({id:uid(), url, caption});
     await saveContent();
     document.getElementById('newPhotoUrl').value=''; document.getElementById('newPhotoCap').value='';
     document.getElementById('newPhotoFile').value = '';
-    uploadedGalleryImgBase64 = '';
+    galleryPreviewCtrl.clear();
     renderPhotoManage(); flashSaved();
   });
 
@@ -1267,23 +1664,33 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     });
   }
 
-  let uploadedShopItemImgBase64 = '';
   document.getElementById('shopItemImgFile').addEventListener('change', function(e) {
-    const file = e.target.files[0]; if(!file) { uploadedShopItemImgBase64 = ''; return; }
+    const file = e.target.files[0]; if(!file) return;
     const reader = new FileReader();
-    reader.onload = function(evt) { uploadedShopItemImgBase64 = evt.target.result; };
+    reader.onload = function(evt) { shopItemPreviewCtrl.show(evt.target.result); };
     reader.readAsDataURL(file);
+  });
+
+  document.getElementById('shopItemImgUrl').addEventListener('input', function(e){
+    const val = e.target.value.trim();
+    if(val) shopItemPreviewCtrl.show(val);
+  });
+
+  document.getElementById('btnRemoveShopItemImg').addEventListener('click', () => {
+    document.getElementById('shopItemImgUrl').value = '';
+    document.getElementById('shopItemImgFile').value = '';
+    shopItemPreviewCtrl.clear();
   });
 
   document.getElementById('btnAddShopItem').addEventListener('click', async () => {
     const title = document.getElementById('shopItemTitle').value.trim();
     const price = document.getElementById('shopItemPrice').value.trim() || 'Sob consulta';
     const desc = document.getElementById('shopItemDesc').value.trim() || 'Sem descrição';
-    let imgUrl = document.getElementById('shopItemImgUrl').value.trim();
+    let imgUrl = shopItemPreviewCtrl.getCroppedBase64(600, 0.85);
+    if(!imgUrl) imgUrl = document.getElementById('shopItemImgUrl').value.trim();
     const link = document.getElementById('shopItemLink').value.trim() || '#';
 
     if(!title) { alert('O nome do produto é obrigatório.'); return; }
-    if(uploadedShopItemImgBase64) { imgUrl = uploadedShopItemImgBase64; }
 
     content.shopItems.unshift({ id: uid(), title, price, desc, imgUrl, link });
     await saveContent();
@@ -1291,7 +1698,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     document.getElementById('shopItemTitle').value = ''; document.getElementById('shopItemPrice').value = '';
     document.getElementById('shopItemDesc').value = ''; document.getElementById('shopItemImgUrl').value = '';
     document.getElementById('shopItemImgFile').value = '';
-    uploadedShopItemImgBase64 = '';
+    shopItemPreviewCtrl.clear();
 
     renderShopManage(); flashSaved();
   });
@@ -1314,7 +1721,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     cancelBtn.onclick = ()=> close();
   }
 
-  // ================== EVENTOS (classificação de ingressos) ==================
+  // ================== EVENTOS ==================
   function renderEventsManage(){
     const wrap = document.getElementById('eventosManageList'); if(!wrap) return;
     wrap.innerHTML = '';
@@ -1456,9 +1863,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   }
 
   async function baixarIngressoPDF(ticket){
-
     const stub = buildStubEl(ticket,180);
-
     stub.style.position = "fixed";
     stub.style.left = "-9999px";
     stub.style.top = "0";
@@ -1466,28 +1871,19 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     stub.style.background = "#fff";
 
     document.body.appendChild(stub);
-
-    const canvas = await html2canvas(stub,{
-        scale:2,
-        backgroundColor:"#ffffff"
-    });
-
+    const canvas = await html2canvas(stub,{ scale:2, backgroundColor:"#ffffff" });
     document.body.removeChild(stub);
 
     const { jsPDF } = window.jspdf;
-
     const pdf = new jsPDF("p","mm","a4");
-
     pdf.setFontSize(20);
     pdf.text("Ingresso da Calourada",105,15,{align:"center"});
 
     const img = canvas.toDataURL("image/png");
-
     const largura = 190;
     const altura = canvas.height * largura / canvas.width;
 
     pdf.addImage(img,"PNG",10,25,largura,altura);
-
     pdf.save("Ingresso-"+ticket.id+".pdf");
   }
 
@@ -1502,24 +1898,18 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     const ticket = {id: genId(), name, phone, eventId, eventName: ev ? ev.name : '', used:false, createdAt:new Date().toISOString(), usedAt:null};
     tickets.unshift(ticket); await saveTickets(); updateCount(); renderEventFilterChips(); renderEventsManage();
     document.getElementById('inpNome').value=''; document.getElementById('inpTel').value='';
-    document.getElementById('novoIngressoWrap').hidden = false; document.getElementById('novoIngressoWrap').innerHTML = '';
+    
     const wrap = document.getElementById("novoIngressoWrap");
+    wrap.hidden = false; wrap.innerHTML="";
+    const stub = buildStubEl(ticket,110);
+    wrap.appendChild(stub);
 
-wrap.innerHTML="";
-
-const stub = buildStubEl(ticket,110);
-
-wrap.appendChild(stub);
-
-const btnPdf = document.createElement("button");
-
-btnPdf.className="t-btn";
-btnPdf.style.marginTop="20px";
-btnPdf.innerHTML="📄 Baixar PDF";
-
-btnPdf.onclick=()=>baixarIngressoPDF(ticket);
-
-wrap.appendChild(btnPdf);
+    const btnPdf = document.createElement("button");
+    btnPdf.className="t-btn";
+    btnPdf.style.marginTop="20px";
+    btnPdf.innerHTML="📄 Baixar PDF";
+    btnPdf.onclick=()=>baixarIngressoPDF(ticket);
+    wrap.appendChild(btnPdf);
   });
 
   function eventFilteredTickets(){
@@ -1568,14 +1958,14 @@ wrap.appendChild(btnPdf);
 </div>
 `;
 
-row.querySelector(".pdf-btn").onclick=()=>baixarIngressoPDF(t);
-row.querySelector(".row-check").addEventListener('change', (e)=>{
-  if(e.target.checked) selectedTicketIds.add(t.id); else selectedTicketIds.delete(t.id);
-  updateBulkBar(filtered.map(x=>x.id));
-});
-row.querySelector(".t-del-icon").addEventListener('click', ()=>{
-  showConfirm('Excluir ingresso', `Tem certeza que deseja excluir o ingresso de "${t.name}" (${t.id})? Essa ação não pode ser desfeita.`, ()=> deleteTicketsByIds([t.id]));
-});
+      row.querySelector(".pdf-btn").onclick=()=>baixarIngressoPDF(t);
+      row.querySelector(".row-check").addEventListener('change', (e)=>{
+        if(e.target.checked) selectedTicketIds.add(t.id); else selectedTicketIds.delete(t.id);
+        updateBulkBar(filtered.map(x=>x.id));
+      });
+      row.querySelector(".t-del-icon").addEventListener('click', ()=>{
+        showConfirm('Excluir ingresso', `Tem certeza que deseja excluir o ingresso de "${t.name}" (${t.id})? Essa ação não pode ser desfeita.`, ()=> deleteTicketsByIds([t.id]));
+      });
       renderQR(row.querySelector('[data-qr]'), 'TICKET:'+t.id, 34);
       body.appendChild(row);
     });
@@ -1585,194 +1975,101 @@ row.querySelector(".t-del-icon").addEventListener('click', ()=>{
   document.getElementById('chkSelectAll').addEventListener('change', (e)=>{
     const q = document.getElementById('inpBusca').value.trim().toLowerCase();
     const visible = eventFilteredTickets().filter(t => !q || t.name.toLowerCase().includes(q) || t.phone.toLowerCase().includes(q) || t.id.toLowerCase().includes(q));
-    if(e.target.checked) visible.forEach(t=>selectedTicketIds.add(t.id));
-    else visible.forEach(t=>selectedTicketIds.delete(t.id));
+    visible.forEach(t=>{ if(e.target.checked) selectedTicketIds.add(t.id); else selectedTicketIds.delete(t.id); });
     renderLedger();
   });
 
   document.getElementById('btnExcluirSelecionados').addEventListener('click', ()=>{
-    const n = selectedTicketIds.size; if(n===0) return;
-    showConfirm('Excluir ingressos selecionados', `Tem certeza que deseja excluir ${n} ingresso(s) selecionado(s)? Essa ação não pode ser desfeita.`, ()=> deleteTicketsByIds([...selectedTicketIds]));
+    const count = selectedTicketIds.size;
+    if(count===0) return;
+    showConfirm('Excluir ingressos selecionados', `Tem certeza que deseja excluir os ${count} ingressos selecionados? Esta ação não pode ser desfeita.`, ()=> deleteTicketsByIds(Array.from(selectedTicketIds)));
   });
 
   document.getElementById('btnExcluirTodos').addEventListener('click', ()=>{
-    const scope = eventFilteredTickets();
-    if(scope.length===0) return;
-    const scopeLabel = currentEventFilter==='todos' ? 'TODOS os ingressos cadastrados' : (currentEventFilter==='sem' ? 'todos os ingressos sem classificação' : 'todos os ingressos deste evento');
-    showConfirm('Excluir ingressos', `Tem certeza que deseja excluir ${scopeLabel} (${scope.length} ingresso(s))? Essa ação não pode ser desfeita.`, ()=> deleteTicketsByIds(scope.map(t=>t.id)));
+    const targetTickets = eventFilteredTickets();
+    const count = targetTickets.length;
+    if(count===0) return;
+    const label = currentEventFilter==='todos' ? 'todos os ingressos do sistema' : currentEventFilter==='sem' ? 'todos os ingressos sem classificação' : 'todos os ingressos deste evento';
+    showConfirm('Excluir ingressos', `Tem certeza que deseja excluir ${label} (${count} ingresso(s))? Esta ação é irreversível.`, ()=> deleteTicketsByIds(targetTickets.map(t=>t.id)));
   });
 
-  // ================== VALIDAR INGRESSO (código manual + câmera) ==================
-  let html5QrCode = null;
-  let scannerRunning = false;
-
-  function findTicketByCode(raw){
-    let code = (raw || '').trim();
-    if(!code) return null;
-    code = code.replace(/^TICKET:/i,'').trim();
-    return tickets.find(t => t.id.toLowerCase() === code.toLowerCase()) || null;
-  }
-
-  function renderResult(ticket, codeTried){
-    const area = document.getElementById('resultArea');
+  function processVerification(rawId){
+    const cleanId = rawId.trim().replace(/^TICKET:/i, '');
+    const ticket = tickets.find(t=>t.id===cleanId);
+    const area = document.getElementById('resultArea'); area.innerHTML = '';
     if(!ticket){
-      area.innerHTML = `<div class="t-result-box t-result-invalid"><p class="t-result-title">Código não encontrado</p><p class="t-result-sub">"${esc(codeTried || '')}" não corresponde a nenhum ingresso cadastrado.</p></div>`;
+      area.innerHTML = `<div class="t-result-box t-result-invalid"><h3 class="t-result-title">Ingresso não encontrado</h3><p class="t-result-sub">O código "${esc(cleanId)}" não existe na base de dados.</p></div>`;
       return;
     }
-    const already = ticket.used;
-    area.innerHTML = `
-      <div class="t-result-box ${already ? 't-result-used' : 't-result-ok'}">
-        <p class="t-result-title">${already ? 'Ingresso já utilizado' : 'Ingresso válido'}</p>
-        <div class="t-stub-info" style="margin-bottom:12px;">
-          ${ticket.eventName ? `<p class="t-stub-event">${esc(ticket.eventName)}</p>` : ''}
-          <p class="t-stub-code">${ticket.id}</p>
-          <p class="t-stub-name">${esc(ticket.name)}</p>
-          <p class="t-stub-phone">${esc(ticket.phone)}</p>
-          ${statusPill(ticket)}
-        </div>
-        ${already
-          ? `<p class="t-result-sub">Uso registrado em ${ticket.usedAt ? fmtDate(ticket.usedAt) : '—'}.</p>`
-          : `<button class="t-btn" id="btnMarcarUsado">Marcar como usado</button>`}
-      </div>`;
-    if(!already){
-      document.getElementById('btnMarcarUsado').addEventListener('click', async () => {
+    if(ticket.used){
+      area.innerHTML = `<div class="t-result-box t-result-used"><h3 class="t-result-title">Ingresso JÁ UTILIZADO</h3><p class="t-result-sub"><b>${esc(ticket.name)}</b> ${ticket.eventName ? '· ' + esc(ticket.eventName) : ''}<br>Usado em: ${fmtDate(ticket.usedAt)}</p></div>`;
+    } else {
+      area.innerHTML = `<div class="t-result-box t-result-ok"><h3 class="t-result-title">Ingresso VÁLIDO</h3><p class="t-result-sub"><b>${esc(ticket.name)}</b> ${ticket.eventName ? '· ' + esc(ticket.eventName) : ''}<br>Tel: ${esc(ticket.phone)}</p><button class="t-btn" id="btnMarcarUsado" style="margin-top:12px;">Marcar como usado</button></div>`;
+      document.getElementById('btnMarcarUsado').addEventListener('click', async ()=>{
         ticket.used = true; ticket.usedAt = new Date().toISOString();
-        await saveTickets(); updateCount();
-        renderResult(ticket, codeTried);
-        renderLedger();
+        await saveTickets(); updateCount(); renderLedger(); processVerification(cleanId);
       });
     }
   }
 
-  document.getElementById('btnVerificar').addEventListener('click', () => {
+  document.getElementById('btnVerificar').addEventListener('click', ()=>{
     const code = document.getElementById('inpCodigo').value;
-    renderResult(findTicketByCode(code), code);
-  });
-  document.getElementById('inpCodigo').addEventListener('keydown', (e) => {
-    if(e.key === 'Enter') document.getElementById('btnVerificar').click();
+    if(code) processVerification(code);
   });
 
-  async function stopScanner(){
-    if(html5QrCode && scannerRunning){
-      try{ await html5QrCode.stop(); }catch(e){}
-      try{ await html5QrCode.clear(); }catch(e){}
+  let html5QrCode = null;
+  function stopScanner(){
+    if(html5QrCode){
+      html5QrCode.stop().then(()=>{
+        html5QrCode.clear();
+        html5QrCode = null;
+        document.getElementById('camBox').hidden = true;
+      }).catch(()=>{
+        document.getElementById('camBox').hidden = true;
+      });
+    } else {
+      document.getElementById('camBox').hidden = true;
     }
-    scannerRunning = false;
-    const camBox = document.getElementById('camBox');
-    if(camBox) camBox.hidden = true;
   }
 
-  document.getElementById('btnCam').addEventListener('click', async () => {
-    const camBox = document.getElementById('camBox');
-    const status = document.getElementById('camStatus');
-    camBox.hidden = false;
-    status.style.color = 'var(--ink-soft)';
-    status.style.fontWeight = 'normal';
-
-    function showError(msg, raw){
-      status.textContent = msg;
-      status.style.color = 'var(--used)';
-      status.style.fontWeight = '700';
-      if(raw) console.error('[QR Scanner]', raw);
-    }
-
-    try{
-      if(!window.isSecureContext){
-        showError('A câmera só funciona em conexão segura (https://). Abra o site com https:// para usar o leitor.');
-        return;
-      }
-      if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-        showError('Este navegador não permite acesso à câmera. Tente atualizar o Safari (iOS) ou o Chrome (Android).');
-        return;
-      }
-      if(typeof Html5Qrcode === 'undefined'){
-        showError('Não foi possível carregar o leitor de QR code (falha ao baixar a biblioteca). Verifique sua conexão e recarregue a página.');
-        return;
-      }
-      if(scannerRunning) return;
-
-      status.textContent = 'Solicitando permissão da câmera...';
-      if(!html5QrCode) html5QrCode = new Html5Qrcode('qrReader');
-
-      const config = { fps: 10, qrbox: { width: 220, height: 220 } };
-
-      const onScanSuccess = async (decodedText) => {
-        if(!scannerRunning) return;
-        status.textContent = 'Código lido!';
-        await stopScanner();
-        document.getElementById('inpCodigo').value = decodedText.replace(/^TICKET:/i,'');
-        renderResult(findTicketByCode(decodedText), decodedText);
-      };
-      const onScanFailure = () => {};
-
-      let started = false;
-      let lastErr = null;
-
-      try{
-        await html5QrCode.start({ facingMode: 'environment' }, config, onScanSuccess, onScanFailure);
-        started = true;
-      }catch(err1){
-        lastErr = err1;
-        try{
-          const cameras = await Html5Qrcode.getCameras();
-          if(cameras && cameras.length){
-            const cam = cameras.find(c => /back|traseira|rear|environment/i.test(c.label)) || cameras[cameras.length - 1];
-            await html5QrCode.start({ deviceId: { exact: cam.id } }, config, onScanSuccess, onScanFailure);
-            started = true;
-          } else {
-            showError('Nenhuma câmera foi encontrada neste dispositivo.', err1);
-            return;
-          }
-        }catch(err2){
-          lastErr = err2;
-        }
-      }
-
-      if(started){
-        scannerRunning = true;
-        status.textContent = 'Aponte a câmera para o QR code do ingresso.';
-        status.style.color = 'var(--ink-soft)';
-        status.style.fontWeight = 'normal';
-        return;
-      }
-
-      const name = (lastErr && lastErr.name) || '';
-      let msg = 'Não foi possível acessar a câmera' + (lastErr && lastErr.message ? (': ' + lastErr.message) : '.');
-      if(name === 'NotAllowedError' || /permission/i.test(String(lastErr))){
-        msg = 'Permissão da câmera negada. No navegador, toque no ícone de cadeado/site na barra de endereço e libere a Câmera para este site (no iOS: Ajustes > Safari > Câmera > Permitir).';
-      } else if(name === 'NotFoundError'){
-        msg = 'Nenhuma câmera encontrada neste dispositivo.';
-      } else if(name === 'NotReadableError'){
-        msg = 'A câmera já está em uso por outro aplicativo. Feche outros apps que usam a câmera e tente novamente.';
-      } else if(name === 'OverconstrainedError'){
-        msg = 'A câmera traseira não foi encontrada com essas configurações. Tentando novamente com outra câmera pode ajudar — recarregue a página.';
-      }
-      showError(msg, lastErr);
-    }catch(fatal){
-      showError('Erro inesperado ao abrir a câmera: ' + (fatal && fatal.message ? fatal.message : String(fatal)), fatal);
-    }
+  document.getElementById('btnCam').addEventListener('click', ()=>{
+    const camBox = document.getElementById('camBox'); camBox.hidden = false;
+    document.getElementById('camStatus').textContent = 'Iniciando câmera...';
+    if(html5QrCode) stopScanner();
+    html5QrCode = new Html5Qrcode("qrReader");
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 220, height: 220 } },
+      (decodedText) => {
+        document.getElementById('inpCodigo').value = decodedText;
+        processVerification(decodedText);
+        stopScanner();
+      },
+      () => {}
+    ).then(()=>{
+      document.getElementById('camStatus').textContent = 'Aponte a câmera para o QR code.';
+    }).catch(err=>{
+      document.getElementById('camStatus').textContent = 'Erro ao acessar a câmera: ' + err;
+    });
   });
 
   document.getElementById('btnCamStop').addEventListener('click', stopScanner);
 
-  document.querySelectorAll('.t-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => { if(btn.dataset.ttab !== 'validar') stopScanner(); });
-  });
-
-  function updateCount(){
-    const total = tickets.length; const usados = tickets.filter(t=>t.used).length;
-    if(document.getElementById('tCountBadge')) document.getElementById('tCountBadge').textContent = total + ' cadastrados';
-    if(document.getElementById('cTotal')) document.getElementById('cTotal').textContent = total;
-    if(document.getElementById('cValidos')) document.getElementById('cValidos').textContent = total - usados;
-    if(document.getElementById('cUsados')) document.getElementById('cUsados').textContent = usados;
-  }
-
+  // ================== INICIALIZAÇÃO ==================
   (async function init(){
     firebaseReady = initFirebase();
-    if(firebaseReady){
-      try{ await loadInitialContent(); watchContent(); watchAuthState(); }catch(e){ content = defaultContent(); tickets = []; }
-    } else { content = defaultContent(); tickets = []; }
-    updateNavAuth(); updateCount(); showView('home');
+    if(!firebaseReady){
+      const warn = document.getElementById('configWarning');
+      warn.textContent = 'Erro ao conectar com Firebase. Verifique suas credenciais.';
+      warn.hidden = false;
+      content = defaultContent();
+      renderHome(); renderLoja(); renderRegrasView();
+      return;
+    }
+    await loadInitialContent();
+    watchContent();
+    watchAuthState();
+    renderHome(); renderLoja(); renderRegrasView();
   })();
 })();
 </script>
