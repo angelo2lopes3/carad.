@@ -18,8 +18,8 @@
   --amber:#E8A23C;
   --line:#2A3547;
   --paper:#EDE3CC;
-  --ink:#211C14;
-  --ink-soft:#5A5140;
+  --ink:#110E0A;
+  --ink-soft:#3D362A;
   --rule:#C2AF7C;
   --valid:#2F6B4E;
   --valid-bg:#E1EEE4;
@@ -170,7 +170,7 @@ img{max-width:100%;display:block;}
 .btn-buy{
   display:block;text-align:center;background:var(--cyan);color:var(--film-black);
   font-weight:700;padding:10px;border-radius:6px;font-size:14px;cursor:pointer;
-  transition:background 0.2s;
+  transition:background 0.2s;border:none;width:100%;
 }
 .btn-buy:hover{background:#8FE4F2;}
 
@@ -189,11 +189,11 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .login-title{font-family:'Oswald',sans-serif;font-size:22px;margin:6px 0 4px;}
 .login-sub{font-size:13px;color:var(--muted);margin:0 0 24px;}
 .field-dark label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
-.field-dark input{
+.field-dark input, .field-dark select{
   width:100%;background:var(--film-navy);border:1px solid var(--line);color:var(--bone);
   padding:11px 12px;border-radius:6px;font-family:'Space Mono',monospace;font-size:14px;margin-bottom:16px;
 }
-.field-dark input:focus{outline:none;border-color:var(--cyan);}
+.field-dark input:focus, .field-dark select:focus{outline:none;border-color:var(--cyan);}
 .login-err{color:#F0897C;font-size:13px;margin:-8px 0 14px;font-family:'Space Mono',monospace;}
 .btn-cyan{
   width:100%;background:var(--cyan);color:var(--film-black);border:none;font-weight:700;
@@ -332,7 +332,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:26px;margin:0;}
 .t-title-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
 .t-count-badge{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.04em;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:20px;padding:5px 14px;font-weight:700;}
-.t-tabs{display:flex;gap:6px;margin-bottom:20px;}
+.t-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
 .t-counter-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
 .t-counter-box{
   flex:1;min-width:110px;background:#fff;border:2px solid var(--rule);border-radius:8px;
@@ -361,11 +361,12 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-stub::before{left:-14px;}.t-stub::after{right:-14px;}
 .t-stub-info{flex:1;min-width:0;}
 .t-stub-code{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);margin:0 0 6px;}
-.t-stub-name{font-family:'Oswald',sans-serif;font-size:21px;margin:0 0 4px;line-height:1.1;word-break:break-word;}
+.t-stub-name{font-family:'Oswald',sans-serif;font-size:21px;margin:0 0 4px;line-height:1.1;word-break:break-word;color:var(--ink);}
 .t-stub-phone{font-family:'Space Mono',monospace;font-size:13px;color:var(--ink-soft);margin:0 0 10px;}
 .t-pill{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:700;}
 .t-pill.valido{background:var(--valid-bg);color:var(--valid);}
 .t-pill.usado{background:var(--used-bg);color:var(--used);}
+.t-pill.pendente{background:#FEF3C7;color:#92400E;}
 .t-stamp{position:absolute;top:8px;right:20px;font-family:'Oswald',sans-serif;font-size:19px;color:var(--used);border:3px solid var(--used);border-radius:8px;padding:2px 9px;transform:rotate(8deg);opacity:.85;}
 .t-search-row{display:flex;gap:10px;margin-bottom:16px;}
 .t-search-row input{flex:1;}
@@ -375,7 +376,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-ledger-row{background:#fff;font-family:'Space Mono',monospace;font-size:12px;border-top:1px solid var(--rule);}
 .t-ledger-row:nth-child(even){background:#F7F2E4;}
 .t-qr-mini{line-height:0;cursor:pointer;}
-.t-ledger-name{font-family:'Inter',sans-serif;font-weight:600;font-size:12.5px;}
+.t-ledger-name{font-family:'Inter',sans-serif;font-weight:600;font-size:12.5px;color:var(--ink);}
 .t-empty{padding:28px 16px;text-align:center;color:var(--ink-soft);font-size:13px;}
 .t-reset{margin-top:16px;font-size:12px;color:var(--ink-soft);background:none;border:none;text-decoration:underline;cursor:pointer;padding:0;}
 .t-verify-row{display:flex;gap:10px;}
@@ -390,6 +391,12 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-result-title{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;margin:0 0 10px;}
 .t-result-sub{font-size:13px;color:var(--ink-soft);margin:0;}
 .t-shared-note{font-size:11px;color:var(--ink-soft);margin-top:18px;border-top:1px solid var(--rule);padding-top:12px;}
+
+/* ---------------- COMPROVANTE EXTRACTION UI ---------------- */
+.ocr-data-card{background:#FAF7F0;border:1px solid var(--rule);border-radius:8px;padding:14px;margin-top:14px;font-family:'Space Mono',monospace;font-size:12px;}
+.ocr-data-card h4{margin:0 0 8px;font-family:'Oswald',sans-serif;font-size:15px;color:var(--ink);}
+.ocr-field-item{margin-bottom:4px;}
+.ocr-field-item span{color:var(--gold);font-weight:700;}
 
 /* ---------------- EVENTOS ---------------- */
 .t-select{width:100%;font-family:'Space Mono',monospace;font-size:14px;padding:10px 11px;border:2px solid var(--rule);border-radius:6px;background:#fff;color:var(--ink);}
@@ -431,6 +438,33 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .modal-title{font-family:'Oswald',sans-serif;font-size:19px;margin:0 0 10px;}
 .modal-msg{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0 0 22px;}
 .modal-actions{display:flex;justify-content:flex-end;gap:10px;}
+
+/* ---------------- POPUP COMPRA DA LOJA ---------------- */
+.buy-modal-overlay{
+  position:fixed;inset:0;background:rgba(10,13,19,.82);z-index:300;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(4px);
+}
+.buy-modal-overlay[hidden]{display:none;}
+.buy-modal-box{
+  background:var(--panel);color:var(--bone);border:1px solid var(--line);
+  border-radius:12px;padding:24px;max-width:440px;width:100%;
+  box-shadow:0 20px 50px rgba(0,0,0,.6);max-height:90vh;overflow-y:auto;
+}
+.buy-modal-title{font-family:'Oswald',sans-serif;font-size:22px;margin:0 0 4px;color:var(--cyan);}
+.buy-modal-sub{font-size:13px;color:var(--muted);margin:0 0 18px;}
+.buy-options{display:flex;gap:10px;margin-bottom:18px;}
+.buy-opt-btn{
+  flex:1;padding:12px;border:1px solid var(--line);border-radius:8px;
+  background:var(--film-navy);color:var(--bone);font-weight:600;font-size:13px;
+  cursor:pointer;text-align:center;transition:all 0.2s;
+}
+.buy-opt-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.buy-opt-btn.active{border-color:var(--cyan);background:rgba(111,217,236,0.1);color:var(--cyan);}
+.buy-method-sec{display:none;}
+.buy-method-sec.active{display:block;}
+.qr-display-box{text-align:center;background:#fff;padding:16px;border-radius:8px;margin-bottom:16px;}
+.qr-display-box img{max-width:200px;margin:0 auto;border-radius:4px;}
 
 /* ---------------- REGULAMENTO ---------------- */
 .rules-wrap{
@@ -883,6 +917,20 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           <div class="field-dark"><label for="shopItemPrice">Preço (R$)</label><input id="shopItemPrice" type="text" placeholder="Ex: R$ 15,00"></div>
         </div>
         <div class="field-dark"><label for="shopItemDesc">Descrição</label><input id="shopItemDesc" type="text" placeholder="Ex: Tirante em nylon com engate rápido de 40cm"></div>
+        
+        <div class="field-dark">
+          <label for="shopItemIsTicket">Tipo do Item</label>
+          <select id="shopItemIsTicket">
+            <option value="false">Produto Geral</option>
+            <option value="true">Ingresso de Evento</option>
+          </select>
+        </div>
+
+        <div class="field-dark" id="shopEventSelectWrap" hidden>
+          <label for="shopItemEventId">Evento Vinculado</label>
+          <select id="shopItemEventId"></select>
+        </div>
+
         <div class="field-dark"><label for="shopItemImgUrl">URL da Imagem do Produto</label><input id="shopItemImgUrl" type="text" placeholder="https://..."></div>
         <div class="field-dark">
           <label for="shopItemImgFile">ou envie uma foto do dispositivo</label>
@@ -897,7 +945,10 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           <input type="range" id="shopItemZoomRange" min="1" max="3" step="0.05" value="1">
         </div>
         <button class="del-btn upload-preview-remove" id="btnRemoveShopItemImg" type="button" hidden>Remover imagem</button>
-        <div class="field-dark"><label for="shopItemLink">Link para Compra (WhatsApp ou Instagram)</label><input id="shopItemLink" type="text" placeholder="https://wa.me/... ou https://instagram.com/..."></div>
+        
+        <div class="field-dark"><label for="shopItemQrImgFile">Imagem do QR Code de Pagamento</label><input id="shopItemQrImgFile" type="file" accept="image/*"></div>
+        
+        <div class="field-dark"><label for="shopItemLink">Link do WhatsApp da comissão</label><input id="shopItemLink" type="text" placeholder="https://wa.me/..."></div>
         <button class="btn-outline" id="btnAddShopItem">Cadastrar Item</button>
         
         <h3 style="margin-top:30px; border-top:1px solid var(--line); padding-top:20px;">Produtos Cadastrados</h3>
@@ -942,6 +993,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           <button class="t-tab-btn" data-ttab="emitir">Emitir</button>
           <button class="t-tab-btn" data-ttab="lista">Ingressos</button>
           <button class="t-tab-btn" data-ttab="validar">Validar</button>
+          <button class="t-tab-btn" data-ttab="comprovantes">Validar por Comprovante</button>
         </div>
 
         <div class="t-panel" id="tpanel-eventos">
@@ -1008,6 +1060,32 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           </div>
           <div class="result-area" id="resultArea" style="margin-top:20px;"></div>
         </div>
+
+        <!-- ABA DE VALIDACAO DE COMPROVANTES AUTOMATICA POR IMAGEM -->
+        <div class="t-panel" id="tpanel-comprovantes" hidden>
+          <p class="evt-form-title">Validação Automática por Imagem de Comprovante</p>
+          <p class="t-hint">Envie a imagem do comprovante de pagamento (Pix / Transferência) para realizar o escaneamento e validação automática do ingresso correspondente.</p>
+          
+          <div class="t-field">
+            <label for="fileComprovante">Imagem do Comprovante (PNG, JPG, WebP)</label>
+            <input type="file" id="fileComprovante" accept="image/*">
+          </div>
+
+          <button class="t-btn" id="btnProcessarComprovante">Analisar e Validar Comprovante</button>
+
+          <div id="ocrStatusMsg" class="t-cam-status" style="margin-top:12px;font-weight:bold;color:var(--gold);" hidden>Lendo dados da imagem...</div>
+
+          <div id="ocrExtractedCard" class="ocr-data-card" hidden>
+            <h4>Dados Identificados na Imagem:</h4>
+            <div class="ocr-field-item"><span>Nome Pagador:</span> <i id="ocrOutName">-</i></div>
+            <div class="ocr-field-item"><span>Valor Pago:</span> <i id="ocrOutValor">-</i></div>
+            <div class="ocr-field-item"><span>ID Transação / Autenticação:</span> <i id="ocrOutTxid">-</i></div>
+            <div class="ocr-field-item"><span>Data e Horário:</span> <i id="ocrOutDate">-</i></div>
+          </div>
+
+          <div id="ocrValidationResult" class="result-area" style="margin-top:20px;"></div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1024,10 +1102,52 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   </div>
 </div>
 
+<div class="buy-modal-overlay" id="buyModalOverlay" hidden>
+  <div class="buy-modal-box">
+    <h3 class="buy-modal-title" id="buyModalProductTitle">Opções de Compra</h3>
+    <p class="buy-modal-sub">Escolha como você deseja finalizar seu pedido:</p>
+    
+    <div class="buy-options">
+      <button class="buy-opt-btn active" id="btnOptWhatsapp">WhatsApp</button>
+      <button class="buy-opt-btn" id="btnOptQrcode">QR Code</button>
+    </div>
+
+    <div class="buy-method-sec active" id="secBuyWhatsapp">
+      <p style="font-size:13.5px;color:var(--muted);line-height:1.5;margin-bottom:18px;">Você será redirecionado para conversar diretamente com a nossa comissão e realizar a compra via WhatsApp.</p>
+      <a href="#" id="buyWhatsappLink" target="_blank" class="btn-cyan" style="display:block;text-align:center;">Ir para WhatsApp</a>
+    </div>
+
+    <div class="buy-method-sec" id="secBuyQrcode">
+      <div class="qr-display-box" id="qrDisplayBox">
+        <p style="font-size:12px;color:var(--ink-soft);margin:0 0 8px;font-weight:600;">Escaneie o QR Code para pagar:</p>
+        <img id="qrDisplayImg" src="" alt="QR Code de Pagamento">
+      </div>
+      
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Preencha os dados abaixo para gerar seu ingresso aguardando aprovação:</p>
+
+      <div class="field-dark">
+        <label for="buyQrName">Nome Completo</label>
+        <input type="text" id="buyQrName" placeholder="Ex: Maria Santos">
+      </div>
+      <div class="field-dark">
+        <label for="buyQrPhone">Telefone / WhatsApp</label>
+        <input type="text" id="buyQrPhone" placeholder="Ex: (86) 99999-9999">
+      </div>
+      <div class="field-dark">
+        <label for="buyQrCpf">CPF</label>
+        <input type="text" id="buyQrCpf" placeholder="Ex: 000.000.000-00">
+      </div>
+      <div id="buyQrErr" class="login-err" hidden></div>
+      <button class="btn-cyan" id="btnSubmitQrBuy">Enviar e Solicitar Ingresso</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -1070,8 +1190,10 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   let auth = null;
   let firebaseReady = false;
   let unsubscribeTickets = null;
+  let currentShopItemBuying = null;
 
   function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function genId(){ return 'T-'+Math.random().toString(36).substr(2,6).toUpperCase(); }
   function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 
   function defaultContent(){
@@ -1163,7 +1285,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     const cValidos = document.getElementById('cValidos');
     const cUsados = document.getElementById('cUsados');
     if(cTotal) cTotal.textContent = tickets.length;
-    if(cValidos) cValidos.textContent = tickets.filter(t=>!t.used).length;
+    if(cValidos) cValidos.textContent = tickets.filter(t=>!t.used && t.status!=='pending').length;
     if(cUsados) cUsados.textContent = tickets.filter(t=>t.used).length;
   }
   
@@ -1257,7 +1379,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       shopGrid.innerHTML = '<p class="empty-note">Nenhum produto anunciado na loja ainda.</p>';
       return;
     }
-    content.shopItems.forEach(item => {
+    content.shopItems.forEach((item, idx) => {
       shopGrid.innerHTML += `
         <div class="shop-card">
           <div class="shop-img-box"><img src="${item.imgUrl ? esc(item.imgUrl) : 'https://via.placeholder.com/300x220?text=Sem+Foto'}" alt="${esc(item.title)}"></div>
@@ -1267,12 +1389,111 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
               <p class="shop-desc">${esc(item.desc)}</p>
               <span class="shop-price">${esc(item.price)}</span>
             </div>
-            <a href="${esc(item.link)}" target="_blank" class="btn-buy">Comprar via WhatsApp / Link</a>
+            <button class="btn-buy" data-shop-idx="${idx}">Comprar Item</button>
           </div>
         </div>
       `;
     });
+
+    shopGrid.querySelectorAll('.btn-buy').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = e.target.getAttribute('data-shop-idx');
+        openBuyModal(content.shopItems[idx]);
+      });
+    });
   }
+
+  function openBuyModal(item){
+    currentShopItemBuying = item;
+    const overlay = document.getElementById('buyModalOverlay');
+    document.getElementById('buyModalProductTitle').textContent = 'Comprar: ' + item.title;
+    document.getElementById('buyWhatsappLink').href = item.link || '#';
+    
+    const qrImg = document.getElementById('qrDisplayImg');
+    if(item.qrImg){
+      qrImg.src = item.qrImg;
+      document.getElementById('qrDisplayBox').hidden = false;
+    } else {
+      document.getElementById('qrDisplayBox').hidden = true;
+    }
+
+    document.getElementById('buyQrName').value = '';
+    document.getElementById('buyQrPhone').value = '';
+    document.getElementById('buyQrCpf').value = '';
+    document.getElementById('buyQrErr').hidden = true;
+
+    document.getElementById('btnOptWhatsapp').click();
+    overlay.hidden = false;
+  }
+
+  const buyModalOverlay = document.getElementById('buyModalOverlay');
+  buyModalOverlay.addEventListener('click', (e) => {
+    if(e.target === buyModalOverlay){
+      buyModalOverlay.hidden = true;
+    }
+  });
+
+  document.getElementById('btnOptWhatsapp').addEventListener('click', () => {
+    document.getElementById('btnOptWhatsapp').classList.add('active');
+    document.getElementById('btnOptQrcode').classList.remove('active');
+    document.getElementById('secBuyWhatsapp').classList.add('active');
+    document.getElementById('secBuyQrcode').classList.remove('active');
+  });
+
+  document.getElementById('btnOptQrcode').addEventListener('click', () => {
+    document.getElementById('btnOptQrcode').classList.add('active');
+    document.getElementById('btnOptWhatsapp').classList.remove('active');
+    document.getElementById('secBuyQrcode').classList.add('active');
+    document.getElementById('secBuyWhatsapp').classList.remove('active');
+  });
+
+  document.getElementById('btnSubmitQrBuy').addEventListener('click', async () => {
+    const name = document.getElementById('buyQrName').value.trim();
+    const phone = document.getElementById('buyQrPhone').value.trim();
+    const cpf = document.getElementById('buyQrCpf').value.trim();
+    const errEl = document.getElementById('buyQrErr');
+
+    if(!name || !phone || !cpf){
+      errEl.textContent = 'Preencha Nome, Telefone e CPF.';
+      errEl.hidden = false;
+      return;
+    }
+    errEl.hidden = true;
+
+    if(!db){
+      alert('Banco de dados indisponível no momento.');
+      return;
+    }
+
+    let eventId = currentShopItemBuying.isTicket ? currentShopItemBuying.eventId : null;
+    let eventName = currentShopItemBuying.isTicket ? (events.find(e=>e.id===eventId)?.name || 'Evento') : 'Loja - ' + currentShopItemBuying.title;
+
+    const newTicket = {
+      id: genId(),
+      name: name,
+      phone: phone,
+      cpf: cpf,
+      eventId: eventId,
+      eventName: eventName,
+      used: false,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      const ref = db.collection(COLLECTION).doc('tickets');
+      const snap = await ref.get();
+      let currentTickets = snap.exists ? (snap.data().list || []) : [];
+      let currentEvents = snap.exists ? (snap.data().events || []) : [];
+      currentTickets.unshift(newTicket);
+      await ref.set({ list: currentTickets, events: currentEvents });
+      alert('Sua solicitação de compra via QR Code foi realizada com sucesso! Seu ingresso está aguardando aprovação da comissão.');
+      buyModalOverlay.hidden = true;
+    } catch(e){
+      errEl.textContent = 'Erro ao enviar dados. Tente novamente.';
+      errEl.hidden = false;
+    }
+  });
 
   function renderRegrasView(){
     document.getElementById('rulesHeroTitleOut').textContent = content.rulesHeroTitle || 'Regulamento Geral';
@@ -1292,6 +1513,101 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       if(btn.dataset.subtab==='ingressos'){ renderEventsManage(); renderEventSelect(); renderEventFilterChips(); renderLedger(); }
       if(btn.dataset.subtab==='loja') renderShopManage();
     });
+  });
+
+  // TABS INTERNAS DE GESTAO DE INGRESSOS
+  document.querySelectorAll('.t-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.t-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.getAttribute('data-ttab');
+      document.querySelectorAll('.t-panel').forEach(p => p.hidden = true);
+      const activePanel = document.getElementById('tpanel-' + target);
+      if(activePanel) activePanel.hidden = false;
+    });
+  });
+
+  // FERRAMENTA DE PROCESSAMENTO DE COMPROVANTES (OCR)
+  document.getElementById('btnProcessarComprovante').addEventListener('click', async () => {
+    const fileInp = document.getElementById('fileComprovante');
+    const statusMsg = document.getElementById('ocrStatusMsg');
+    const extractedCard = document.getElementById('ocrExtractedCard');
+    const resultBox = document.getElementById('ocrValidationResult');
+
+    if(!fileInp.files || !fileInp.files[0]){
+      alert('Por favor, selecione a imagem de um comprovante.');
+      return;
+    }
+
+    const file = fileInp.files[0];
+    statusMsg.hidden = false;
+    statusMsg.textContent = 'Processando OCR na imagem do comprovante... Por favor aguarde.';
+    extractedCard.hidden = true;
+    resultBox.innerHTML = '';
+
+    try {
+      const worker = await Tesseract.createWorker('por');
+      const ret = await worker.recognize(file);
+      await worker.terminate();
+
+      const text = ret.data.text;
+      statusMsg.hidden = true;
+
+      // PARSING DOS DADOS DO COMPROVANTE
+      let nameMatch = text.match(/(?:Nome|Pagador|Origem|De)\s*[:\.-]?\s*([A-Za-zÀ-ÖØ-öø-ÿ\s]{3,35})/i);
+      let valorMatch = text.match(/(?:R\$|Valor)\s*[:\.-]?\s*([\d\.\,]+)/i);
+      let txidMatch = text.match(/(?:ID|Transação|Autenticação|E-ID|Código)\s*[:\.-]?\s*([A-Za-z0-9]{10,40})/i);
+      let dateMatch = text.match(/(\d{2}\/\d{2}\/\d{4}|\d{2}-\d{2}-\d{4})(?:\s*-\s*|\s+)?(\d{2}:\d{2}(?::\d{2})?)?/i);
+
+      let extractedName = nameMatch ? nameMatch[1].trim() : 'Não identificado';
+      let extractedValor = valorMatch ? valorMatch[1].trim() : 'Não identificado';
+      let extractedTxid = txidMatch ? txidMatch[1].trim() : 'Não identificado';
+      let extractedDate = dateMatch ? (dateMatch[1] + (dateMatch[2] ? ' ' + dateMatch[2] : '')) : 'Não identificado';
+
+      document.getElementById('ocrOutName').textContent = extractedName;
+      document.getElementById('ocrOutValor').textContent = extractedValor;
+      document.getElementById('ocrOutTxid').textContent = extractedTxid;
+      document.getElementById('ocrOutDate').textContent = extractedDate;
+      extractedCard.hidden = false;
+
+      // VALIDAÇÃO E BUSCA NOS INGRESSOS
+      let foundTicket = null;
+      if(extractedName !== 'Não identificado'){
+        const cleanExtractedName = extractedName.toLowerCase();
+        foundTicket = tickets.find(t => t.name.toLowerCase().includes(cleanExtractedName) || cleanExtractedName.includes(t.name.toLowerCase()));
+      }
+
+      if(!foundTicket && extractedTxid !== 'Não identificado'){
+        foundTicket = tickets.find(t => t.id === extractedTxid);
+      }
+
+      if(foundTicket){
+        foundTicket.status = 'approved';
+        foundTicket.used = false;
+        await saveTickets();
+
+        resultBox.innerHTML = `
+          <div class="t-result-box t-result-ok">
+            <h3 class="t-result-title">✅ Comprovante Valido & Ingresso Aprovado!</h3>
+            <p class="t-result-sub"><b>Comprador:</b> ${esc(foundTicket.name)}</p>
+            <p class="t-result-sub"><b>Evento:</b> ${esc(foundTicket.eventName || 'Não informado')}</p>
+            <p class="t-result-sub"><b>Código do Ingresso:</b> ${esc(foundTicket.id)}</p>
+            <p class="t-result-sub">O status do ingresso foi automaticamente atualizado para <b>VÁLIDO</b> no sistema.</p>
+          </div>
+        `;
+      } else {
+        resultBox.innerHTML = `
+          <div class="t-result-box t-result-invalid">
+            <h3 class="t-result-title">⚠️ Nenhum Ingresso Correspondente Encontrado</h3>
+            <p class="t-result-sub">Não foi possível associar os dados lidos do comprovante (${esc(extractedName)}) a nenhum ingresso cadastrado no sistema.</p>
+          </div>
+        `;
+      }
+
+    } catch(err){
+      statusMsg.hidden = true;
+      alert('Erro ao realizar a leitura OCR da imagem. Verifique se o arquivo de imagem é válido.');
+    }
   });
 
   // ================== FERRAMENTA DE CROP / AJUSTE DE IMAGEM ==================
@@ -1548,7 +1864,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     flashSaved();
   });
 
-  // LÓGICA DE EDIÇÃO E UPLOAD PARA REGRAS
   document.getElementById('edRulesHeroImgFile').addEventListener('change', function(e) {
     const file = e.target.files[0]; if(!file) return;
     const reader = new FileReader();
@@ -1649,8 +1964,26 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     renderPhotoManage(); flashSaved();
   });
 
+  let shopQrBase64 = '';
+  document.getElementById('shopItemQrImgFile').addEventListener('change', function(e){
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt){ shopQrBase64 = evt.target.result; };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('shopItemIsTicket').addEventListener('change', function(e){
+    const isTicket = e.target.value === 'true';
+    document.getElementById('shopEventSelectWrap').hidden = !isTicket;
+  });
+
   function renderShopManage(){
     const wrap = document.getElementById('shopManageList'); wrap.innerHTML = '';
+    const selEvt = document.getElementById('shopItemEventId');
+    if(selEvt){
+      selEvt.innerHTML = events.map(ev => `<option value="${ev.id}">${esc(ev.name)}</option>`).join('');
+    }
+
     if(!content.shopItems || content.shopItems.length === 0){
       wrap.innerHTML = '<p class="lmi-text">Nenhum produto cadastrado.</p>'; return;
     }
@@ -1671,95 +2004,70 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     reader.readAsDataURL(file);
   });
 
-  document.getElementById('shopItemImgUrl').addEventListener('input', function(e){
-    const val = e.target.value.trim();
-    if(val) shopItemPreviewCtrl.show(val);
-  });
-
-  document.getElementById('btnRemoveShopItemImg').addEventListener('click', () => {
-    document.getElementById('shopItemImgUrl').value = '';
-    document.getElementById('shopItemImgFile').value = '';
-    shopItemPreviewCtrl.clear();
-  });
-
   document.getElementById('btnAddShopItem').addEventListener('click', async () => {
     const title = document.getElementById('shopItemTitle').value.trim();
-    const price = document.getElementById('shopItemPrice').value.trim() || 'Sob consulta';
-    const desc = document.getElementById('shopItemDesc').value.trim() || 'Sem descrição';
+    const price = document.getElementById('shopItemPrice').value.trim();
+    const desc = document.getElementById('shopItemDesc').value.trim();
+    const isTicket = document.getElementById('shopItemIsTicket').value === 'true';
+    const eventId = isTicket ? document.getElementById('shopItemEventId').value : null;
+    const link = document.getElementById('shopItemLink').value.trim();
+    
     let imgUrl = shopItemPreviewCtrl.getCroppedBase64(600, 0.85);
     if(!imgUrl) imgUrl = document.getElementById('shopItemImgUrl').value.trim();
-    const link = document.getElementById('shopItemLink').value.trim() || '#';
 
-    if(!title) { alert('O nome do produto é obrigatório.'); return; }
+    if(!title || !price){ alert('Preencha Nome e Preço do produto.'); return; }
 
-    content.shopItems.unshift({ id: uid(), title, price, desc, imgUrl, link });
+    const newItem = {
+      id: uid(),
+      title,
+      price,
+      desc,
+      isTicket,
+      eventId,
+      imgUrl,
+      qrImg: shopQrBase64,
+      link
+    };
+
+    if(!content.shopItems) content.shopItems = [];
+    content.shopItems.unshift(newItem);
     await saveContent();
-
-    document.getElementById('shopItemTitle').value = ''; document.getElementById('shopItemPrice').value = '';
-    document.getElementById('shopItemDesc').value = ''; document.getElementById('shopItemImgUrl').value = '';
+    
+    document.getElementById('shopItemTitle').value = '';
+    document.getElementById('shopItemPrice').value = '';
+    document.getElementById('shopItemDesc').value = '';
+    document.getElementById('shopItemImgUrl').value = '';
+    document.getElementById('shopItemLink').value = '';
     document.getElementById('shopItemImgFile').value = '';
+    document.getElementById('shopItemQrImgFile').value = '';
+    shopQrBase64 = '';
     shopItemPreviewCtrl.clear();
-
-    renderShopManage(); flashSaved();
+    
+    renderShopManage();
+    flashSaved();
   });
 
-  document.getElementById('btnSaveMyPass').addEventListener('click', async ()=>{
-    const val = document.getElementById('edMyPassword').value.trim(); if(val.length < 6) return;
-    try{ await auth.currentUser.updatePassword(val); document.getElementById('edMyPassword').value=''; flashSaved(); }catch(e){}
-  });
-
-  // ================== CONFIRMAÇÃO GENÉRICA ==================
-  function showConfirm(title, message, onConfirm){
-    const overlay = document.getElementById('confirmModal');
-    document.getElementById('confirmModalTitle').textContent = title;
-    document.getElementById('confirmModalMsg').textContent = message;
-    overlay.hidden = false;
-    const okBtn = document.getElementById('confirmModalOk');
-    const cancelBtn = document.getElementById('confirmModalCancel');
-    function close(){ overlay.hidden = true; okBtn.onclick = null; cancelBtn.onclick = null; }
-    okBtn.onclick = async ()=>{ close(); await onConfirm(); };
-    cancelBtn.onclick = ()=> close();
-  }
-
-  // ================== EVENTOS ==================
   function renderEventsManage(){
-    const wrap = document.getElementById('eventosManageList'); if(!wrap) return;
-    wrap.innerHTML = '';
-    if(events.length === 0){ wrap.innerHTML = '<p class="lmi-text">Nenhum evento cadastrado ainda.</p>'; return; }
+    const wrap = document.getElementById('eventosManageList'); if(!wrap) return; wrap.innerHTML = '';
+    if(!events.length){ wrap.innerHTML = '<p class="t-empty">Nenhum evento cadastrado.</p>'; return; }
     events.forEach(ev=>{
-      const count = tickets.filter(t=>t.eventId===ev.id).length;
       const row = document.createElement('div'); row.className = 'list-manage-item';
-      row.innerHTML = `<div class="lmi-text"><b>${esc(ev.name)}</b>${esc(ev.date || 'Sem data')}${ev.local ? ' — ' + esc(ev.local) : ''} · ${count} ingresso(s)</div>
-        <div class="lmi-actions"><button class="edit-btn">Editar</button><button class="del-btn">Excluir</button></div>`;
-      row.querySelector('.edit-btn').addEventListener('click', ()=> startEditEvent(ev.id));
-      row.querySelector('.del-btn').addEventListener('click', ()=>{
-        showConfirm(
-          'Excluir evento',
-          `Tem certeza que deseja excluir "${ev.name}"? ${count > 0 ? 'Os ' + count + ' ingresso(s) vinculado(s) a ele deixarão de ter uma classificação, mas não serão apagados.' : ''}`,
-          async ()=>{
-            events = events.filter(x=>x.id!==ev.id);
-            tickets.forEach(t=>{ if(t.eventId===ev.id){ t.eventId = null; t.eventName = '(evento removido)'; } });
-            if(editingEventId===ev.id) cancelEditEvent();
-            await saveTickets();
-            renderEventsManage(); renderEventSelect(); renderEventFilterChips(); renderLedger();
-          }
-        );
-      });
+      row.innerHTML = `<div class="lmi-text"><b>${esc(ev.name)}</b>Data: ${esc(ev.date || 'Não informada')} ${ev.location ? '&middot; Local: '+esc(ev.location) : ''}</div><div class="lmi-actions"><button class="edit-btn">Editar</button><button class="del-btn">Excluir</button></div>`;
+      row.querySelector('.edit-btn').addEventListener('click', ()=>editEvent(ev));
+      row.querySelector('.del-btn').addEventListener('click', ()=>deleteEvent(ev.id));
       wrap.appendChild(row);
     });
   }
 
-  function startEditEvent(id){
-    const ev = events.find(e=>e.id===id); if(!ev) return;
-    editingEventId = id;
+  function editEvent(ev){
+    editingEventId = ev.id;
     document.getElementById('inpEvtNome').value = ev.name;
     document.getElementById('inpEvtData').value = ev.date || '';
-    document.getElementById('inpEvtLocal').value = ev.local || '';
+    document.getElementById('inpEvtLocal').value = ev.location || '';
     document.getElementById('evtFormTitle').textContent = 'Editar evento';
     document.getElementById('evtEditingTag').hidden = false;
     document.getElementById('btnSalvarEvento').textContent = 'Salvar alterações';
     document.getElementById('btnCancelarEdicaoEvento').hidden = false;
-    document.getElementById('inpEvtNome').scrollIntoView({behavior:'smooth', block:'center'});
   }
 
   function cancelEditEvent(){
@@ -1771,7 +2079,6 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     document.getElementById('evtEditingTag').hidden = true;
     document.getElementById('btnSalvarEvento').textContent = 'Cadastrar evento';
     document.getElementById('btnCancelarEdicaoEvento').hidden = true;
-    document.getElementById('evtErro').hidden = true;
   }
 
   document.getElementById('btnCancelarEdicaoEvento').addEventListener('click', cancelEditEvent);
@@ -1779,298 +2086,289 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   document.getElementById('btnSalvarEvento').addEventListener('click', async ()=>{
     const name = document.getElementById('inpEvtNome').value.trim();
     const date = document.getElementById('inpEvtData').value.trim();
-    const local = document.getElementById('inpEvtLocal').value.trim();
-    const errEl = document.getElementById('evtErro');
-    if(!name){ errEl.textContent = 'Informe o nome do evento.'; errEl.hidden = false; return; }
-    errEl.hidden = true;
-
+    const location = document.getElementById('inpEvtLocal').value.trim();
+    const err = document.getElementById('evtErro'); err.hidden = true;
+    if(!name){ err.textContent = 'Preencha o nome do evento.'; err.hidden = false; return; }
     if(editingEventId){
-      const ev = events.find(e=>e.id===editingEventId);
-      if(ev){
-        ev.name = name; ev.date = date; ev.local = local;
-        tickets.forEach(t=>{ if(t.eventId===ev.id) t.eventName = ev.name; });
-      }
+      const ev = events.find(x=>x.id===editingEventId);
+      if(ev){ ev.name = name; ev.date = date; ev.location = location; }
     } else {
-      events.unshift({id: uid(), name, date, local});
+      events.push({id: uid(), name, date, location});
     }
     await saveTickets();
     cancelEditEvent();
-    renderEventsManage(); renderEventSelect(); renderEventFilterChips(); renderLedger();
-    flashSaved();
+    renderEventsManage();
+    renderEventSelect();
+    renderEventFilterChips();
   });
+
+  async function deleteEvent(id){
+    if(!confirm('Excluir este evento? Ingressos vinculados a ele continuarão mantidos.')) return;
+    events = events.filter(x=>x.id!==id);
+    await saveTickets();
+    renderEventsManage();
+    renderEventSelect();
+    renderEventFilterChips();
+  }
 
   function renderEventSelect(){
     const sel = document.getElementById('inpEvento'); if(!sel) return;
-    const prev = sel.value;
-    if(events.length === 0){
-      sel.innerHTML = '<option value="">Nenhum evento cadastrado</option>';
-      sel.disabled = true;
-      document.getElementById('emitirSemEvento').hidden = false;
-      document.getElementById('btnEmitir').disabled = true;
-    } else {
-      sel.innerHTML = '<option value="">Selecione um evento...</option>' + events.map(ev=>`<option value="${ev.id}">${esc(ev.name)}</option>`).join('');
-      sel.disabled = false;
-      document.getElementById('emitirSemEvento').hidden = true;
-      document.getElementById('btnEmitir').disabled = false;
-      if(events.some(ev=>ev.id===prev)) sel.value = prev;
+    const warn = document.getElementById('emitirSemEvento');
+    sel.innerHTML = '';
+    if(!events.length){
+      if(warn) warn.hidden = false;
+      return;
     }
+    if(warn) warn.hidden = true;
+    events.forEach(ev=>{
+      sel.innerHTML += `<option value="${esc(ev.id)}">${esc(ev.name)} (${esc(ev.date || 'Sem data')})</option>`;
+    });
   }
 
   function renderEventFilterChips(){
-    const wrap = document.getElementById('evtFilterChips'); if(!wrap) return;
-    if(!events.some(ev=>ev.id===currentEventFilter)) currentEventFilter = 'todos';
-    let html = `<button type="button" class="t-evt-chip${currentEventFilter==='todos' ? ' active' : ''}" data-evtfilter="todos">Todos</button>`;
+    const wrap = document.getElementById('evtFilterChips'); if(!wrap) return; wrap.innerHTML = '';
+    const allChip = document.createElement('button');
+    allChip.className = 't-evt-chip' + (currentEventFilter==='todos'?' active':'');
+    allChip.textContent = 'Todos os eventos';
+    allChip.addEventListener('click', ()=>{ currentEventFilter='todos'; renderEventFilterChips(); renderLedger(); });
+    wrap.appendChild(allChip);
+
     events.forEach(ev=>{
-      html += `<button type="button" class="t-evt-chip${currentEventFilter===ev.id ? ' active' : ''}" data-evtfilter="${ev.id}">${esc(ev.name)}</button>`;
+      const chip = document.createElement('button');
+      chip.className = 't-evt-chip' + (currentEventFilter===ev.id?' active':'');
+      chip.textContent = ev.name;
+      chip.addEventListener('click', ()=>{ currentEventFilter=ev.id; renderEventFilterChips(); renderLedger(); });
+      wrap.appendChild(chip);
     });
-    if(tickets.some(t=>!t.eventId)){
-      html += `<button type="button" class="t-evt-chip${currentEventFilter==='sem' ? ' active' : ''}" data-evtfilter="sem">Sem classificação</button>`;
-    }
-    wrap.innerHTML = html;
-    wrap.querySelectorAll('.t-evt-chip').forEach(chip=>{
-      chip.addEventListener('click', ()=>{
-        currentEventFilter = chip.dataset.evtfilter;
-        selectedTicketIds.clear();
-        renderEventFilterChips();
-        renderLedger();
-      });
-    });
-  }
-
-  // ================== TICKET TOOL ==================
-  document.querySelectorAll('.t-tab-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.t-tab-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tpanel-eventos').hidden = btn.dataset.ttab!=='eventos';
-      document.getElementById('tpanel-emitir').hidden = btn.dataset.ttab!=='emitir';
-      document.getElementById('tpanel-lista').hidden = btn.dataset.ttab!=='lista';
-      document.getElementById('tpanel-validar').hidden = btn.dataset.ttab!=='validar';
-      if(btn.dataset.ttab==='eventos') renderEventsManage();
-      if(btn.dataset.ttab==='emitir') renderEventSelect();
-      if(btn.dataset.ttab==='lista'){ renderEventFilterChips(); renderLedger(); }
-    });
-  });
-
-  function genId(){ return 'T-'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,6).toUpperCase(); }
-  function fmtDate(iso){ const d = new Date(iso); return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
-  function renderQR(container, text, size){ container.innerHTML=''; new QRCode(container, {text:text, width:size, height:size, colorDark:'#211C14', colorLight:'#ffffff'}); }
-  function statusPill(t){ return t.used ? '<span class="t-pill usado">Usado</span>' : '<span class="t-pill valido">Válido</span>'; }
-  function buildStubEl(t, qrSize){
-    const el = document.createElement('div'); el.className = 't-stub';
-    el.innerHTML = `${t.used ? '<div class="t-stamp">USADO</div>' : ''}<div class="t-stub-info">${t.eventName ? `<p class="t-stub-event">${esc(t.eventName)}</p>` : ''}<p class="t-stub-code">${t.id}</p><p class="t-stub-name">${esc(t.name)}</p><p class="t-stub-phone">${esc(t.phone)}</p>${statusPill(t)}</div><div class="stub-qr" data-qr></div>`;
-    renderQR(el.querySelector('[data-qr]'), 'TICKET:'+t.id, qrSize||96); return el;
-  }
-
-  async function baixarIngressoPDF(ticket){
-    const stub = buildStubEl(ticket,180);
-    stub.style.position = "fixed";
-    stub.style.left = "-9999px";
-    stub.style.top = "0";
-    stub.style.width = "720px";
-    stub.style.background = "#fff";
-
-    document.body.appendChild(stub);
-    const canvas = await html2canvas(stub,{ scale:2, backgroundColor:"#ffffff" });
-    document.body.removeChild(stub);
-
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p","mm","a4");
-    pdf.setFontSize(20);
-    pdf.text("Ingresso da Calourada",105,15,{align:"center"});
-
-    const img = canvas.toDataURL("image/png");
-    const largura = 190;
-    const altura = canvas.height * largura / canvas.width;
-
-    pdf.addImage(img,"PNG",10,25,largura,altura);
-    pdf.save("Ingresso-"+ticket.id+".pdf");
   }
 
   document.getElementById('btnEmitir').addEventListener('click', async ()=>{
-    const name = document.getElementById('inpNome').value.trim(); const phone = document.getElementById('inpTel').value.trim();
+    const name = document.getElementById('inpNome').value.trim();
+    const phone = document.getElementById('inpTel').value.trim();
     const eventId = document.getElementById('inpEvento').value;
-    const errEl = document.getElementById('emitirErro');
-    if(!eventId){ errEl.textContent = 'Selecione o evento ao qual este ingresso pertence.'; errEl.hidden = false; return; }
-    if(!name || !phone){ errEl.textContent = 'Preencha nome e telefone do comprador.'; errEl.hidden = false; return; }
-    errEl.hidden = true;
-    const ev = events.find(e=>e.id===eventId);
-    const ticket = {id: genId(), name, phone, eventId, eventName: ev ? ev.name : '', used:false, createdAt:new Date().toISOString(), usedAt:null};
-    tickets.unshift(ticket); await saveTickets(); updateCount(); renderEventFilterChips(); renderEventsManage();
-    document.getElementById('inpNome').value=''; document.getElementById('inpTel').value='';
-    
-    const wrap = document.getElementById("novoIngressoWrap");
-    wrap.hidden = false; wrap.innerHTML="";
-    const stub = buildStubEl(ticket,110);
-    wrap.appendChild(stub);
+    const err = document.getElementById('emitirErro'); err.hidden = true;
 
-    const btnPdf = document.createElement("button");
-    btnPdf.className="t-btn";
-    btnPdf.style.marginTop="20px";
-    btnPdf.innerHTML="📄 Baixar PDF";
-    btnPdf.onclick=()=>baixarIngressoPDF(ticket);
-    wrap.appendChild(btnPdf);
+    if(!events.length){ err.textContent = 'Cadastre um evento primeiro na aba "Eventos".'; err.hidden = false; return; }
+    if(!name){ err.textContent = 'Digite o nome do comprador.'; err.hidden = false; return; }
+
+    const ev = events.find(x=>x.id===eventId) || events[0];
+    const ticket = {
+      id: genId(),
+      name,
+      phone,
+      eventId: ev.id,
+      eventName: ev.name,
+      used: false,
+      status: 'approved',
+      createdAt: new Date().toISOString()
+    };
+
+    tickets.unshift(ticket);
+    await saveTickets();
+    document.getElementById('inpNome').value = ''; document.getElementById('inpTel').value = '';
+    renderNewTicketStub(ticket);
   });
 
-  function eventFilteredTickets(){
-    if(currentEventFilter==='todos') return tickets.slice();
-    if(currentEventFilter==='sem') return tickets.filter(t=>!t.eventId);
-    return tickets.filter(t=>t.eventId===currentEventFilter);
-  }
-
-  function updateBulkBar(visibleIds){
-    const n = selectedTicketIds.size;
-    document.getElementById('bulkCountLabel').textContent = n + ' selecionado(s)';
-    document.getElementById('btnExcluirSelecionados').disabled = n===0;
-    const allChecked = visibleIds.length>0 && visibleIds.every(id=>selectedTicketIds.has(id));
-    document.getElementById('chkSelectAll').checked = allChecked;
-    document.getElementById('chkSelectAll').disabled = visibleIds.length===0;
-  }
-
-  async function deleteTicketsByIds(ids){
-    const idSet = new Set(ids);
-    tickets = tickets.filter(t=>!idSet.has(t.id));
-    idSet.forEach(id=>selectedTicketIds.delete(id));
-    await saveTickets(); updateCount(); renderEventFilterChips(); renderEventsManage(); renderLedger();
+  function renderNewTicketStub(ticket){
+    const wrap = document.getElementById('novoIngressoWrap'); wrap.hidden = false;
+    wrap.innerHTML = `
+      <div class="t-stub">
+        <div class="t-stub-info">
+          <p class="t-stub-event">${esc(ticket.eventName || '')}</p>
+          <p class="t-stub-code">CÓDIGO: ${esc(ticket.id)}</p>
+          <h3 class="t-stub-name">${esc(ticket.name)}</h3>
+          <p class="t-stub-phone">${esc(ticket.phone || 'Sem telefone')}</p>
+          <span class="t-pill valido">VÁLIDO</span>
+        </div>
+        <div id="stubQr_${ticket.id}"></div>
+      </div>
+    `;
+    new QRCode(document.getElementById(`stubQr_${ticket.id}`), { text: ticket.id, width: 80, height: 80 });
   }
 
   function renderLedger(){
-    const q = document.getElementById('inpBusca').value.trim().toLowerCase();
-    const byEvent = eventFilteredTickets();
-    const filtered = byEvent.filter(t => !q || t.name.toLowerCase().includes(q) || t.phone.toLowerCase().includes(q) || t.id.toLowerCase().includes(q));
-    const body = document.getElementById('ledgerBody'); body.innerHTML = '';
-    updateBulkBar(filtered.map(t=>t.id));
+    const body = document.getElementById('ledgerBody'); if(!body) return; body.innerHTML = '';
+    const q = document.getElementById('inpBusca').value.toLowerCase().trim();
 
-    if(filtered.length===0){ body.innerHTML = '<div class="t-empty">Nenhum ingresso encontrado.</div>'; return; }
-    filtered.forEach(t=>{
-      const row = document.createElement('div'); row.className = 't-ledger-row';
-      row.innerHTML = `
-<div><input type="checkbox" class="t-check row-check" ${selectedTicketIds.has(t.id) ? 'checked' : ''}></div>
-<div class="t-qr-mini" data-qr></div>
-<div class="t-ledger-name">${esc(t.name)}</div>
-<div class="t-col-hide">${esc(t.eventName || 'Sem classificação')}</div>
-<div class="t-col-hide">${t.id}</div>
-<div class="t-col-hide">${statusPill(t)}</div>
-<div>${fmtDate(t.createdAt).split(' ')[0]}</div>
-<div style="display:flex;gap:8px;align-items:center;">
-<button class="t-btn pdf-btn" style="padding:8px 10px;font-size:12px;">PDF</button>
-<button class="t-del-icon" title="Excluir ingresso">🗑</button>
-</div>
-`;
+    let list = tickets;
+    if(currentEventFilter !== 'todos'){
+      list = list.filter(t => t.eventId === currentEventFilter);
+    }
+    if(q){
+      list = list.filter(t => t.name.toLowerCase().includes(q) || (t.phone && t.phone.toLowerCase().includes(q)) || t.id.toLowerCase().includes(q));
+    }
 
-      row.querySelector(".pdf-btn").onclick=()=>baixarIngressoPDF(t);
-      row.querySelector(".row-check").addEventListener('change', (e)=>{
-        if(e.target.checked) selectedTicketIds.add(t.id); else selectedTicketIds.delete(t.id);
-        updateBulkBar(filtered.map(x=>x.id));
-      });
-      row.querySelector(".t-del-icon").addEventListener('click', ()=>{
-        showConfirm('Excluir ingresso', `Tem certeza que deseja excluir o ingresso de "${t.name}" (${t.id})? Essa ação não pode ser desfeita.`, ()=> deleteTicketsByIds([t.id]));
-      });
-      renderQR(row.querySelector('[data-qr]'), 'TICKET:'+t.id, 34);
-      body.appendChild(row);
-    });
-  }
-  document.getElementById('inpBusca').addEventListener('input', renderLedger);
-
-  document.getElementById('chkSelectAll').addEventListener('change', (e)=>{
-    const q = document.getElementById('inpBusca').value.trim().toLowerCase();
-    const visible = eventFilteredTickets().filter(t => !q || t.name.toLowerCase().includes(q) || t.phone.toLowerCase().includes(q) || t.id.toLowerCase().includes(q));
-    visible.forEach(t=>{ if(e.target.checked) selectedTicketIds.add(t.id); else selectedTicketIds.delete(t.id); });
-    renderLedger();
-  });
-
-  document.getElementById('btnExcluirSelecionados').addEventListener('click', ()=>{
-    const count = selectedTicketIds.size;
-    if(count===0) return;
-    showConfirm('Excluir ingressos selecionados', `Tem certeza que deseja excluir os ${count} ingressos selecionados? Esta ação não pode ser desfeita.`, ()=> deleteTicketsByIds(Array.from(selectedTicketIds)));
-  });
-
-  document.getElementById('btnExcluirTodos').addEventListener('click', ()=>{
-    const targetTickets = eventFilteredTickets();
-    const count = targetTickets.length;
-    if(count===0) return;
-    const label = currentEventFilter==='todos' ? 'todos os ingressos do sistema' : currentEventFilter==='sem' ? 'todos os ingressos sem classificação' : 'todos os ingressos deste evento';
-    showConfirm('Excluir ingressos', `Tem certeza que deseja excluir ${label} (${count} ingresso(s))? Esta ação é irreversível.`, ()=> deleteTicketsByIds(targetTickets.map(t=>t.id)));
-  });
-
-  function processVerification(rawId){
-    const cleanId = rawId.trim().replace(/^TICKET:/i, '');
-    const ticket = tickets.find(t=>t.id===cleanId);
-    const area = document.getElementById('resultArea'); area.innerHTML = '';
-    if(!ticket){
-      area.innerHTML = `<div class="t-result-box t-result-invalid"><h3 class="t-result-title">Ingresso não encontrado</h3><p class="t-result-sub">O código "${esc(cleanId)}" não existe na base de dados.</p></div>`;
+    if(!list.length){
+      body.innerHTML = '<div class="t-empty">Nenhum ingresso encontrado.</div>';
       return;
     }
-    if(ticket.used){
-      area.innerHTML = `<div class="t-result-box t-result-used"><h3 class="t-result-title">Ingresso JÁ UTILIZADO</h3><p class="t-result-sub"><b>${esc(ticket.name)}</b> ${ticket.eventName ? '· ' + esc(ticket.eventName) : ''}<br>Usado em: ${fmtDate(ticket.usedAt)}</p></div>`;
-    } else {
-      area.innerHTML = `<div class="t-result-box t-result-ok"><h3 class="t-result-title">Ingresso VÁLIDO</h3><p class="t-result-sub"><b>${esc(ticket.name)}</b> ${ticket.eventName ? '· ' + esc(ticket.eventName) : ''}<br>Tel: ${esc(ticket.phone)}</p><button class="t-btn" id="btnMarcarUsado" style="margin-top:12px;">Marcar como usado</button></div>`;
-      document.getElementById('btnMarcarUsado').addEventListener('click', async ()=>{
-        ticket.used = true; ticket.usedAt = new Date().toISOString();
-        await saveTickets(); updateCount(); renderLedger(); processVerification(cleanId);
+
+    list.forEach(t=>{
+      const isPending = t.status === 'pending';
+      const statusPill = isPending ? `<span class="t-pill pendente">PENDENTE</span>` : (t.used ? `<span class="t-pill usado">USADO</span>` : `<span class="t-pill valido">VÁLIDO</span>`);
+      const row = document.createElement('div');
+      row.className = 't-ledger-row';
+      row.innerHTML = `
+        <div><input type="checkbox" class="t-check chk-ticket" data-id="${t.id}" ${selectedTicketIds.has(t.id)?'checked':''}></div>
+        <div class="t-qr-mini" id="qrMini_${t.id}"></div>
+        <div class="t-ledger-name">${esc(t.name)}</div>
+        <div class="t-col-hide">${esc(t.eventName || '-')}</div>
+        <div class="t-col-hide">${esc(t.id)}</div>
+        <div class="t-col-hide">${statusPill}</div>
+        <div>${new Date(t.createdAt).toLocaleDateString()}</div>
+        <div>
+          ${isPending ? `<button class="t-btn" style="padding:4px 8px;font-size:10px;" onclick="approveTicket('${t.id}')">Aprovar</button>` : ''}
+          <button class="t-del-icon" onclick="deleteSingleTicket('${t.id}')">&times;</button>
+        </div>
+      `;
+      body.appendChild(row);
+      new QRCode(document.getElementById(`qrMini_${t.id}`), { text: t.id, width: 28, height: 28 });
+    });
+
+    document.querySelectorAll('.chk-ticket').forEach(chk => {
+      chk.addEventListener('change', (e)=>{
+        if(e.target.checked) selectedTicketIds.add(e.target.dataset.id);
+        else selectedTicketIds.delete(e.target.dataset.id);
+        updateBulkActions();
       });
-    }
+    });
   }
 
-  document.getElementById('btnVerificar').addEventListener('click', ()=>{
-    const code = document.getElementById('inpCodigo').value;
-    if(code) processVerification(code);
+  window.approveTicket = async function(id){
+    const t = tickets.find(x=>x.id===id);
+    if(t){
+      t.status = 'approved';
+      await saveTickets();
+      renderLedger();
+    }
+  };
+
+  window.deleteSingleTicket = async function(id){
+    if(!confirm('Excluir este ingresso permanentemente?')) return;
+    tickets = tickets.filter(x=>x.id!==id);
+    selectedTicketIds.delete(id);
+    await saveTickets();
+    renderLedger();
+  };
+
+  document.getElementById('chkSelectAll').addEventListener('change', (e)=>{
+    const checked = e.target.checked;
+    let list = tickets;
+    if(currentEventFilter !== 'todos') list = list.filter(t => t.eventId === currentEventFilter);
+    list.forEach(t => {
+      if(checked) selectedTicketIds.add(t.id);
+      else selectedTicketIds.delete(t.id);
+    });
+    renderLedger();
+    updateBulkActions();
   });
 
-  let html5QrCode = null;
-  function stopScanner(){
-    if(html5QrCode){
-      html5QrCode.stop().then(()=>{
-        html5QrCode.clear();
-        html5QrCode = null;
-        document.getElementById('camBox').hidden = true;
-      }).catch(()=>{
-        document.getElementById('camBox').hidden = true;
-      });
-    } else {
-      document.getElementById('camBox').hidden = true;
-    }
+  function updateBulkActions(){
+    const btnDel = document.getElementById('btnExcluirSelecionados');
+    const label = document.getElementById('bulkCountLabel');
+    if(btnDel) btnDel.disabled = selectedTicketIds.size === 0;
+    if(label) label.textContent = `${selectedTicketIds.size} selecionado(s)`;
   }
 
+  document.getElementById('btnExcluirSelecionados').addEventListener('click', async ()=>{
+    if(!confirm(`Excluir ${selectedTicketIds.size} ingresso(s) selecionado(s)?`)) return;
+    tickets = tickets.filter(t => !selectedTicketIds.has(t.id));
+    selectedTicketIds.clear();
+    await saveTickets();
+    renderLedger();
+    updateBulkActions();
+  });
+
+  document.getElementById('btnExcluirTodos').addEventListener('click', async ()=>{
+    const evtName = currentEventFilter==='todos'?'todos os eventos': (events.find(e=>e.id===currentEventFilter)?.name || 'este evento');
+    if(!confirm(`ATENÇÃO: Excluir TODOS os ingressos vinculados a: "${evtName}"?`)) return;
+    if(currentEventFilter === 'todos'){
+      tickets = [];
+    } else {
+      tickets = tickets.filter(t => t.eventId !== currentEventFilter);
+    }
+    selectedTicketIds.clear();
+    await saveTickets();
+    renderLedger();
+    updateBulkActions();
+  });
+
+  document.getElementById('inpBusca').addEventListener('input', renderLedger);
+
+  document.getElementById('btnVerificar').addEventListener('click', ()=>{
+    const code = document.getElementById('inpCodigo').value.trim();
+    if(!code) return;
+    verifyCode(code);
+  });
+
+  async function verifyCode(code){
+    const area = document.getElementById('resultArea');
+    const t = tickets.find(x => x.id.toUpperCase() === code.toUpperCase());
+    if(!t){
+      area.innerHTML = `<div class="t-result-box t-result-invalid"><h3 class="t-result-title">❌ Ingresso Não Encontrado</h3><p class="t-result-sub">O código "${esc(code)}" não existe no sistema.</p></div>`;
+      return;
+    }
+    if(t.used){
+      area.innerHTML = `<div class="t-result-box t-result-used"><h3 class="t-result-title">⚠️ Ingresso Já Utilizado</h3><p class="t-result-sub"><b>Comprador:</b> ${esc(t.name)}</p><p class="t-result-sub">Este ingresso já foi validado anteriormente.</p></div>`;
+      return;
+    }
+    if(t.status === 'pending'){
+      area.innerHTML = `<div class="t-result-box t-result-used"><h3 class="t-result-title">⏳ Pagamento Pendente</h3><p class="t-result-sub"><b>Comprador:</b> ${esc(t.name)}</p><p class="t-result-sub">Este ingresso aguarda aprovação de pagamento pela comissão.</p></div>`;
+      return;
+    }
+
+    t.used = true;
+    await saveTickets();
+    area.innerHTML = `
+      <div class="t-result-box t-result-ok">
+        <h3 class="t-result-title">✅ Entrada Liberada!</h3>
+        <p class="t-result-sub"><b>Comprador:</b> ${esc(t.name)}</p>
+        <p class="t-result-sub"><b>Evento:</b> ${esc(t.eventName || 'Não especificado')}</p>
+        <p class="t-result-sub">O ingresso foi marcado como <b>USADO</b> no sistema.</p>
+      </div>
+    `;
+  }
+
+  let html5QrCode = null;
   document.getElementById('btnCam').addEventListener('click', ()=>{
-    const camBox = document.getElementById('camBox'); camBox.hidden = false;
-    document.getElementById('camStatus').textContent = 'Iniciando câmera...';
-    if(html5QrCode) stopScanner();
+    document.getElementById('camBox').hidden = false;
     html5QrCode = new Html5Qrcode("qrReader");
     html5QrCode.start(
       { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 220, height: 220 } },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
       (decodedText) => {
         document.getElementById('inpCodigo').value = decodedText;
-        processVerification(decodedText);
+        verifyCode(decodedText);
         stopScanner();
       },
       () => {}
-    ).then(()=>{
-      document.getElementById('camStatus').textContent = 'Aponte a câmera para o QR code.';
-    }).catch(err=>{
-      document.getElementById('camStatus').textContent = 'Erro ao acessar a câmera: ' + err;
+    ).catch(() => {
+      document.getElementById('camStatus').textContent = 'Erro ao acessar a câmera.';
     });
   });
 
+  function stopScanner(){
+    if(html5QrCode){
+      html5QrCode.stop().then(() => {
+        html5QrCode.clear();
+        document.getElementById('camBox').hidden = true;
+      }).catch(()=>{});
+    }
+  }
+
   document.getElementById('btnCamStop').addEventListener('click', stopScanner);
 
-  // ================== INICIALIZAÇÃO ==================
-  (async function init(){
-    firebaseReady = initFirebase();
-    if(!firebaseReady){
-      const warn = document.getElementById('configWarning');
-      warn.textContent = 'Erro ao conectar com Firebase. Verifique suas credenciais.';
-      warn.hidden = false;
+  window.addEventListener('DOMContentLoaded', async ()=>{
+    if(initFirebase()){
+      await loadInitialContent();
+      watchContent();
+      watchAuthState();
+    } else {
       content = defaultContent();
-      renderHome(); renderLoja(); renderRegrasView();
-      return;
     }
-    await loadInitialContent();
-    watchContent();
-    watchAuthState();
-    renderHome(); renderLoja(); renderRegrasView();
-  })();
+    renderHome();
+  });
+
 })();
 </script>
 </body>
