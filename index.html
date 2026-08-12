@@ -425,6 +425,11 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 .t-btn:disabled{opacity:.45;cursor:not-allowed;}
 .t-check{width:16px;height:16px;cursor:pointer;accent-color:var(--ink);}
 .t-del-icon{background:none;border:none;color:var(--used);cursor:pointer;font-size:15px;padding:2px;line-height:1;}
+.t-pdf-icon{background:none;border:none;color:var(--cyan-dim,#3E7A87);cursor:pointer;font-size:15px;padding:2px;line-height:1;}
+.t-pdf-icon:hover{color:var(--gold);}
+.t-stub-actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;}
+.btn-baixar-pdf{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;border:none;border-radius:6px;padding:10px 16px;cursor:pointer;background:var(--gold);color:#fff;}
+.btn-baixar-pdf:hover{background:#8f6a1e;}
 
 .modal-overlay{
   position:fixed;inset:0;background:rgba(10,13,19,.72);z-index:200;
@@ -1037,6 +1042,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
           <div class="t-bulkbar">
             <div class="t-bulk-left"><span id="bulkCountLabel">0 selecionado(s)</span></div>
             <div class="t-bulk-actions">
+              <button class="t-btn secondary" id="btnPdfSelecionados" disabled>Baixar PDF dos selecionados</button>
               <button class="t-btn secondary" id="btnExcluirSelecionados" disabled>Excluir selecionados</button>
               <button class="t-btn danger" id="btnExcluirTodos">Excluir todos (nesta classificação)</button>
             </div>
@@ -2182,9 +2188,161 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
         </div>
         <div id="stubQr_${ticket.id}"></div>
       </div>
+      <div class="t-stub-actions">
+        <button class="btn-baixar-pdf" onclick="baixarPdfIngresso('${ticket.id}')">📄 Baixar PDF do ingresso</button>
+      </div>
     `;
     new QRCode(document.getElementById(`stubQr_${ticket.id}`), { text: ticket.id, width: 80, height: 80 });
   }
+
+  /* ---------------- GERAÇÃO DE PDF DOS INGRESSOS ---------------- */
+
+  // Gera um QR code em alta resolução fora da tela e retorna como dataURL (PNG),
+  // desacoplado de qualquer elemento já renderizado na página.
+  function getQrDataUrl(text, size){
+    return new Promise((resolve)=>{
+      const temp = document.createElement('div');
+      temp.style.position = 'fixed';
+      temp.style.left = '-9999px';
+      temp.style.top = '-9999px';
+      document.body.appendChild(temp);
+      new QRCode(temp, {
+        text: text,
+        width: size,
+        height: size,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+      // qrcodejs renderiza de forma síncrona no construtor
+      setTimeout(()=>{
+        const canvas = temp.querySelector('canvas');
+        let dataUrl = '';
+        if(canvas){
+          dataUrl = canvas.toDataURL('image/png');
+        } else {
+          const img = temp.querySelector('img');
+          if(img) dataUrl = img.src;
+        }
+        document.body.removeChild(temp);
+        resolve(dataUrl);
+      }, 30);
+    });
+  }
+
+  // Desenha um único ingresso (formato de bilhete) numa página do documento jsPDF já existente.
+  async function desenharIngressoNoDoc(doc, ticket){
+    const W = 190, H = 90;
+
+    // fundo escuro
+    doc.setFillColor(10,13,19);
+    doc.rect(0,0,W,H,'F');
+
+    // faixa lateral ciano
+    doc.setFillColor(111,217,236);
+    doc.rect(0,0,4,H,'F');
+
+    // linha pontilhada de destaque (simulando picote)
+    doc.setDrawColor(42,53,71);
+    doc.setLineWidth(0.3);
+    doc.setLineDashPattern([1.5,1.5], 0);
+    doc.line(132,4,132,H-4);
+    doc.setLineDashPattern([], 0);
+
+    // eyebrow
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(232,162,60);
+    doc.text('INGRESSO OFICIAL', 12, 13);
+
+    // nome do evento
+    doc.setFontSize(11);
+    doc.setTextColor(139,148,166);
+    doc.text(String(ticket.eventName || 'Evento').toUpperCase(), 12, 21, { maxWidth: 112 });
+
+    // nome do comprador
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(20);
+    doc.setTextColor(243,238,226);
+    doc.text(String(ticket.name || ''), 12, 38, { maxWidth: 112 });
+
+    // telefone
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+    doc.setTextColor(139,148,166);
+    doc.text(String(ticket.phone || 'Sem telefone'), 12, 47);
+
+    // código
+    doc.setFont('courier','normal');
+    doc.setFontSize(11);
+    doc.setTextColor(111,217,236);
+    doc.text('CÓDIGO: ' + String(ticket.id), 12, 58);
+
+    // pill de status
+    const isUsed = !!ticket.used;
+    const isPending = ticket.status === 'pending';
+    let pillLabel = 'VÁLIDO', pillColor = [47,107,78];
+    if(isPending){ pillLabel = 'PENDENTE'; pillColor = [146,64,14]; }
+    else if(isUsed){ pillLabel = 'USADO'; pillColor = [165,54,43]; }
+    doc.setFillColor(...pillColor);
+    doc.roundedRect(12,64,30,9,3,3,'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(8);
+    doc.setTextColor(255,255,255);
+    doc.text(pillLabel, 27, 69.7, { align:'center' });
+
+    // data de emissão
+    doc.setFont('courier','normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(139,148,166);
+    doc.text('Emitido em: ' + new Date(ticket.createdAt).toLocaleDateString('pt-BR'), 12, 82);
+
+    // QR code em alta resolução — precisa de fundo branco sólido e zona de
+    // silêncio (margem branca) ao redor para o leitor conseguir decodificar.
+    const qrSize = 38, qrX = 142, qrY = 14;
+    const qrPad = 4; // margem branca (zona de silêncio) em mm
+    doc.setFillColor(255,255,255);
+    doc.roundedRect(qrX - qrPad, qrY - qrPad, qrSize + qrPad*2, qrSize + qrPad*2, 2, 2, 'F');
+    try{
+      const qrData = await getQrDataUrl(ticket.id, 300);
+      if(qrData){
+        doc.addImage(qrData, 'PNG', qrX, qrY, qrSize, qrSize);
+      }
+    }catch(e){ /* segue sem travar a geração do PDF */ }
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(7);
+    doc.setTextColor(139,148,166);
+    doc.text('Apresente este QR code', 142, qrY + qrSize + qrPad + 8, { maxWidth: 38 });
+    doc.text('na entrada do evento.', 142, qrY + qrSize + qrPad + 12, { maxWidth: 38 });
+  }
+
+  function criarDocIngresso(){
+    const { jsPDF } = window.jspdf;
+    return new jsPDF({ orientation:'landscape', unit:'mm', format:[190,90] });
+  }
+
+  async function gerarPdfIngresso(ticket){
+    const doc = criarDocIngresso();
+    await desenharIngressoNoDoc(doc, ticket);
+    doc.save(`ingresso_${ticket.id}.pdf`);
+  }
+
+  async function gerarPdfMultiplos(ticketList){
+    if(!ticketList.length) return;
+    const doc = criarDocIngresso();
+    for(let i=0;i<ticketList.length;i++){
+      if(i>0) doc.addPage([190,90], 'landscape');
+      await desenharIngressoNoDoc(doc, ticketList[i]);
+    }
+    doc.save(`ingressos_${new Date().toISOString().slice(0,10)}.pdf`);
+  }
+
+  window.baixarPdfIngresso = async function(id){
+    const t = tickets.find(x=>x.id===id);
+    if(!t) return;
+    await gerarPdfIngresso(t);
+  };
 
   function renderLedger(){
     const body = document.getElementById('ledgerBody'); if(!body) return; body.innerHTML = '';
@@ -2218,6 +2376,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
         <div>${new Date(t.createdAt).toLocaleDateString()}</div>
         <div>
           ${isPending ? `<button class="t-btn" style="padding:4px 8px;font-size:10px;" onclick="approveTicket('${t.id}')">Aprovar</button>` : ''}
+          <button class="t-pdf-icon" title="Baixar PDF" onclick="baixarPdfIngresso('${t.id}')">📄</button>
           <button class="t-del-icon" onclick="deleteSingleTicket('${t.id}')">&times;</button>
         </div>
       `;
@@ -2265,10 +2424,26 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 
   function updateBulkActions(){
     const btnDel = document.getElementById('btnExcluirSelecionados');
+    const btnPdf = document.getElementById('btnPdfSelecionados');
     const label = document.getElementById('bulkCountLabel');
     if(btnDel) btnDel.disabled = selectedTicketIds.size === 0;
+    if(btnPdf) btnPdf.disabled = selectedTicketIds.size === 0;
     if(label) label.textContent = `${selectedTicketIds.size} selecionado(s)`;
   }
+
+  document.getElementById('btnPdfSelecionados').addEventListener('click', async ()=>{
+    const selecionados = tickets.filter(t => selectedTicketIds.has(t.id));
+    if(!selecionados.length) return;
+    const btn = document.getElementById('btnPdfSelecionados');
+    const textoOriginal = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Gerando PDF...';
+    try{
+      await gerarPdfMultiplos(selecionados);
+    } finally {
+      btn.textContent = textoOriginal;
+      btn.disabled = selectedTicketIds.size === 0;
+    }
+  });
 
   document.getElementById('btnExcluirSelecionados').addEventListener('click', async ()=>{
     if(!confirm(`Excluir ${selectedTicketIds.size} ingresso(s) selecionado(s)?`)) return;
