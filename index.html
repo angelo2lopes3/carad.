@@ -1149,6 +1149,58 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   </div>
 </div>
 
+<div class="buy-modal-overlay" id="editShopItemModalOverlay" hidden>
+  <div class="buy-modal-box">
+    <h3 class="buy-modal-title">Editar Anúncio</h3>
+    <p class="buy-modal-sub">Atualize as informações do produto e salve as alterações.</p>
+
+    <div class="row-flex">
+      <div class="field-dark"><label for="editShopItemTitle">Nome do Produto</label><input id="editShopItemTitle" type="text" placeholder="Ex: Tirante Radiologia"></div>
+      <div class="field-dark"><label for="editShopItemPrice">Preço (R$)</label><input id="editShopItemPrice" type="text" placeholder="Ex: R$ 15,00"></div>
+    </div>
+    <div class="field-dark"><label for="editShopItemDesc">Descrição</label><input id="editShopItemDesc" type="text" placeholder="Ex: Tirante em nylon com engate rápido de 40cm"></div>
+
+    <div class="field-dark">
+      <label for="editShopItemIsTicket">Tipo do Item</label>
+      <select id="editShopItemIsTicket">
+        <option value="false">Produto Geral</option>
+        <option value="true">Ingresso de Evento</option>
+      </select>
+    </div>
+
+    <div class="field-dark" id="editShopEventSelectWrap" hidden>
+      <label for="editShopItemEventId">Evento Vinculado</label>
+      <select id="editShopItemEventId"></select>
+    </div>
+
+    <div class="field-dark"><label for="editShopItemImgUrl">URL da Imagem do Produto</label><input id="editShopItemImgUrl" type="text" placeholder="https://..."></div>
+    <div class="field-dark">
+      <label for="editShopItemImgFile">ou envie uma foto do dispositivo</label>
+      <input id="editShopItemImgFile" type="file" accept="image/*">
+    </div>
+    <div class="upload-preview-box preview-ratio-shop" id="editShopItemImgPreviewBox">
+      <div class="upload-preview-hint">Arraste a imagem para enquadrar como será exibida no cartão do produto.</div>
+      <img id="editShopItemImgPreview" alt="Pré-visualização do produto">
+    </div>
+    <div class="zoom-control-wrap" id="editShopItemZoomWrap" hidden>
+      <label for="editShopItemZoomRange">Zoom:</label>
+      <input type="range" id="editShopItemZoomRange" min="1" max="3" step="0.05" value="1">
+    </div>
+    <button class="del-btn upload-preview-remove" id="btnRemoveEditShopItemImg" type="button" hidden>Remover imagem</button>
+
+    <div class="field-dark"><label for="editShopItemQrImgFile">Trocar Imagem do QR Code de Pagamento (opcional)</label><input id="editShopItemQrImgFile" type="file" accept="image/*"></div>
+
+    <div class="field-dark"><label for="editShopItemLink">Link do WhatsApp da comissão</label><input id="editShopItemLink" type="text" placeholder="https://wa.me/..."></div>
+
+    <div id="editShopItemErr" class="login-err" hidden></div>
+
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="t-btn secondary" id="btnCancelEditShopItem">Cancelar</button>
+      <button class="btn-cyan" id="btnSaveEditShopItem">Salvar Alterações</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1778,6 +1830,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   const rulesHeroPreviewCtrl = makeInteractiveCropBox('rulesHeroImgPreviewBox', 'rulesHeroImgPreview', 'btnRemoveRulesHeroImg', 'rulesHeroZoomRange', 'rulesHeroZoomWrap');
   const galleryPreviewCtrl = makeInteractiveCropBox('galleryImgPreviewBox', 'galleryImgPreview', 'btnRemoveGalleryImg', 'galleryZoomRange', 'galleryZoomWrap');
   const shopItemPreviewCtrl = makeInteractiveCropBox('shopItemImgPreviewBox', 'shopItemImgPreview', 'btnRemoveShopItemImg', 'shopItemZoomRange', 'shopItemZoomWrap');
+  const editShopItemPreviewCtrl = makeInteractiveCropBox('editShopItemImgPreviewBox', 'editShopItemImgPreview', 'btnRemoveEditShopItemImg', 'editShopItemZoomRange', 'editShopItemZoomWrap');
 
   function renderAdmin(){
     document.getElementById('edHeroTitle').value = content.heroTitle || '';
@@ -1995,13 +2048,127 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     }
     content.shopItems.forEach(item => {
       const row = document.createElement('div'); row.className = 'list-manage-item';
-      row.innerHTML = `<div class="thumb-row"><img src="${item.imgUrl ? esc(item.imgUrl) : 'https://via.placeholder.com/52x40?text=No+Img'}"><div class="lmi-text"><b>${esc(item.title)} (${esc(item.price)})</b><span>${esc(item.desc)}</span></div></div><button class="del-btn">Excluir Anúncio</button>`;
+      row.innerHTML = `<div class="thumb-row"><img src="${item.imgUrl ? esc(item.imgUrl) : 'https://via.placeholder.com/52x40?text=No+Img'}"><div class="lmi-text"><b>${esc(item.title)} (${esc(item.price)})</b><span>${esc(item.desc)}</span></div></div><div class="lmi-actions" style="display:flex;gap:8px;flex-shrink:0;"><button class="btn-outline edit-btn" type="button" style="padding:6px 12px;font-size:12px;">Editar</button><button class="del-btn">Excluir Anúncio</button></div>`;
       row.querySelector('.del-btn').addEventListener('click', async () => {
         content.shopItems = content.shopItems.filter(x => x.id !== item.id); await saveContent(); renderShopManage();
+      });
+      row.querySelector('.edit-btn').addEventListener('click', () => {
+        openEditShopItemModal(item);
       });
       wrap.appendChild(row);
     });
   }
+
+  // ================== EDITAR ANÚNCIO DE PRODUTO (POP-UP) ==================
+  let editingShopItemId = null;
+  let editShopItemNewImageUsed = false;
+  let editShopQrBase64 = '';
+  let editShopItemNewQrUsed = false;
+
+  function openEditShopItemModal(item){
+    editingShopItemId = item.id;
+    editShopItemNewImageUsed = false;
+    editShopItemNewQrUsed = false;
+    editShopQrBase64 = item.qrImg || '';
+
+    document.getElementById('editShopItemTitle').value = item.title || '';
+    document.getElementById('editShopItemPrice').value = item.price || '';
+    document.getElementById('editShopItemDesc').value = item.desc || '';
+    document.getElementById('editShopItemIsTicket').value = item.isTicket ? 'true' : 'false';
+    document.getElementById('editShopItemLink').value = item.link || '';
+    document.getElementById('editShopItemImgUrl').value = item.imgUrl && !item.imgUrl.startsWith('data:') ? item.imgUrl : '';
+    document.getElementById('editShopItemImgFile').value = '';
+    document.getElementById('editShopItemQrImgFile').value = '';
+    const err = document.getElementById('editShopItemErr'); err.hidden = true; err.textContent = '';
+
+    const selEvt = document.getElementById('editShopItemEventId');
+    if(selEvt){
+      selEvt.innerHTML = events.map(ev => `<option value="${ev.id}">${esc(ev.name)}</option>`).join('');
+      if(item.eventId) selEvt.value = item.eventId;
+    }
+    document.getElementById('editShopEventSelectWrap').hidden = !item.isTicket;
+
+    if(item.imgUrl){
+      editShopItemPreviewCtrl.show(item.imgUrl);
+    } else {
+      editShopItemPreviewCtrl.clear();
+    }
+
+    document.getElementById('editShopItemModalOverlay').hidden = false;
+  }
+
+  function closeEditShopItemModal(){
+    document.getElementById('editShopItemModalOverlay').hidden = true;
+    editingShopItemId = null;
+  }
+
+  document.getElementById('editShopItemIsTicket').addEventListener('change', function(e){
+    const isTicket = e.target.value === 'true';
+    document.getElementById('editShopEventSelectWrap').hidden = !isTicket;
+  });
+
+  document.getElementById('editShopItemImgFile').addEventListener('change', function(e){
+    const file = e.target.files[0]; if(!file) return;
+    editShopItemNewImageUsed = true;
+    const reader = new FileReader();
+    reader.onload = function(evt){ editShopItemPreviewCtrl.show(evt.target.result); };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('editShopItemQrImgFile').addEventListener('change', function(e){
+    const file = e.target.files[0]; if(!file) return;
+    editShopItemNewQrUsed = true;
+    const reader = new FileReader();
+    reader.onload = function(evt){ editShopQrBase64 = evt.target.result; };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('btnCancelEditShopItem').addEventListener('click', closeEditShopItemModal);
+
+  document.getElementById('editShopItemModalOverlay').addEventListener('click', (e) => {
+    if(e.target === document.getElementById('editShopItemModalOverlay')) closeEditShopItemModal();
+  });
+
+  document.getElementById('btnSaveEditShopItem').addEventListener('click', async () => {
+    if(!editingShopItemId) return;
+    const title = document.getElementById('editShopItemTitle').value.trim();
+    const price = document.getElementById('editShopItemPrice').value.trim();
+    const desc = document.getElementById('editShopItemDesc').value.trim();
+    const isTicket = document.getElementById('editShopItemIsTicket').value === 'true';
+    const eventId = isTicket ? document.getElementById('editShopItemEventId').value : null;
+    const link = document.getElementById('editShopItemLink').value.trim();
+    const urlInput = document.getElementById('editShopItemImgUrl').value.trim();
+
+    const err = document.getElementById('editShopItemErr');
+    if(!title || !price){ err.textContent = 'Preencha Nome e Preço do produto.'; err.hidden = false; return; }
+    err.hidden = true;
+
+    const idx = content.shopItems.findIndex(x => x.id === editingShopItemId);
+    if(idx === -1){ closeEditShopItemModal(); return; }
+    const original = content.shopItems[idx];
+
+    let imgUrl = original.imgUrl;
+    if(editShopItemNewImageUsed){
+      const cropped = editShopItemPreviewCtrl.getCroppedBase64(600, 0.85);
+      if(cropped) imgUrl = cropped;
+    } else if(urlInput && urlInput !== original.imgUrl){
+      imgUrl = urlInput;
+    } else if(!urlInput && !original.imgUrl){
+      imgUrl = '';
+    }
+
+    const qrImg = editShopItemNewQrUsed ? editShopQrBase64 : original.qrImg;
+
+    content.shopItems[idx] = {
+      ...original,
+      title, price, desc, isTicket, eventId, imgUrl, qrImg, link
+    };
+
+    await saveContent();
+    closeEditShopItemModal();
+    renderShopManage();
+    flashSaved();
+  });
 
   document.getElementById('shopItemImgFile').addEventListener('change', function(e) {
     const file = e.target.files[0]; if(!file) return;
