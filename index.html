@@ -1209,6 +1209,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script>
 (function(){
   // ================== POP-UP DE ACEITE DAS REGRAS ==================
@@ -1226,16 +1227,14 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     });
   })();
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBFKZWyOD1BhhyJidfZJarw0DV-o8tWq9g",
-    authDomain: "sitecarad.firebaseapp.com",
-    projectId: "sitecarad",
-    storageBucket: "sitecarad.firebasestorage.app",
-    messagingSenderId: "787001867481",
-    appId: "1:787001867481:web:e8e4a864300e3de0ab12c8"
-  };
+  // A configuração do Firebase agora vem do arquivo firebase-config.js
+  // (gerado a partir de Secrets do GitHub no deploy — veja README.md).
+  // window.__FIREBASE_CONFIG__ é definido nesse arquivo externo.
+  const firebaseConfig = window.__FIREBASE_CONFIG__ || null;
 
   const COLLECTION = 'calourada';
+  const TICKETS_COLLECTION = 'tickets';
+  function ticketsRef(){ return db.collection(TICKETS_COLLECTION); }
 
   let content = null;
   let tickets = [];
@@ -1268,12 +1267,13 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       rulesHeroImage: '',
       announcements: [],
       photos: [],
-      shopItems: []
+      shopItems: [],
+      events: []
     };
   }
 
   function initFirebase(){
-    if(firebaseConfig.apiKey === 'sua api' || firebaseConfig.apiKey.includes('AQUI')){
+    if(!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey.includes('AQUI')){
       return false;
     }
     try{
@@ -1296,6 +1296,8 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     if(!content.announcements) content.announcements = [];
     if(!content.photos) content.photos = [];
     if(!content.shopItems) content.shopItems = [];
+    if(!content.events) content.events = [];
+    events = content.events;
   }
   
   function watchContent(){
@@ -1305,9 +1307,14 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       if(!content.announcements) content.announcements = [];
       if(!content.photos) content.photos = [];
       if(!content.shopItems) content.shopItems = [];
+      if(!content.events) content.events = [];
+      events = content.events;
       if(views.home.classList.contains('active')) renderHome();
       if(views.loja.classList.contains('active')) renderLoja();
       if(views.regras.classList.contains('active')) renderRegrasView();
+      renderEventSelect();
+      renderEventFilterChips();
+      if(!document.getElementById('tpanel-eventos').hidden) renderEventsManage();
     });
   }
   
@@ -1316,24 +1323,15 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   }
 
   async function startTicketsSync(){
-    try{
-      const ref = db.collection(COLLECTION).doc('tickets');
-      const snap = await ref.get();
-      if(!snap.exists) await ref.set({list: [], events: []});
-      tickets = snap.exists ? (snap.data().list || []) : [];
-      events = snap.exists ? (snap.data().events || []) : [];
-    }catch(e){}
     updateCount();
     if(unsubscribeTickets) unsubscribeTickets();
-    unsubscribeTickets = db.collection(COLLECTION).doc('tickets').onSnapshot(snap=>{
-      tickets = snap.exists ? (snap.data().list || []) : [];
-      events = snap.exists ? (snap.data().events || []) : [];
+    unsubscribeTickets = ticketsRef().onSnapshot(snap=>{
+      tickets = snap.docs.map(d => d.data());
+      tickets.sort((a,b) => (b.createdAt||'').localeCompare(a.createdAt||''));
       updateCount();
-      renderEventSelect();
-      renderEventFilterChips();
       if(!document.getElementById('tpanel-eventos').hidden) renderEventsManage();
       if(!document.getElementById('tpanel-lista').hidden) renderLedger();
-    });
+    }, ()=>{ /* sem permissão / offline: mantém última lista conhecida */ });
   }
 
   function updateCount(){
@@ -1347,8 +1345,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     if(cUsados) cUsados.textContent = tickets.filter(t=>t.used).length;
   }
   
-  function stopTicketsSync(){ if(unsubscribeTickets){ unsubscribeTickets().catch(()=>{}); unsubscribeTickets = null; } tickets = []; events = []; updateCount(); }
-  async function saveTickets(){ try{ await db.collection(COLLECTION).doc('tickets').set({list: tickets, events: events}); return true; }catch(e){ return false; } }
+  function stopTicketsSync(){ if(unsubscribeTickets){ unsubscribeTickets(); unsubscribeTickets = null; } tickets = []; updateCount(); }
   function flashSaved(){ const tag = document.getElementById('savedTag'); tag.classList.add('show'); setTimeout(()=>tag.classList.remove('show'), 1600); }
 
   const views = {
@@ -1539,12 +1536,10 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     };
 
     try {
-      const ref = db.collection(COLLECTION).doc('tickets');
-      const snap = await ref.get();
-      let currentTickets = snap.exists ? (snap.data().list || []) : [];
-      let currentEvents = snap.exists ? (snap.data().events || []) : [];
-      currentTickets.unshift(newTicket);
-      await ref.set({ list: currentTickets, events: currentEvents });
+      // Cada solicitação cria APENAS o seu próprio documento (nunca lê nem
+      // reescreve os dados de outros compradores). As regras do Firestore
+      // (firestore.rules) validam este formato no servidor antes de aceitar.
+      await ticketsRef().doc(newTicket.id).set(newTicket);
       alert('Sua solicitação de compra via QR Code foi realizada com sucesso! Seu ingresso está aguardando aprovação da comissão.');
       buyModalOverlay.hidden = true;
     } catch(e){
@@ -1640,9 +1635,9 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       }
 
       if(foundTicket){
+        await ticketsRef().doc(foundTicket.id).update({status: 'approved', used: false});
         foundTicket.status = 'approved';
         foundTicket.used = false;
-        await saveTickets();
 
         resultBox.innerHTML = `
           <div class="t-result-box t-result-ok">
@@ -2268,7 +2263,8 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     } else {
       events.push({id: uid(), name, date, location});
     }
-    await saveTickets();
+    content.events = events;
+    await saveContent();
     cancelEditEvent();
     renderEventsManage();
     renderEventSelect();
@@ -2278,7 +2274,8 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   async function deleteEvent(id){
     if(!confirm('Excluir este evento? Ingressos vinculados a ele continuarão mantidos.')) return;
     events = events.filter(x=>x.id!==id);
-    await saveTickets();
+    content.events = events;
+    await saveContent();
     renderEventsManage();
     renderEventSelect();
     renderEventFilterChips();
@@ -2336,8 +2333,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
       createdAt: new Date().toISOString()
     };
 
-    tickets.unshift(ticket);
-    await saveTickets();
+    await ticketsRef().doc(ticket.id).set(ticket);
     document.getElementById('inpNome').value = ''; document.getElementById('inpTel').value = '';
     renderNewTicketStub(ticket);
   });
@@ -2561,20 +2557,13 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
   }
 
   window.approveTicket = async function(id){
-    const t = tickets.find(x=>x.id===id);
-    if(t){
-      t.status = 'approved';
-      await saveTickets();
-      renderLedger();
-    }
+    await ticketsRef().doc(id).update({status: 'approved'});
   };
 
   window.deleteSingleTicket = async function(id){
     if(!confirm('Excluir este ingresso permanentemente?')) return;
-    tickets = tickets.filter(x=>x.id!==id);
     selectedTicketIds.delete(id);
-    await saveTickets();
-    renderLedger();
+    await ticketsRef().doc(id).delete();
   };
 
   document.getElementById('chkSelectAll').addEventListener('change', (e)=>{
@@ -2614,24 +2603,21 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
 
   document.getElementById('btnExcluirSelecionados').addEventListener('click', async ()=>{
     if(!confirm(`Excluir ${selectedTicketIds.size} ingresso(s) selecionado(s)?`)) return;
-    tickets = tickets.filter(t => !selectedTicketIds.has(t.id));
+    const batch = db.batch();
+    selectedTicketIds.forEach(id => batch.delete(ticketsRef().doc(id)));
     selectedTicketIds.clear();
-    await saveTickets();
-    renderLedger();
+    await batch.commit();
     updateBulkActions();
   });
 
   document.getElementById('btnExcluirTodos').addEventListener('click', async ()=>{
     const evtName = currentEventFilter==='todos'?'todos os eventos': (events.find(e=>e.id===currentEventFilter)?.name || 'este evento');
     if(!confirm(`ATENÇÃO: Excluir TODOS os ingressos vinculados a: "${evtName}"?`)) return;
-    if(currentEventFilter === 'todos'){
-      tickets = [];
-    } else {
-      tickets = tickets.filter(t => t.eventId !== currentEventFilter);
-    }
+    const toDelete = currentEventFilter === 'todos' ? tickets : tickets.filter(t => t.eventId === currentEventFilter);
+    const batch = db.batch();
+    toDelete.forEach(t => batch.delete(ticketsRef().doc(t.id)));
     selectedTicketIds.clear();
-    await saveTickets();
-    renderLedger();
+    await batch.commit();
     updateBulkActions();
   });
 
@@ -2660,7 +2646,7 @@ footer{text-align:center;padding:40px 20px 60px;color:var(--muted);font-size:12p
     }
 
     t.used = true;
-    await saveTickets();
+    await ticketsRef().doc(t.id).update({used: true});
     area.innerHTML = `
       <div class="t-result-box t-result-ok">
         <h3 class="t-result-title">✅ Entrada Liberada!</h3>
