@@ -1,0 +1,10 @@
+# Configuração real do Firebase — NUNCA deve ir para o GitHub.
+# É gerada automaticamente pelo workflow de deploy (.github/workflows/deploy.yml)
+# a partir dos Secrets do repositório.
+firebase-config.js
+
+# Arquivos comuns de sistema/editor
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
